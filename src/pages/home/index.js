@@ -12,10 +12,25 @@ export default class Home extends Component {
 
     render(){
 		return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Tela Unidades</Text>
+            <View style={ styles.container }>
+                <View style={ styles.containerTitle }>
+                    <Text style={ styles.title }>Selecionar Unidade</Text>
+                </View>
                 <Button title="Ir para Login" onPress={() => this.props.navigation.navigate('Login')} />
             </View>
         );
     }
 }
+
+const styles = {
+    container: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    containerTitle: {
+        display: 'flex',
+        alignItems: 'center'
+    },
+    title: {
+    }
+};
