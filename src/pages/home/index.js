@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, View, Text, Picker, ImageBackground } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
 
 export default class Home extends Component {
@@ -21,10 +22,31 @@ export default class Home extends Component {
             });
         }).catch( error => {
             console.log("Error => ", error);
+            alert("Falha na comunicação com o servidor, favor verifar sua conexão com a internet.");
         });
     }
 
+    handleUpdateUnit = async (hospitalSelected) => {
+        this.setState({ hospitalSelected });
+        await AsyncStorage.setItem('hospitalSelected', `${hospitalSelected}` );
+    }
+
+    unitList = () => {
+        return( this.state.hospitals.map( (item, index) => { 
+            return( <Picker.Item label={ item.name } key={ index } value={ item.id } />)
+        }));
+    }
+
+    goToLogin = () => {
+        if (this.state.hospitalSelected !== null) {
+            this.props.navigation.navigate('Login');
+        } else {
+            alert("Selecione uma unidade.");
+        }
+    }
+
     render() {
+        console.log("UNIT=>", this.state.hospitalSelected)
 		return (
             <View style={ styles.container }>
                 <View style={ styles.containerTitle }>
@@ -32,16 +54,14 @@ export default class Home extends Component {
                 </View>
                 
                 <View  style={ styles.containerSelect }>
-                    <Picker style={ styles.select } selectedValue={this.state.hospitalSelected} onValueChange={(hospitalSelected) => this.setState({ hospitalSelected }) }>
-                        <Picker.Item label='Unidade' value='' />
-                        <Picker.Item label='Vila Nova' value='vilanova' />
-                        <Picker.Item label='DF Star' value='dfstar' />
-                        <Picker.Item label='Copa Star' value='cstar' />
+                    <Picker style={ styles.select } selectedValue={this.state.hospitalSelected} onValueChange={ this.handleUpdateUnit }>
+                        <Picker.Item label='Unidade' value={ null } />
+                        { this.unitList() }
                     </Picker>
                 </View>
 
                 <View  style={ styles.containerButton }>
-                    <Button style={ styles.button } title='PROSSEGUIR' onPress={() => this.props.navigation.navigate('Login')} color='#957657' />
+                    <Button style={ styles.button } title='PROSSEGUIR' onPress={ this.goToLogin } color='#957657' />
                 </View>
 
                 <ImageBackground source={require('../../../assets/images/footerHome.png')} style={ styles.imgBackground }>

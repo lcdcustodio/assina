@@ -30,7 +30,7 @@ export default class App extends React.Component {
   render() {
     return (
       <View style={{ flex: 1 }}>
-        <GeneralStatusBarColor backgroundColor="#772ea2" barStyle="light-content"/>
+        <GeneralStatusBarColor backgroundColor="#957657" barStyle="light-content"/>
         <AppContainer />
       </View>
     );
