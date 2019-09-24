@@ -28,7 +28,7 @@ export default class Home extends Component {
 
     handleUpdateUnit = async (hospitalSelected) => {
         this.setState({ hospitalSelected });
-        await AsyncStorage.setItem('hospitalSelected', `${hospitalSelected}` );
+        await AsyncStorage.setItem('hospitalSelectedId', `${hospitalSelected}` );
     }
 
     unitList = () => {
@@ -46,7 +46,6 @@ export default class Home extends Component {
     }
 
     render() {
-        console.log("UNIT=>", this.state.hospitalSelected)
 		return (
             <View style={ styles.container }>
                 <View style={ styles.containerTitle }>
