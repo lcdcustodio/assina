@@ -39,9 +39,13 @@ export default class Login extends Component {
                     }
                 }
     
-                api.post('/login', data).then(response => {
-                    console.log("Result => ", response);
-                    this.props.navigation.navigate('SearchAttendance')
+                api.post('/login', data).then(async response => {
+                    if(response.status == 200) {
+                        await AsyncStorage.setItem('token', `${response.headers.authorization}` );
+                        this.props.navigation.navigate('SearchAttendance');
+                    } else {
+                        alert("Falha na comunicação com o servidor, dados não reconhecidos.");
+                    }
                 }).catch( error => {
                     console.log("Error => ", error);
                     alert("Falha na comunicação com o servidor, favor verifar sua conexão com a internet.");
@@ -127,6 +131,7 @@ const styles = {
         marginLeft: '12.5%',
         borderColor: 'black',
         borderWidth: 0,
+        marginBottom: '5%'
     },
     inputGroup: {
         marginTop: '5%',

@@ -16,7 +16,6 @@ export default class Home extends Component {
 
     async getUnits() {
         api.get('/units').then(response => {
-            console.log("Result => ", response.data);
             this.setState({
                 hospitals: response.data
             });
