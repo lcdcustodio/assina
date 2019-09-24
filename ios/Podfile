@@ -29,6 +29,8 @@ target 'assina' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'assinaTests' do
     inherit! :search_paths
     # Pods for testing

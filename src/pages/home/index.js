@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
 import { Button, View, Text, Picker, ImageBackground } from 'react-native';
+import api from '../../services/api';
 
 export default class Home extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            hospitalUnit: null
+            hospitalSelected: null,
+            hospitals: []
         }
+        this.getUnits();
     }
 
-    render(){
+    async getUnits() {
+        api.get('/units').then(response => {
+            console.log("Result => ", response.data);
+            this.setState({
+                hospitals: response.data
+            });
+        }).catch( error => {
+            console.log("Error => ", error);
+        });
+    }
+
+    render() {
 		return (
             <View style={ styles.container }>
                 <View style={ styles.containerTitle }>
@@ -18,7 +32,7 @@ export default class Home extends Component {
                 </View>
                 
                 <View  style={ styles.containerSelect }>
-                    <Picker style={ styles.select } selectedValue={this.state.hospitalUnit} onValueChange={(hospitalUnit) => this.setState({ hospitalUnit }) }>
+                    <Picker style={ styles.select } selectedValue={this.state.hospitalSelected} onValueChange={(hospitalSelected) => this.setState({ hospitalSelected }) }>
                         <Picker.Item label='Unidade' value='' />
                         <Picker.Item label='Vila Nova' value='vilanova' />
                         <Picker.Item label='DF Star' value='dfstar' />
