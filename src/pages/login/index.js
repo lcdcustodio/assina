@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
-import { TouchableHighlight, View, Text, ImageBackground, Image, KeyboardAvoidingView } from 'react-native';
+import { TouchableHighlight, View, Text, ImageBackground, Image } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import api from '../../services/api';

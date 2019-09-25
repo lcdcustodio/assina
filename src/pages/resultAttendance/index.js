@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Button, View, Text, ImageBackground } from 'react-native';
+import moment from 'moment';
+import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
 import { Icon } from 'native-base';
 
 export default class ResultAttendance extends Component {
@@ -7,50 +8,85 @@ export default class ResultAttendance extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            patient: null,
+            documents: null
         }
     }
 
-    render(){
+    didFocus = this.props.navigation.addListener('didFocus', (res) => {
+        const patient = this.props.navigation.getParam('patient');
+        const documents = this.props.navigation.getParam('documents');
+
+        this.setState({
+            patient,
+            documents
+        });
+    });
+
+    renderBirthday() {
+        if(this.state.patient) {
+            let birthday = this.state.patient.birthdate ? moment(this.state.patient.birthdate).format('DD/MM/YYYY') : '';
+            let yearsOld = this.state.patient.birthdate ? moment().diff(this.state.patient.birthdate, 'years') + ' anos': '';
+    
+            return (
+                <Text style={ styles.textBirthday }> {birthday} | {yearsOld}</Text>
+            );
+        }
+    }
+
+    renderItem = ({ item }) => (
+        <View style={ styles.containerTerm }>
+            <Text style={ styles.textNameTerm }> { item.title } </Text>
+            <View style={ item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed }>
+                <Text style={ item.signed ? styles.textStatusTermGreen : styles.textStatusTermRed }>
+                    { item.signed ? 'Assinado' : 'Pendente' }
+                </Text>
+            </View>
+        </View>
+    );
+    
+    goBack = () => {
+		this.props.navigation.navigate('SearchAttendance');
+	}
+
+    goToExit = () => {
+        this.props.navigation.navigate('Login');
+    }
+
+    render() {
+        console.log("patient=>", this.state.patient);
+        console.log("documents=>", this.state.documents);
+
 		return (
             <View style={ styles.container }>
                 <ImageBackground source={require('../../../assets/images/general-background.png')} style={ styles.imgBackground }>
                     <View style={ styles.containerMenu }>
-                        <View style={ styles.containerIconsLeft }>
+                        <TouchableOpacity style={ styles.containerIconsLeft } onPress={ this.goBack }>
                             <Icon type='MaterialCommunityIcons' name='arrow-left' style={ styles.imgExit } />
-                        </View>
+                        </TouchableOpacity>
 
                         <View style={ styles.containerIconsRight }>
-                            <Icon type='MaterialCommunityIcons' name='reload' style={ styles.imgExit } />
-                            <Text style={ styles.imgText }>Sair</Text>
-                            <Icon type='MaterialIcons' name='exit-to-app' style={ styles.imgExit } />
+                            <TouchableOpacity >
+                                <Icon type='MaterialCommunityIcons' name='reload' style={ styles.imgExit } />
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={ this.goToExit } style={ styles.containerIconsRight }>
+                                <Text style={ styles.imgText }>Sair</Text>
+                                <Icon type='MaterialIcons' name='exit-to-app' style={ styles.imgExit } />
+                            </TouchableOpacity>
                         </View>
                     </View>
 
                     <View style={ styles.containerContent }>
-                        <Text style={ styles.textName }>Layssa Belfort Rizzi Ximenes</Text>
-                        <Text style={ styles.textBirthday }>11/09/1989 | 30 Anos</Text>
-
-                        <View style={ styles.containerTerm }>
-                            <Text style={ styles.textNameTerm }>Termo 123456</Text>
-                            <View style={ styles.containerStatusTermGreen }>
-                                <Text style={ styles.textStatusTermGreen }>Assinado</Text>
-                            </View>
-					    </View>
-
-                        <View style={ styles.containerTerm }>
-                            <Text style={ styles.textNameTerm }>Termo 123456</Text>
-                            <View style={ styles.containerStatusTermRed }>
-                                <Text style={ styles.textStatusTermRed }>Pendente</Text>
-                            </View>
-					    </View>
-
-                        <View style={ styles.containerTerm }>
-                            <Text style={ styles.textNameTerm }>Termo 123456</Text>
-                            <View style={ styles.containerStatusTermRed }>
-                                <Text style={ styles.textStatusTermRed }>Pendente</Text>
-                            </View>
-					    </View>
+                        <Text style={ styles.textName }> { this.state.patient ? this.state.patient.name : ''} </Text>
+                        <Text style={ styles.textBirthday }> { this.renderBirthday() } </Text>
+                        
+                        <FlatList
+                            // contentContainerStyle={baseStyles.container}
+                            data={this.state.documents}
+                            keyExtractor={item => `${item.ref}`}
+                            renderItem={this.renderItem}
+                        />
 
                     </View>
 
@@ -149,8 +185,9 @@ const styles = {
         borderWidth: 0,
     },
     textNameTerm: {
-        marginTop: '4%',
-        marginLeft: '5%',
+        width: '70%',
+        marginTop: '2%',
+        marginLeft: '2%',
         fontFamily: "Roboto-Regular",
         fontSize: 14,
         fontWeight: "normal",
@@ -161,7 +198,7 @@ const styles = {
     },
     containerStatusTermGreen: {
         marginTop: '3%',
-        marginLeft: '35%',
+        marginLeft: '0%',
         height: 25,
         width: 85,
         borderColor: 'black',
@@ -173,7 +210,7 @@ const styles = {
     },
     containerStatusTermRed: {
         marginTop: '3%',
-        marginLeft: '35%',
+        marginLeft: '0%',
         height: 25,
         width: 85,
         borderColor: 'black',

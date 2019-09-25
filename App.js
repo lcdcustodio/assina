@@ -19,7 +19,7 @@ const RootStack = createStackNavigator(
     ResultAttendance: ResultAttendanceScreen
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'ResultAttendance',
     headerMode: 'none'
   }
 );
