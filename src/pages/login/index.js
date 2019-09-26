@@ -38,7 +38,8 @@ export default class Login extends Component {
                         'id': unitId
                     }
                 }
-    
+                
+                console.log(data)
                 api.post('/login', data).then(async response => {
                     if(response.status == 200) {
                         await AsyncStorage.setItem('token', `${response.headers.authorization}` );
@@ -139,7 +140,7 @@ const styles = {
     },
     textLabel: {
         fontFamily: "Roboto-Bold",
-        fontSize: 14,
+        fontSize: 30,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 0,
@@ -150,10 +151,9 @@ const styles = {
         marginLeft: '3%',
         opacity: 0.6,
         fontFamily: "Roboto",
-        fontSize: 14,
+        fontSize: 30,
         fontWeight: "300",
         fontStyle: "normal",
-        lineHeight: 14,
         letterSpacing: 0.02,
         color: "#ffffff"
     },
@@ -170,7 +170,7 @@ const styles = {
         backgroundColor: '#FFFFFF'
     },
     textButton: {
-        fontSize: 16,
+        fontSize: 30,
         fontFamily: "Roboto-Bold",
         fontWeight: "bold",
         fontStyle: "normal",

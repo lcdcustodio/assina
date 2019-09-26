@@ -127,7 +127,7 @@ const styles = {
     },
     title: {
         fontFamily: "Roboto-Bold",
-        fontSize: 20,
+        fontSize: 40,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 0,
@@ -137,7 +137,7 @@ const styles = {
     text: {
         marginTop: '5%',
         fontFamily: "Roboto-Light",
-        fontSize: 12,
+        fontSize: 22,
         fontWeight: "300",
         fontStyle: "normal",
         letterSpacing: 0.01,
@@ -146,10 +146,11 @@ const styles = {
     },
     textInput: {
         marginTop: '10%',
-        fontSize: 15,
+        fontSize: 22,
         width: '100%',
+        height: '13%',
         paddingLeft: '5%',
-        borderRadius: 2.5,
+        borderRadius: 10,
         backgroundColor: "#efefef",
         color: "#707070"
     },
@@ -159,13 +160,13 @@ const styles = {
     },
     button: {
         height: '33%',
-        paddingTop: '2.5%',
+        paddingTop: '3%',
         alignItems: 'center',
-        borderRadius: 2.5,
+        borderRadius: 10,
         backgroundColor: '#957657'
     },
     textButton: {
-        fontSize: 11,
+        fontSize: 22,
         fontFamily: "Roboto-Bold",
         fontWeight: "bold",
         fontStyle: "normal",

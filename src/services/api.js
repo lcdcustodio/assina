@@ -1,6 +1,5 @@
 import axios from "axios";
-import Config from "react-native-config";
 
-axios.defaults.baseURL = Config.API_HOST;
+axios.defaults.baseURL = 'http://10.15.24.94:8080/assina-api/';
 
 export default axios;
