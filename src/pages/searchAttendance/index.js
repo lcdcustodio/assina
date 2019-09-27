@@ -104,13 +104,14 @@ const styles = {
         borderWidth: 0,
     },
     imgExit: {
+        fontSize: 40, 
         color: 'white',
         marginRight: '5%',
         marginLeft: '1%'
     },
     imgText: {
         fontFamily: "Roboto-Light",
-        fontSize: 12,
+        fontSize: 24,
         fontWeight: "300",
         fontStyle: "normal",
         letterSpacing: 0.01,

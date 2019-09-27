@@ -1,7 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import AsyncStorage from '@react-native-community/async-storage';
 
 //Pages
 import HomeScreen from './src/pages/home';
@@ -11,23 +12,37 @@ import ResultAttendanceScreen from './src/pages/resultAttendance';
 
 import GeneralStatusBarColor from './src/components/GeneralStatusBarColor';
 
-const RootStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-    Login: LoginScreen,
-    SearchAttendance: SearchAttendanceScreen,
-    ResultAttendance: ResultAttendanceScreen
-  },
-  {
-    initialRouteName: 'ResultAttendance',
-    headerMode: 'none'
-  }
-);
-
-const AppContainer = createAppContainer(RootStack);
-
 export default class App extends React.Component {
+
+  constructor(props) {
+    super(props);
+      this.state = {
+        hospitalSelected: null,
+      }
+  }
+
+  async componentDidMount() {
+    let hospitalSelected = await AsyncStorage.getItem('hospitalSelected');
+    this.setState({
+      hospitalSelected
+    });
+  }
+
   render() {
+    const RootStack = createStackNavigator(
+      {
+        Home: HomeScreen,
+        Login: LoginScreen,
+        SearchAttendance: SearchAttendanceScreen,
+        ResultAttendance: ResultAttendanceScreen
+      },
+      {
+        initialRouteName: this.state.hospitalSelected ? 'Login' : 'Home',
+        headerMode: 'none'
+      }
+    );
+    
+    const AppContainer = createAppContainer(RootStack);
     return (
       <View style={{ flex: 1 }}>
         <GeneralStatusBarColor backgroundColor="#957657" barStyle="light-content"/>

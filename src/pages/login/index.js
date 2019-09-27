@@ -11,9 +11,19 @@ export default class Login extends Component {
         super(props);
         this.state = {
             username: 'admin',
-            password: '123456'
+            password: '123456',
+            hospitalSelected: null
         }
     }
+
+    didFocus = this.props.navigation.addListener('didFocus', async (res) => {
+        let hospitalOnStorage = await AsyncStorage.getItem('hospitalSelected');
+        let hospitalSelected = JSON.parse(hospitalOnStorage)
+        this.setState({
+            hospitalSelected
+        })
+        console.log("hospitalSelected", this.state.hospitalSelected)
+    });
 
     handleChange(evt, name) {
         const { text } = evt.nativeEvent;
@@ -26,20 +36,17 @@ export default class Login extends Component {
         if ( this.state.username.trim().length === 0 || this.state.password.trim().length === 0) {
             alert("Por favor, preencha todos os campos.");
         } else {
-            const unitId = await AsyncStorage.getItem('hospitalSelectedId');
-            console.log(unitId);
-            if (unitId == null) {
+            if (this.state.hospitalSelected == null) {
                 alert("Hospital selecionado não identificado.");
             } else {
                 let data = {
                     'username': this.state.username,
                     'password': this.state.password,
                     'unit': {
-                        'id': unitId
+                        'id': this.state.hospitalSelected.id
                     }
                 }
                 
-                console.log(data)
                 api.post('/login', data).then(async response => {
                     if(response.status == 200) {
                         await AsyncStorage.setItem('token', `${response.headers.authorization}` );
@@ -56,57 +63,70 @@ export default class Login extends Component {
         
     }
 
+    getBackground() {
+        if(this.state.hospitalSelected && this.state.hospitalSelected.id === 1) {
+            return require('../../../assets/images/vila-nova-background.jpg');
+        } else if(this.state.hospitalSelected && this.state.hospitalSelected.id === 2) {
+            return require('../../../assets/images/dfstar-background.png');
+        }
+    }
+
     render() {
-
-		return (
-            <View style={ styles.container }>
-                <ImageBackground source={require('../../../assets/images/dfstar-background.png')} style={ styles.imgBackground }>
-                    <View style={ styles.containerLogo }>
-                        <Image source={require('../../../assets/images/assinaLogo.png')} style={ styles.imgLogo }/>
-                    </View>
-
-                    <View style={ styles.containerForm }>
-
-                        <View style={ styles.inputGroup }>
-                            <Text style={ styles.textLabel }>Usuário</Text>
-                            <Item>
-                                <Icon type='Feather' active name='user' color="#FFFFFF" size={25} />
-                                <Input  style={ styles.textInput } 
-                                        placeholder='seu.usuario' 
-                                        value={ this.state.username } 
-                                        placeholderTextColor="#FFFFFF" 
-                                        autoCapitalize="none"
-                                        autoCorrect={ false } 
-                                        onChange={ (evt) => this.handleChange(evt, "username") } />
-                            </Item>
+        if (this.state.hospitalSelected && this.state.hospitalSelected.id) {
+            return (
+                <View style={ styles.container }>
+                    <ImageBackground source={ this.getBackground() } style={ styles.imgBackground }>
+                        <View style={ styles.containerLogo }>
+                            <Image source={require('../../../assets/images/assinaLogo.png')} style={ styles.imgLogo }/>
                         </View>
 
-                        <View style={ styles.inputGroup }>
-                            <Text style={ styles.textLabel }>Senha</Text>
-                            <Item>
-                                <Icon type='Feather' active name='lock' color="#FFFFFF" size={25} />
-                                <Input  style={ styles.textInput } 
-                                        placeholder='******' 
-                                        value={ this.state.password } 
-                                        placeholderTextColor="#FFFFFF" 
-                                        autoCapitalize="none" 
-                                        autoCorrect={ false } 
-                                        secureTextEntry 
-                                        onChange={ (evt) => this.handleChange(evt, "password") } />
-                            </Item>
-                        </View>
-                    </View>
+                        <View style={ styles.containerForm }>
 
-                    <View  style={ styles.containerButton }>
-                        <TouchableHighlight style={ styles.button } onPress={ this.handleLogin }>
-                            <Text style={ styles.textButton }>
-                                LOGIN
-                            </Text>
-                        </TouchableHighlight>
-                    </View>
-                </ImageBackground>
-            </View>
-        );
+                            <View style={ styles.inputGroup }>
+                                <Text style={ styles.textLabel }>Usuário</Text>
+                                <Item>
+                                    <Icon type='Feather' active name='user' color="#FFFFFF" size={25} />
+                                    <Input  style={ styles.textInput } 
+                                            placeholder='seu.usuario' 
+                                            value={ this.state.username } 
+                                            placeholderTextColor="#FFFFFF" 
+                                            autoCapitalize="none"
+                                            autoCorrect={ false } 
+                                            onChange={ (evt) => this.handleChange(evt, "username") } />
+                                </Item>
+                            </View>
+
+                            <View style={ styles.inputGroup }>
+                                <Text style={ styles.textLabel }>Senha</Text>
+                                <Item>
+                                    <Icon type='Feather' active name='lock' color="#FFFFFF" size={25} />
+                                    <Input  style={ styles.textInput } 
+                                            placeholder='******' 
+                                            value={ this.state.password } 
+                                            placeholderTextColor="#FFFFFF" 
+                                            autoCapitalize="none" 
+                                            autoCorrect={ false } 
+                                            secureTextEntry 
+                                            onChange={ (evt) => this.handleChange(evt, "password") } />
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View  style={ styles.containerButton }>
+                            <TouchableHighlight style={ styles.button } onPress={ this.handleLogin }>
+                                <Text style={ styles.textButton }>
+                                    LOGIN
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                    </ImageBackground>
+                </View>
+            );
+        } else {
+            return(
+                <View></View>
+            )
+        }
     }
 }
 
@@ -123,12 +143,12 @@ const styles = {
         alignItems: 'center'
     },
     imgLogo: {
-        marginTop: '10%'
+        marginTop: '5%'
     },
     containerForm: {
         width: '75%',
         height: '35%',
-        marginTop: '15%',
+        marginTop: '10%',
         marginLeft: '12.5%',
         borderColor: 'black',
         borderWidth: 0,
@@ -136,7 +156,7 @@ const styles = {
     },
     inputGroup: {
         marginTop: '5%',
-        marginBottom: '15%',
+        marginBottom: '10%',
     },
     textLabel: {
         fontFamily: "Roboto-Bold",
@@ -158,7 +178,7 @@ const styles = {
         color: "#ffffff"
     },
     containerButton: {
-        marginTop: '10%',
+        marginTop: '5%',
         marginLeft: '12.5%',
         width: '75%',
         
@@ -166,7 +186,7 @@ const styles = {
     button: {
         padding: '5%',
         alignItems: 'center',
-        borderRadius: 2.5,
+        borderRadius: 10,
         backgroundColor: '#FFFFFF'
     },
     textButton: {

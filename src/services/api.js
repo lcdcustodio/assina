@@ -1,5 +1,5 @@
 import axios from "axios";
 
-axios.defaults.baseURL = 'http://10.15.24.94:8080/assina-api/';
+axios.defaults.baseURL = 'http://10.25.32.141:8081/assina-api/';
 
 export default axios;

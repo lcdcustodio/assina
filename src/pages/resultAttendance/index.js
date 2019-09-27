@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
-import { Icon } from 'native-base';
+import { Icon,  List } from 'native-base';
 
 export default class ResultAttendance extends Component {
 
@@ -35,14 +35,18 @@ export default class ResultAttendance extends Component {
     }
 
     renderItem = ({ item }) => (
-        <View style={ styles.containerTerm }>
-            <Text style={ styles.textNameTerm }> { item.title } </Text>
-            <View style={ item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed }>
-                <Text style={ item.signed ? styles.textStatusTermGreen : styles.textStatusTermRed }>
-                    { item.signed ? 'Assinado' : 'Pendente' }
-                </Text>
+        <View>
+            <View style={ styles.containerTerm }>
+                <Text style={ styles.textNameTerm }> { item.title } </Text>
+                <View style={ item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed }>
+                    <Text style={ item.signed ? styles.textStatusTermGreen : styles.textStatusTermRed }>
+                        { item.signed ? 'Assinado' : 'Pendente' }
+                    </Text>
+                </View>
             </View>
+            <Text> {"\n"} </Text>
         </View>
+        
     );
     
     goBack = () => {
@@ -54,8 +58,6 @@ export default class ResultAttendance extends Component {
     }
 
     render() {
-        console.log("patient=>", this.state.patient);
-        console.log("documents=>", this.state.documents);
 
 		return (
             <View style={ styles.container }>
@@ -66,11 +68,11 @@ export default class ResultAttendance extends Component {
                         </TouchableOpacity>
 
                         <View style={ styles.containerIconsRight }>
-                            <TouchableOpacity >
+                            <TouchableOpacity style={[ {marginRight: '10%'}, styles.containerIconsRight ]}>
                                 <Icon type='MaterialCommunityIcons' name='reload' style={ styles.imgExit } />
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={ this.goToExit } style={ styles.containerIconsRight }>
+                            <TouchableOpacity onPress={ this.goToExit } style={styles.containerIconsRight}>
                                 <Text style={ styles.imgText }>Sair</Text>
                                 <Icon type='MaterialIcons' name='exit-to-app' style={ styles.imgExit } />
                             </TouchableOpacity>
@@ -81,12 +83,17 @@ export default class ResultAttendance extends Component {
                         <Text style={ styles.textName }> { this.state.patient ? this.state.patient.name : ''} </Text>
                         <Text style={ styles.textBirthday }> { this.renderBirthday() } </Text>
                         
-                        <FlatList
-                            // contentContainerStyle={baseStyles.container}
-                            data={this.state.documents}
-                            keyExtractor={item => `${item.ref}`}
-                            renderItem={this.renderItem}
-                        />
+
+                        {/* <View style={{ height: '20%'}}> */}
+
+                            <FlatList
+                                
+                                data={this.state.documents}
+                                keyExtractor={item => `${item.ref}`}
+                                renderItem={this.renderItem}
+                            />
+                        {/* </View> */}
+                        
 
                     </View>
 
@@ -110,20 +117,26 @@ const styles = {
         paddingTop: '2%',
         borderColor: 'black',
         borderWidth: 0,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignContent: 'center',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 0,
     },
     containerIconsLeft: {
         paddingLeft: '3%',
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        alignContent: 'center',
         borderColor: 'black',
-        borderWidth: 0
+        borderWidth: 0,
+        marginRight: '55%'
     },
     containerIconsRight: {
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
+        alignContent: 'center',
         borderColor: 'black',
         borderWidth: 0,
     },
@@ -134,13 +147,14 @@ const styles = {
         justifyContent: 'flex-start',
     },
     imgExit: {
+        fontSize: 40, 
         color: 'white',
         marginRight: '5%',
         marginLeft: '1%'
     },
     imgText: {
         fontFamily: "Roboto-Light",
-        fontSize: 12,
+        fontSize: 24,
         fontWeight: "300",
         fontStyle: "normal",
         letterSpacing: 0.01,
@@ -157,7 +171,7 @@ const styles = {
     },
     textName: {
         fontFamily: "Roboto-Bold",
-        fontSize: 15,
+        fontSize: 30,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 0,
@@ -166,8 +180,9 @@ const styles = {
     },
     textBirthday: {
         marginTop: '1%',
+        marginBottom: '3%',
         fontFamily: "Roboto-Regular",
-        fontSize: 12,
+        fontSize: 24,
         fontWeight: "normal",
         fontStyle: "normal",
         letterSpacing: 0,
@@ -176,53 +191,51 @@ const styles = {
     },
     containerTerm: {
         flexDirection: 'row',
-        height: 50,
-        marginTop: '5%',
+        alignItems: 'center',
+        height: 100,
         opacity: 0.5,
-        borderRadius: 2.5,
+        borderRadius: 10,
         backgroundColor: "#70450e",
         borderColor: 'black',
         borderWidth: 0,
     },
     textNameTerm: {
+        paddingLeft: '1%',
         width: '70%',
-        marginTop: '2%',
-        marginLeft: '2%',
         fontFamily: "Roboto-Regular",
-        fontSize: 14,
+        fontSize: 28,
         fontWeight: "normal",
         fontStyle: "normal",
         letterSpacing: 1,
         textAlign: "left",
-        color: "#ffffff"
+        color: "#ffffff",
+        borderColor: 'black',
+        borderWidth: 0,
     },
     containerStatusTermGreen: {
-        marginTop: '3%',
-        marginLeft: '0%',
-        height: 25,
-        width: 85,
+        height: '50%',
+        width: '20%',
+        marginLeft: '5%',
+        alignItems: "center",
+        borderRadius: 10,
+        backgroundColor: "#42fce9",
         borderColor: 'black',
         borderWidth: 0,
-        paddingTop: '1.5%',
-        paddingLeft: '4%',
-        borderRadius: 2.5,
-        backgroundColor: "#42fce9"
     },
     containerStatusTermRed: {
-        marginTop: '3%',
-        marginLeft: '0%',
-        height: 25,
-        width: 85,
+        height: '50%',
+        width: '20%',
+        marginLeft: '5%',
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 10,
+        backgroundColor: "#fca791",
         borderColor: 'black',
         borderWidth: 0,
-        paddingTop: '1.5%',
-        paddingLeft: '4%',
-        borderRadius: 2.5,
-        backgroundColor: "#fca791"
     },
     textStatusTermGreen: {
         fontFamily: "Roboto-Bold",
-        fontSize: 12,
+        fontSize: 24,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 1,
@@ -231,7 +244,7 @@ const styles = {
     },
     textStatusTermRed: {
         fontFamily: "Roboto-Bold",
-        fontSize: 12,
+        fontSize: 24,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 1,

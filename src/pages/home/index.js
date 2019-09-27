@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, View, Text, ImageBackground } from 'react-native';
+import { TouchableHighlight, View, Text, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
 import { Content, Picker } from "native-base";
@@ -16,6 +16,13 @@ export default class Home extends Component {
         this.getUnits();
     }
 
+    // didFocus = this.props.navigation.addListener('didFocus', async (res) => {
+    //     let hospitalOnStorage = await AsyncStorage.getItem('hospitalSelected');
+    //     if (hospitalOnStorage != null) {
+    //         this.props.navigation.navigate('Login');
+    //     }
+    // });
+
     async getUnits() {
         api.get('/units').then(response => {
             this.setState({
@@ -29,12 +36,12 @@ export default class Home extends Component {
 
     handleUpdateUnit = async (hospitalSelected) => {
         this.setState({ hospitalSelected });
-        await AsyncStorage.setItem('hospitalSelectedId', `${hospitalSelected}` );
+        await AsyncStorage.setItem('hospitalSelected', JSON.stringify(hospitalSelected));
     }
 
     unitList = () => {
         return( this.state.hospitals.map( (item, index) => { 
-            return( <Picker.Item label={ item.name } key={ index } value={ item.id } />)
+            return( <Picker.Item label={ item.name } key={ index } value={ item } />)
         }));
     }
 
@@ -55,8 +62,7 @@ export default class Home extends Component {
 
 
                 <View  style={ styles.containerSelect }>
-                    <Picker mode="dropdown"
-                            iosHeader="Selecione a sua Unidade"
+                    <Picker iosHeader="Selecione a sua Unidade"
                             headerBackButtonText="Voltar"
                             style={ styles.select }
                             textStyle={{
@@ -75,7 +81,11 @@ export default class Home extends Component {
                 
 
                 <View  style={ styles.containerButton }>
-                    <Button style={ styles.button } title='PROSSEGUIR' onPress={ this.goToLogin } color='#FFFFFF' />
+                    <TouchableHighlight style={ styles.button } onPress={ this.goToLogin }>
+                            <Text style={ styles.textButton } >
+                                PROSSEGUIR
+                            </Text>
+                    </TouchableHighlight>
                 </View>
 
                 <ImageBackground source={require('../../../assets/images/footerHome.png')} style={ styles.imgBackground }>
@@ -124,29 +134,29 @@ const styles = {
     },
     select: {
         marginLeft: '3%',
-        marginRight: '3%'
+        marginRight: '3%',
+        fontFamily: 'Roboto-Bold',
+        fontSize: 24,
+        color: '#707070',
     },
     containerButton: {
-        marginTop: '3%',
-        paddingTop: '1.2%',
+        marginTop: '5%',
         marginLeft: '12.5%',
         width: '75%',
-        height:'4%',
-        borderRadius: 10,
-        borderColor: 'black',
-        borderWidth: 1,
-        backgroundColor: '#957657',
-        fontFamily: "Roboto-Bold",
-        fontSize: 50,
     },
     button: {
-        marginTop: '4%',
+        padding: '2%',
+        alignItems: 'center',
+        backgroundColor: '#957657',
+        borderRadius: 10,
+    },
+    textButton: {
+        fontSize: 24,
         fontFamily: "Roboto-Bold",
-        fontSize: 30,
         fontWeight: "bold",
         fontStyle: "normal",
         letterSpacing: 0,
-        textAlign: "left",
+        color: '#FFFFFF'
     },
     imgBackground: {
         height: '73%',
