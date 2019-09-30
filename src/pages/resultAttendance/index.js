@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
-import { Icon,  List } from 'native-base';
+import { Icon } from 'native-base';
+import { search } from '../../services/searchAttendance';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class ResultAttendance extends Component {
 
@@ -9,7 +11,10 @@ export default class ResultAttendance extends Component {
         super(props);
         this.state = {
             patient: null,
-            documents: null
+            documents: null,
+            protocol: '3452',
+            loading: true,
+            textContent: 'Aguarde...'
         }
     }
 
@@ -19,7 +24,8 @@ export default class ResultAttendance extends Component {
 
         this.setState({
             patient,
-            documents
+            documents,
+            loading: false,
         });
     });
 
@@ -57,10 +63,20 @@ export default class ResultAttendance extends Component {
         this.props.navigation.navigate('Login');
     }
 
+    refresh = () => {
+        this.setState({ loading: true });
+        search(this.state.protocol, this.props.navigation, this.hideLoading);
+    }
+
+    hideLoading = () => {
+        this.setState({ loading: false });
+    }
+
     render() {
 
 		return (
             <View style={ styles.container }>
+                <Spinner visible={ this.state.loading } textContent={ this.state.textContent } textStyle={ styles.spinnerTextStyle } />
                 <ImageBackground source={require('../../../assets/images/general-background.png')} style={ styles.imgBackground }>
                     <View style={ styles.containerMenu }>
                         <TouchableOpacity style={ styles.containerIconsLeft } onPress={ this.goBack }>
@@ -68,7 +84,7 @@ export default class ResultAttendance extends Component {
                         </TouchableOpacity>
 
                         <View style={ styles.containerIconsRight }>
-                            <TouchableOpacity style={[ {marginRight: '10%'}, styles.containerIconsRight ]}>
+                            <TouchableOpacity style={[ {marginRight: '10%'}, styles.containerIconsRight ]} onPress={ this.refresh }>
                                 <Icon type='MaterialCommunityIcons' name='reload' style={ styles.imgExit } />
                             </TouchableOpacity>
 
@@ -82,19 +98,10 @@ export default class ResultAttendance extends Component {
                     <View style={ styles.containerContent }>
                         <Text style={ styles.textName }> { this.state.patient ? this.state.patient.name : ''} </Text>
                         <Text style={ styles.textBirthday }> { this.renderBirthday() } </Text>
-                        
-
-                        {/* <View style={{ height: '20%'}}> */}
-
                             <FlatList
-                                
                                 data={this.state.documents}
                                 keyExtractor={item => `${item.ref}`}
-                                renderItem={this.renderItem}
-                            />
-                        {/* </View> */}
-                        
-
+                                renderItem={this.renderItem} />
                     </View>
 
                 </ImageBackground>
@@ -250,5 +257,8 @@ const styles = {
         letterSpacing: 1,
         textAlign: "left",
         color: "#a72b0a"
-    }
+    },
+    spinnerTextStyle: {
+	    color: '#ffffff'
+	}
 }

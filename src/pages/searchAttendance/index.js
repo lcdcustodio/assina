@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
 import { TouchableHighlight, View, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
 import { Icon } from 'native-base';
-import api from '../../services/api';
+import { search } from '../../services/searchAttendance';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class SearchAttendance extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            protocol: '3051240'
+            protocol: '3051240',
+            loading: false,
+            textContent: 'Aguarde...'
         }
     }
 
@@ -20,25 +22,13 @@ export default class SearchAttendance extends Component {
         });
     }
 
-    search = async () => {
-        if ( this.state.protocol.trim().length === 0) {
-            alert("Por favor, preencha o número de atendimento.");
-        } else {
-            const token = await AsyncStorage.getItem('token');
-            api.get(`/attendance/${this.state.protocol}`, { headers: { Authorization: token }}).then(async response => {
-                console.log("response=>", response)
-                if(response.status == 200) {
-                    if(response.data.patient && response.data.documents) {
-                        this.props.navigation.navigate('ResultAttendance', { patient: response.data.patient, documents: response.data.documents });
-                    }
-                } else {
-                    alert("Falha na comunicação com o servidor, dados não reconhecidos.");
-                }
-            }).catch( error => {
-                console.log("Error => ", error);
-                alert("Falha na comunicação com o servidor, favor verifar sua conexão com a internet.");
-            });
-        }
+    initializeSearch = async () => {
+        this.setState({ loading: true });
+        await search(this.state.protocol, this.props.navigation, this.hideLoading);
+    }
+
+    hideLoading = () => {
+        this.setState({ loading: false });
     }
 
     goToExit = () => {
@@ -48,6 +38,7 @@ export default class SearchAttendance extends Component {
     render() {
 		return (
             <View style={ styles.container }>
+                <Spinner visible={ this.state.loading } textContent={ this.state.textContent } textStyle={ styles.spinnerTextStyle } />
                 <ImageBackground source={require('../../../assets/images/general-background.png')} style={ styles.imgBackground }>
                     <View style={ styles.containerMenu }>
                         <TouchableOpacity style={ styles.containerImgExit } onPress={ this.goToExit }>
@@ -68,7 +59,7 @@ export default class SearchAttendance extends Component {
                                     onChange={ (evt) => this.handleChange(evt, "protocol") } />
 
                         <View  style={ styles.containerButton }>
-                            <TouchableHighlight style={ styles.button } onPress={ this.search }>
+                            <TouchableHighlight style={ styles.button } onPress={ this.initializeSearch } underlayColor="#957657">
                                 <Text style={ styles.textButton }>
                                     PESQUISAR
                                 </Text>
@@ -173,5 +164,8 @@ const styles = {
         fontStyle: "normal",
         letterSpacing: 0,
         color: "#FFFFFF"
-    }
+    },
+    spinnerTextStyle: {
+	    color: '#ffffff'
+	}
 };

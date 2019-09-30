@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { TouchableHighlight, View, Text, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import api from '../../services/api';
-import { Content, Picker } from "native-base";
+import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Home extends Component {
 
@@ -11,26 +12,32 @@ export default class Home extends Component {
         super(props);
         this.state = {
             hospitalSelected: null,
-            hospitals: []
+            hospitals: [],
+            loading: false,
+            textContent: 'Aguarde...'
         }
-        this.getUnits();
     }
 
-    // didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    //     let hospitalOnStorage = await AsyncStorage.getItem('hospitalSelected');
-    //     if (hospitalOnStorage != null) {
-    //         this.props.navigation.navigate('Login');
-    //     }
-    // });
+    didFocus = this.props.navigation.addListener('didFocus', async (res) => {
+        if (this.state.hospitalSelected != null) {
+            this.props.navigation.navigate('Login', { hospitalSelected: this.state.hospitalSelected });
+        } else {
+            this.getUnits();
+        }
+    });
 
     async getUnits() {
+        this.setState({ loading: true });
+
         api.get('/units').then(response => {
             this.setState({
-                hospitals: response.data
+                hospitals: response.data,
+                loading: false
             });
         }).catch( error => {
             console.log("Error => ", error);
             alert("Falha na comunicação com o servidor, favor verifar sua conexão com a internet.");
+            this.setState({ loading: false });
         });
     }
 
@@ -47,7 +54,7 @@ export default class Home extends Component {
 
     goToLogin = () => {
         if (this.state.hospitalSelected !== null) {
-            this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('Login', { hospitalSelected: this.state.hospitalSelected });
         } else {
             alert("Selecione uma unidade.");
         }
@@ -56,6 +63,8 @@ export default class Home extends Component {
     render() {
 		return (
             <View style={ styles.container }>
+                <Spinner visible={ this.state.loading } textContent={ this.state.textContent } textStyle={ styles.spinnerTextStyle } />
+
                 <View style={ styles.containerTitle }>
                     <Text style={ styles.title }>Selecionar Unidade</Text>
                 </View>
@@ -81,7 +90,7 @@ export default class Home extends Component {
                 
 
                 <View  style={ styles.containerButton }>
-                    <TouchableHighlight style={ styles.button } onPress={ this.goToLogin }>
+                    <TouchableHighlight style={ styles.button } onPress={ this.goToLogin } underlayColor="#957657"> 
                             <Text style={ styles.textButton } >
                                 PROSSEGUIR
                             </Text>
@@ -192,5 +201,8 @@ const styles = {
         letterSpacing: 0.03,
         color: "#ffffff",
         textAlign: "center"
-    }
+    },
+    spinnerTextStyle: {
+	    color: '#FFF'
+	}
 };

@@ -4,6 +4,7 @@ import { TouchableHighlight, View, Text, ImageBackground, Image } from 'react-na
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import api from '../../services/api';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default class Login extends Component {
 
@@ -12,17 +13,16 @@ export default class Login extends Component {
         this.state = {
             username: 'admin',
             password: '123456',
-            hospitalSelected: null
+            hospitalSelected: this.props.navigation.getParam('hospitalSelected'),
+            loading: false,
+            textContent: 'Aguarde...'
         }
     }
 
     didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-        let hospitalOnStorage = await AsyncStorage.getItem('hospitalSelected');
-        let hospitalSelected = JSON.parse(hospitalOnStorage)
         this.setState({
-            hospitalSelected
+            hospitalSelected: this.props.navigation.getParam('hospitalSelected')
         })
-        console.log("hospitalSelected", this.state.hospitalSelected)
     });
 
     handleChange(evt, name) {
@@ -33,11 +33,15 @@ export default class Login extends Component {
     }
 
     handleLogin = async () => {
+        this.setState({ loading: true });
+
         if ( this.state.username.trim().length === 0 || this.state.password.trim().length === 0) {
             alert("Por favor, preencha todos os campos.");
+            this.setState({ loading: false });
         } else {
             if (this.state.hospitalSelected == null) {
                 alert("Hospital selecionado não identificado.");
+                this.setState({ loading: false });
             } else {
                 let data = {
                     'username': this.state.username,
@@ -48,6 +52,7 @@ export default class Login extends Component {
                 }
                 
                 api.post('/login', data).then(async response => {
+                    this.setState({ loading: false });
                     if(response.status == 200) {
                         await AsyncStorage.setItem('token', `${response.headers.authorization}` );
                         this.props.navigation.navigate('SearchAttendance');
@@ -55,12 +60,12 @@ export default class Login extends Component {
                         alert("Falha na comunicação com o servidor, dados não reconhecidos.");
                     }
                 }).catch( error => {
+                    this.setState({ loading: false });
                     console.log("Error => ", error);
                     alert("Falha na comunicação com o servidor, favor verifar sua conexão com a internet.");
                 });
             }
         }
-        
     }
 
     getBackground() {
@@ -72,61 +77,56 @@ export default class Login extends Component {
     }
 
     render() {
-        if (this.state.hospitalSelected && this.state.hospitalSelected.id) {
-            return (
-                <View style={ styles.container }>
-                    <ImageBackground source={ this.getBackground() } style={ styles.imgBackground }>
-                        <View style={ styles.containerLogo }>
-                            <Image source={require('../../../assets/images/assinaLogo.png')} style={ styles.imgLogo }/>
+        return (
+            <View style={ styles.container }>
+                <Spinner visible={ this.state.loading } textContent={ this.state.textContent } textStyle={ styles.spinnerTextStyle } />
+                <ImageBackground source={ this.getBackground() } style={ styles.imgBackground }>
+                    <View style={ styles.containerLogo }>
+                        <Image source={require('../../../assets/images/assinaLogo.png')} style={ styles.imgLogo }/>
+                    </View>
+
+                    <View style={ styles.containerForm }>
+
+                        <View style={ styles.inputGroup }>
+                            <Text style={ styles.textLabel }>Usuário</Text>
+                            <Item>
+                                <Icon type='Feather' active name='user' color="#FFFFFF" size={25} />
+                                <Input  style={ styles.textInput } 
+                                        placeholder='seu.usuario' 
+                                        value={ this.state.username } 
+                                        placeholderTextColor="#FFFFFF" 
+                                        autoCapitalize="none"
+                                        autoCorrect={ false } 
+                                        onChange={ (evt) => this.handleChange(evt, "username") } />
+                            </Item>
                         </View>
 
-                        <View style={ styles.containerForm }>
-
-                            <View style={ styles.inputGroup }>
-                                <Text style={ styles.textLabel }>Usuário</Text>
-                                <Item>
-                                    <Icon type='Feather' active name='user' color="#FFFFFF" size={25} />
-                                    <Input  style={ styles.textInput } 
-                                            placeholder='seu.usuario' 
-                                            value={ this.state.username } 
-                                            placeholderTextColor="#FFFFFF" 
-                                            autoCapitalize="none"
-                                            autoCorrect={ false } 
-                                            onChange={ (evt) => this.handleChange(evt, "username") } />
-                                </Item>
-                            </View>
-
-                            <View style={ styles.inputGroup }>
-                                <Text style={ styles.textLabel }>Senha</Text>
-                                <Item>
-                                    <Icon type='Feather' active name='lock' color="#FFFFFF" size={25} />
-                                    <Input  style={ styles.textInput } 
-                                            placeholder='******' 
-                                            value={ this.state.password } 
-                                            placeholderTextColor="#FFFFFF" 
-                                            autoCapitalize="none" 
-                                            autoCorrect={ false } 
-                                            secureTextEntry 
-                                            onChange={ (evt) => this.handleChange(evt, "password") } />
-                                </Item>
-                            </View>
+                        <View style={ styles.inputGroup }>
+                            <Text style={ styles.textLabel }>Senha</Text>
+                            <Item>
+                                <Icon type='Feather' active name='lock' color="#FFFFFF" size={25} />
+                                <Input  style={ styles.textInput } 
+                                        placeholder='******' 
+                                        value={ this.state.password } 
+                                        placeholderTextColor="#FFFFFF" 
+                                        autoCapitalize="none" 
+                                        autoCorrect={ false } 
+                                        secureTextEntry 
+                                        onChange={ (evt) => this.handleChange(evt, "password") } />
+                            </Item>
                         </View>
+                    </View>
 
-                        <View  style={ styles.containerButton }>
-                            <TouchableHighlight style={ styles.button } onPress={ this.handleLogin }>
-                                <Text style={ styles.textButton }>
-                                    LOGIN
-                                </Text>
-                            </TouchableHighlight>
-                        </View>
-                    </ImageBackground>
-                </View>
-            );
-        } else {
-            return(
-                <View></View>
-            )
-        }
+                    <View  style={ styles.containerButton }>
+                        <TouchableHighlight style={ styles.button } onPress={ this.handleLogin } underlayColor="#ffffff">
+                            <Text style={ styles.textButton }>
+                                LOGIN
+                            </Text>
+                        </TouchableHighlight>
+                    </View>
+                </ImageBackground>
+            </View>
+        );
     }
 }
 
@@ -196,5 +196,8 @@ const styles = {
         fontStyle: "normal",
         letterSpacing: 0,
         color: "#957657"
-    }
+    },
+    spinnerTextStyle: {
+	    color: '#ffffff'
+	}
 };

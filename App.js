@@ -21,10 +21,11 @@ export default class App extends React.Component {
       }
   }
 
-  async componentDidMount() {
-    let hospitalSelected = await AsyncStorage.getItem('hospitalSelected');
-    this.setState({
-      hospitalSelected
+  componentDidMount() {
+    AsyncStorage.getItem('hospitalSelected').then( data => {
+      this.setState({
+        hospitalSelected: JSON.parse(data)
+      });
     });
   }
 
@@ -38,7 +39,8 @@ export default class App extends React.Component {
       },
       {
         initialRouteName: this.state.hospitalSelected ? 'Login' : 'Home',
-        headerMode: 'none'
+        headerMode: 'none',
+        initialRouteParams: { 'hospitalSelected': this.state.hospitalSelected } 
       }
     );
     
