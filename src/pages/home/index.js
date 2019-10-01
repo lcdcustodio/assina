@@ -134,7 +134,6 @@ const styles = {
         paddingTop: '3.8%',
         marginLeft: '12.5%',
         width: '75%',
-        height: '7%',
         borderRadius: 10,
         backgroundColor: '#efefef',
         borderColor: 'black',
