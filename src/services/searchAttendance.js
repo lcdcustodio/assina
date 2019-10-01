@@ -9,12 +9,14 @@ export async function search(protocol, navigation, callback) {
     } else {
         const token = await AsyncStorage.getItem('token');
         api.get(`/attendance/${protocol}`, { headers: { Authorization: token }}).then(async response => {
-            callback();
+            
             if(response.status == 200) {
                 if(response.data.patient && response.data.documents) {
+                    callback(response.data);
                     navigation.navigate('ResultAttendance', { patient: response.data.patient, documents: response.data.documents });
                 }
             } else {
+                callback();
                 alert("Falha na comunicação com o servidor, dados não reconhecidos.");
             }
         }).catch( error => {

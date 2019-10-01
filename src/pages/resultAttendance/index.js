@@ -12,7 +12,7 @@ export default class ResultAttendance extends Component {
         this.state = {
             patient: null,
             documents: null,
-            protocol: '3452',
+            protocol: '3051240',
             loading: true,
             textContent: 'Aguarde...'
         }
@@ -68,8 +68,12 @@ export default class ResultAttendance extends Component {
         search(this.state.protocol, this.props.navigation, this.hideLoading);
     }
 
-    hideLoading = () => {
-        this.setState({ loading: false });
+    hideLoading = (data) => {
+        this.setState({ 
+            loading: false,
+            patient: data.patient,
+            documents: data.documents,
+        });
     }
 
     render() {
@@ -220,6 +224,7 @@ const styles = {
         borderWidth: 0,
     },
     containerStatusTermGreen: {
+        paddingTop: '0.8%',
         height: '50%',
         width: '20%',
         marginLeft: '5%',
@@ -230,11 +235,11 @@ const styles = {
         borderWidth: 0,
     },
     containerStatusTermRed: {
+        paddingTop: '0.8%',
         height: '50%',
         width: '20%',
         marginLeft: '5%',
         alignItems: "center",
-        justifyContent: "center",
         borderRadius: 10,
         backgroundColor: "#fca791",
         borderColor: 'black',
