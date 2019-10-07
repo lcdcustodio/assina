@@ -9,6 +9,7 @@ import HomeScreen from './src/pages/home';
 import LoginScreen from './src/pages/login';
 import SearchAttendanceScreen from './src/pages/searchAttendance';
 import ResultAttendanceScreen from './src/pages/resultAttendance';
+import TermScreen from './src/pages/terms';
 
 import GeneralStatusBarColor from './src/components/GeneralStatusBarColor';
 
@@ -35,10 +36,11 @@ export default class App extends React.Component {
         Home: HomeScreen,
         Login: LoginScreen,
         SearchAttendance: SearchAttendanceScreen,
-        ResultAttendance: ResultAttendanceScreen
+        ResultAttendance: ResultAttendanceScreen,
+        Term: TermScreen,
       },
       {
-        initialRouteName: this.state.hospitalSelected ? 'Login' : 'Home',
+        initialRouteName: this.state.hospitalSelected ? 'Term' : 'Home',
         headerMode: 'none',
         initialRouteParams: { 'hospitalSelected': this.state.hospitalSelected } 
       }

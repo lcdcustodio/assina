@@ -41,7 +41,7 @@ export default class ResultAttendance extends Component {
     }
 
     renderItem = ({ item }) => (
-        <View>
+        <TouchableOpacity onPress={ this.goToTerm }>
             <View style={ styles.containerTerm }>
                 <Text style={ styles.textNameTerm }> { item.title } </Text>
                 <View style={ item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed }>
@@ -51,7 +51,7 @@ export default class ResultAttendance extends Component {
                 </View>
             </View>
             <Text> {"\n"} </Text>
-        </View>
+        </TouchableOpacity>
         
     );
     
@@ -74,6 +74,10 @@ export default class ResultAttendance extends Component {
             patient: data.patient,
             documents: data.documents,
         });
+    }
+
+    goToTerm = () => {
+        this.props.navigation.navigate('Term');
     }
 
     render() {
