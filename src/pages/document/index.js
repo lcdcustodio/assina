@@ -1,30 +1,38 @@
 import React, { Component } from 'react';
+import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import { getTermHTML } from '../../services/getTermHTML';
 
-export default class Term extends Component {
+import AbstractPage, { Loading } from '../AbstractPage';
+import api from '../../services/api';
+
+export default class DocumentPage extends AbstractPage {
 
   constructor(props) {
     super(props);
     this.state = {
-      bodyHTML: '<h1>Hello world</h1>',
-      termNumber: '147952',
-      loading: false,
-      textContent: 'Aguarde...'
+      ...this.state,
+      unsignedHtml: null,
     }
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    this.setState({ loading: true });
-    await getTermHTML(this.state.termNumber, this.props.navigation, this.hideLoading);
+    const { navigation } = this.props;
+    await this.loadUnsignedHtml(navigation.getParam('documentRef'));
+    navigation.getParam('stopLoading')();
   });
 
-  hideLoading = (html) => {
-    this.setState({ 
-      bodyHTML: html,
-      loading: false 
-    });
+  loadUnsignedHtml = async (documentRef) => {
+    this.isLoading = true;
+    let unsignedHtml;
+    try {
+      unsignedHtml = await api.getUnsignedDocument(documentRef);
+    } catch (apiException) {
+      this.goBack();
+      return this.handleApiException(apiException);
+    }
+    this.isLoading = false;
+    this.setState({ unsignedHtml });
   }
 
   async createPDF(data) {
@@ -93,8 +101,7 @@ export default class Term extends Component {
     }
 
     return (
-      <WebView source={{uri: 'http://10.15.48.67:8080'}}
-      //<WebView source={{html: this.state.bodyHTML}}
+      <WebView source={{ html: this.state.unsignedHtml }}
         javaScriptEnabled={true}
         injectedJavaScript={onClick}
         onMessage={async (event) => {

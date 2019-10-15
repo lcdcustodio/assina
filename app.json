@@ -1,4 +1,6 @@
 {
   "name": "assina",
-  "displayName": "Assina"
+  "displayName": "Assina",
+  "apiBaseUrl": "http://10.15.24.90:8080/assina-api",
+  "_apiBaseUrl": "http://10.25.32.141:8081/assina-api"
 }
