@@ -2,16 +2,12 @@ import React from 'react';
 import { TouchableHighlight, View, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
 import { Icon } from 'native-base';
 
-import AbstractPage, { Loading } from '../AbstractPage';
+import AbstractScreen, { Loading } from './AbstractScreen';
 
-export default class AttendanceSearchPage extends AbstractPage {
+export default class SearchAttendance extends AbstractScreen {
 
   constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      attendanceRef: '3051240',
-    }
+    super(props, { attendanceRef: '3051240' });
   }
 
   search = async () => {
@@ -22,14 +18,14 @@ export default class AttendanceSearchPage extends AbstractPage {
     }
     this.isLoading = true;
     const stopLoading = () => this.isLoading = false;
-    this.props.navigation.navigate('AttendanceResults', { attendanceRef, stopLoading });
+    this.props.navigation.navigate('ViewAttendance', { attendanceRef, stopLoading });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Loading visible={this.isLoading} />
-        <ImageBackground source={require('../../../assets/images/general-background.png')} style={styles.imgBackground}>
+        <ImageBackground source={require('../../assets/images/general-background.png')} style={styles.imgBackground}>
           <View style={styles.containerMenu}>
             <TouchableOpacity style={styles.containerImgExit} onPress={this.goHome}>
               <Text style={styles.imgText}>Sair</Text>

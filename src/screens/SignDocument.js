@@ -3,17 +3,13 @@ import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-n
 import { WebView } from 'react-native-webview';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
-import AbstractPage, { Loading } from '../AbstractPage';
-import api from '../../services/api';
+import AbstractScreen, { Loading } from './AbstractScreen';
+import api from '../services/api';
 
-export default class DocumentPage extends AbstractPage {
+export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      unsignedHtml: null,
-    }
+    super(props, { unsignedHtml: null });
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
@@ -27,9 +23,9 @@ export default class DocumentPage extends AbstractPage {
     let unsignedHtml;
     try {
       unsignedHtml = await api.getUnsignedDocument(documentRef);
-    } catch (apiException) {
+    } catch (apiError) {
       this.goBack();
-      return this.handleApiException(apiException);
+      return this.handleApiError(apiError);
     }
     this.isLoading = false;
     this.setState({ unsignedHtml });

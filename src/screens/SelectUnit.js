@@ -4,18 +4,13 @@ import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import AbstractPage, { Loading } from '../AbstractPage';
-import api from '../../services/api';
+import AbstractScreen, { Loading } from './AbstractScreen';
+import api from '../services/api';
 
-export default class UnitSelectionPage extends AbstractPage {
+export default class SelectUnit extends AbstractScreen {
 
   constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      units: [],
-      unit: null,
-    }
+    super(props, { units: [], unit: null, });
   }
 
   componentDidMount() {
@@ -27,8 +22,8 @@ export default class UnitSelectionPage extends AbstractPage {
     let units;
     try {
       units = await api.getUnits();
-    } catch (apiException) {
-      return this.handleApiException(apiException);
+    } catch (apiError) {
+      return this.handleApiError(apiError);
     }
     this.isLoading = false;
     this.setState({ units: units });
@@ -77,7 +72,7 @@ export default class UnitSelectionPage extends AbstractPage {
             <Text style={styles.textButton}>PROSSEGUIR</Text>
           </TouchableHighlight>
         </View>
-        <ImageBackground source={require('../../../assets/images/footerHome.png')} style={styles.imgBackground}>
+        <ImageBackground source={require('../../assets/images/footerHome.png')} style={styles.imgBackground}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>Selecione a sua Unidade</Text>
             <Text style={styles.footerText}>

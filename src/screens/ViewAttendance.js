@@ -3,18 +3,13 @@ import { Icon } from 'native-base';
 import React from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 
-import AbstractPage, { Loading } from '../AbstractPage';
-import api from '../../services/api';
+import AbstractScreen, { Loading } from './AbstractScreen';
+import api from '../services/api';
 
-export default class AttendanceResultsPage extends AbstractPage {
+export default class ViewAttendance extends AbstractScreen {
 
   constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
-      attendanceRef: null,
-      attendance: null,
-    }
+    super(props, { attendanceRef: null, attendance: null });
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
@@ -32,8 +27,8 @@ export default class AttendanceResultsPage extends AbstractPage {
     let attendance;
     try {
       attendance = await api.getAttendance(attendanceRef);
-    } catch (apiException) {
-      return this.handleApiException(apiException);
+    } catch (apiError) {
+      return this.handleApiError(apiError);
     }
     this.isLoading = false;
     this.setState({ attendanceRef, attendance });
@@ -42,14 +37,14 @@ export default class AttendanceResultsPage extends AbstractPage {
   openDocument = (documentRef) => {
     this.isLoading = true;
     const stopLoading = () => this.isLoading = false;
-    this.props.navigation.navigate('Document', { documentRef, stopLoading });
+    this.props.navigation.navigate('SignDocument', { documentRef, stopLoading });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <Loading visible={this.isLoading} />
-        <ImageBackground source={require('../../../assets/images/general-background.png')} style={styles.imgBackground}>
+        <ImageBackground source={require('../../assets/images/general-background.png')} style={styles.imgBackground}>
           <View style={styles.containerMenu}>
             <TouchableOpacity style={styles.containerIconsLeft} onPress={this.goBack}>
               <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.imgExit} />

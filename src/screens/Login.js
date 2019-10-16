@@ -3,19 +3,17 @@ import { TouchableHighlight, View, Text, ImageBackground, Image } from 'react-na
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import AbstractPage, { Loading } from '../AbstractPage';
-import api from '../../services/api';
+import AbstractScreen, { Loading } from './AbstractScreen';
+import api from '../services/api';
 
-export default class LoginPage extends AbstractPage {
+export default class Login extends AbstractScreen {
 
   constructor(props) {
-    super(props);
-    this.state = {
-      ...this.state,
+    super(props, {
       username: 'admin',
       password: '123456',
-      unit: this.props.navigation.getParam('unit')
-    }
+      unit: props.navigation.getParam('unit')
+    });
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
@@ -38,18 +36,18 @@ export default class LoginPage extends AbstractPage {
     this.isLoading = true;
     try {
       await api.login(username, password, unit.id);
-    } catch (apiException) {
-      return this.handleApiException(apiException);
+    } catch (apiError) {
+      return this.handleApiError(apiError);
     }
     this.isLoading = false;
-    this.props.navigation.navigate('AttendanceSearch');
+    this.props.navigation.navigate('SearchAttendance');
   }
 
   getBackground() {
     if (this.state.unit && this.state.unit.id === 1) {
-      return require('../../../assets/images/vila-nova-background.jpg');
+      return require('../../assets/images/vila-nova-background.jpg');
     } else if (this.state.unit && this.state.unit.id === 2) {
-      return require('../../../assets/images/dfstar-background.png');
+      return require('../../assets/images/dfstar-background.png');
     }
   }
 
@@ -59,7 +57,7 @@ export default class LoginPage extends AbstractPage {
         <Loading visible={this.isLoading} />
         <ImageBackground source={this.getBackground()} style={styles.imgBackground}>
           <View style={styles.containerLogo}>
-            <Image source={require('../../../assets/images/assinaLogo.png')} style={styles.imgLogo} />
+            <Image source={require('../../assets/images/assinaLogo.png')} style={styles.imgLogo} />
           </View>
           <View style={styles.containerForm}>
             <View style={styles.inputGroup}>
