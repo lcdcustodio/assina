@@ -1,7 +1,7 @@
-import moment from 'moment';
-import { Icon } from 'native-base';
 import React from 'react';
+import { Icon } from 'native-base';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
+import moment from 'moment';
 
 import AbstractScreen, { Loading } from './AbstractScreen';
 import api from '../services/api';
@@ -35,9 +35,10 @@ export default class ViewAttendance extends AbstractScreen {
   }
 
   openDocument = (documentRef) => {
-    this.isLoading = true;
+    const { patient } = this.state.attendance;
     const stopLoading = () => this.isLoading = false;
-    this.props.navigation.navigate('SignDocument', { documentRef, stopLoading });
+    this.isLoading = true;
+    this.props.navigation.navigate('SignDocument', { documentRef, patient, stopLoading });
   }
 
   render() {

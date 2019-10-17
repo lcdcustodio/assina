@@ -1,16 +1,15 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import { ApiError } from '../services/api';
 
-export type ScreenState = { loading: boolean };
-export type ScreenProps = { navigation: NavigationStackProp<any> };
+export type State = { loading: boolean };
+export type Props = { navigation: NavigationStackProp<any> };
 
-export default abstract class AbstractScreen<
-  S extends ScreenState = ScreenState,
-  P extends ScreenProps = ScreenProps
-  > extends React.Component<P> {
+export default abstract class AbstractScreen<S extends State = State, P extends Props = Props>
+  extends React.Component<P> {
 
   state: S;
 
@@ -27,22 +26,22 @@ export default abstract class AbstractScreen<
   }
 
   set isLoading(value: boolean) {
-    super.setState({ loading: value });
+    this.setState({ loading: value });
   }
 
   goBack = () => {
-    super.props.navigation.pop();
+    this.props.navigation.pop();
   }
 
   goHome = () => {
-    super.props.navigation.popToTop();
+    this.props.navigation.popToTop();
   }
 
   /**
    * TODO: Melhorar tipagem do estado e tipar evento.
    */
   handleChange = (attributeName: string, event: any) => {
-    super.setState({ [attributeName]: event.nativeEvent.text });
+    this.setState({ [attributeName]: event.nativeEvent.text });
   }
 
   handleApiError = (apiError: ApiError) => {
@@ -64,3 +63,59 @@ export type LoadingProps = { visible: boolean; };
 
 export const Loading = (props: LoadingProps) =>
   <Spinner visible={props.visible} textContent='Aguarde...' textStyle={{ color: '#ffffff' }} />
+
+export const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  backgroundImage: {
+    width: '100%',
+    height: '100%',
+  },
+  header: {
+    height: 85,
+    marginHorizontal: '3%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  headerCenter: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  headerText: {
+    fontFamily: "Roboto-Bold",
+    fontSize: 20,
+    fontWeight: "bold",
+    fontStyle: "normal",
+    letterSpacing: 0,
+    textAlign: "left",
+    color: "#ffffff",
+  },
+  headerIcon: {
+    marginRight: '5%',
+    marginLeft: '1%',
+    fontSize: 40,
+    color: 'white',
+  },
+  headerIconText: {
+    fontFamily: "Roboto-Light",
+    fontSize: 24,
+    fontWeight: "300",
+    fontStyle: "normal",
+    letterSpacing: 0.01,
+    textAlign: "center",
+    color: "#ffffff",
+  },
+})
