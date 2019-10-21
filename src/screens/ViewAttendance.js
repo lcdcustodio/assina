@@ -3,7 +3,8 @@ import { Icon } from 'native-base';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 
-import AbstractScreen, { Loading } from './AbstractScreen';
+import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
+import { backgroundImage } from '../components/assets';
 import api from '../services/api';
 
 export default class ViewAttendance extends AbstractScreen {
@@ -45,18 +46,18 @@ export default class ViewAttendance extends AbstractScreen {
     return (
       <View style={styles.container}>
         <Loading visible={this.isLoading} />
-        <ImageBackground source={require('../../assets/images/general-background.png')} style={styles.imgBackground}>
-          <View style={styles.containerMenu}>
-            <TouchableOpacity style={styles.containerIconsLeft} onPress={this.goBack}>
-              <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.imgExit} />
+        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+          <View style={styles.header}>
+            <TouchableOpacity style={styles.headerLeft} onPress={this.goBack}>
+              <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.headerIcon} />
             </TouchableOpacity>
-            <View style={styles.containerIconsRight}>
-              <TouchableOpacity style={[{ marginRight: '10%' }, styles.containerIconsRight]} onPress={this.refresh}>
-                <Icon type='MaterialCommunityIcons' name='reload' style={styles.imgExit} />
+            <View style={styles.headerRight}>
+              <TouchableOpacity style={[{ marginRight: '10%' }, styles.headerRight]} onPress={this.refresh}>
+                <Icon type='MaterialCommunityIcons' name='reload' style={styles.headerIcon} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.containerIconsRight} onPress={this.goHome}>
-                <Text style={styles.imgText}>Sair</Text>
-                <Icon type='MaterialIcons' name='exit-to-app' style={styles.imgExit} />
+              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
+                <Text style={styles.headerIconText}>Sair</Text>
+                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -84,169 +85,101 @@ export default class ViewAttendance extends AbstractScreen {
   }
 
   renderAttendanceItem = ({ item }) =>
-    <TouchableOpacity onPress={() => this.openDocument(item.ref)}>
+    <TouchableOpacity onPress={item.signed ? null : () => this.openDocument(item.ref)}>
       <View style={styles.containerTerm}>
-        <Text style={styles.textNameTerm}> {item.title} </Text>
+        <Text style={styles.textNameTerm}>{item.title}</Text>
         <View style={item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed}>
           <Text style={item.signed ? styles.textStatusTermGreen : styles.textStatusTermRed}>
             {item.signed ? 'Assinado' : 'Pendente'}
           </Text>
         </View>
       </View>
-      <Text>{"\n"}</Text>
+      <Text>{'\n'}</Text>
     </TouchableOpacity>
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  imgBackground: {
-    width: '100%',
-    height: '100%'
-  },
-  containerMenu: {
-    height: '6%',
-    paddingTop: '2%',
-    borderColor: 'black',
-    borderWidth: 0,
-    flexDirection: 'row',
-    alignContent: 'center',
-    alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 0,
-  },
-  containerIconsLeft: {
-    paddingLeft: '3%',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignContent: 'center',
-    borderColor: 'black',
-    borderWidth: 0,
-    marginRight: '55%'
-  },
-  containerIconsRight: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    alignContent: 'center',
-    borderColor: 'black',
-    borderWidth: 0,
-  },
-  iconBack: {
-    color: 'white',
-    marginRight: '5%',
-    marginLeft: '1%',
-    justifyContent: 'flex-start',
-  },
-  imgExit: {
-    fontSize: 40,
-    color: 'white',
-    marginRight: '5%',
-    marginLeft: '1%'
-  },
-  imgText: {
-    fontFamily: "Roboto-Light",
-    fontSize: 24,
-    fontWeight: "300",
-    fontStyle: "normal",
-    letterSpacing: 0.01,
-    textAlign: "center",
-    color: "#ffffff"
-  },
+  ...baseStyles,
   containerContent: {
     width: '90%',
     height: '90%',
     marginTop: '5%',
     marginLeft: '5%',
-    borderColor: 'black',
-    borderWidth: 0,
   },
   textName: {
-    fontFamily: "Roboto-Bold",
+    fontFamily: 'Roboto-Bold',
     fontSize: 30,
-    fontWeight: "bold",
-    fontStyle: "normal",
+    fontWeight: 'bold',
+    fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: "left",
-    color: "#ffffff"
+    textAlign: 'left',
+    color: '#ffffff'
   },
   textBirthday: {
     marginTop: '1%',
-    marginBottom: '3%',
-    fontFamily: "Roboto-Regular",
+    marginBottom: '6%',
+    fontFamily: 'Roboto-Regular',
     fontSize: 24,
-    fontWeight: "normal",
-    fontStyle: "normal",
+    fontWeight: 'normal',
+    fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: "left",
-    color: "#ffffff"
+    textAlign: 'left',
+    color: '#ffffff'
   },
   containerTerm: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: '3%',
     height: 100,
     opacity: 0.5,
     borderRadius: 10,
-    backgroundColor: "#70450e",
-    borderColor: 'black',
-    borderWidth: 0,
+    backgroundColor: '#70450e',
   },
   textNameTerm: {
-    paddingLeft: '1%',
     width: '70%',
-    fontFamily: "Roboto-Regular",
-    fontSize: 28,
-    fontWeight: "normal",
-    fontStyle: "normal",
+    fontFamily: 'Roboto-Regular',
+    fontSize: 24,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
     letterSpacing: 1,
-    textAlign: "left",
-    color: "#ffffff",
-    borderColor: 'black',
-    borderWidth: 0,
+    textAlign: 'left',
+    color: '#ffffff',
   },
   containerStatusTermGreen: {
-    paddingTop: '0.8%',
     height: '50%',
     width: '20%',
     marginLeft: '5%',
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 10,
-    backgroundColor: "#42fce9",
-    borderColor: 'black',
-    borderWidth: 0,
+    backgroundColor: '#42fce9',
   },
   containerStatusTermRed: {
-    paddingTop: '0.8%',
     height: '50%',
     width: '20%',
     marginLeft: '5%',
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 10,
-    backgroundColor: "#fca791",
-    borderColor: 'black',
-    borderWidth: 0,
+    backgroundColor: '#fca791',
   },
   textStatusTermGreen: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 24,
-    fontWeight: "bold",
-    fontStyle: "normal",
+    fontFamily: 'Roboto-Bold',
+    fontSize: 22,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
     letterSpacing: 1,
-    textAlign: "left",
-    color: "#03664e"
+    textAlign: 'left',
+    color: '#03664e'
   },
   textStatusTermRed: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 24,
-    fontWeight: "bold",
-    fontStyle: "normal",
+    fontFamily: 'Roboto-Bold',
+    fontSize: 22,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
     letterSpacing: 1,
-    textAlign: "left",
-    color: "#a72b0a"
+    textAlign: 'left',
+    color: '#a72b0a'
   },
-  spinnerTextStyle: {
-    color: '#ffffff'
-  }
 }

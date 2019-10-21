@@ -1,28 +1,31 @@
 import React from 'react';
 import { Icon } from 'native-base';
-import { View, Text, ImageBackground, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, ImageBackground, TouchableHighlight, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import moment from 'moment';
 
 import appJson from '../../app.json';
 import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
-import api from '../services/api';
 import { backgroundImage } from '../components/assets';
+import api from '../services/api';
 
 export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
     super(props, {
       patient: null,
+      documentRef: null,
       unsignedHtml: null,
     });
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
     const { navigation } = this.props;
-    this.setState({ patient: navigation.getParam('patient') });
-    await this.loadUnsignedHtml(navigation.getParam('documentRef'));
+    const patient = navigation.getParam('patient');
+    const documentRef = navigation.getParam('documentRef');
+    this.setState({ patient, documentRef });
+    await this.loadUnsignedHtml(documentRef);
     navigation.getParam('stopLoading')();
   });
 
@@ -46,21 +49,19 @@ export default class SignDocument extends AbstractScreen {
     if (headTags) {
       return html.replace(headTags[0], headTags[0] + baseTag);
     }
-    const htmlTags =  html.match(/<html(\s+.+)?>/i);
+    const htmlTags = html.match(/<html(\s+.+)?>/i);
     if (htmlTags) {
       return html.replace(htmlTags[0], `${htmlTags[0]}<head>${baseTag}</head>`);
     }
     return `<html><head>${baseTag}</head>${html}</html>`;
   }
 
-  async createPDF(data) {
-    console.log(data)
-    let options = {
-      html: data,
-      fileName: 'test',
-      directory: 'Documents',
-    };
-    let file = await RNHTMLtoPDF.convert(options)
+  createPdf = async (html) => {
+    const { documentRef } = this.state;
+    const pdf = await RNHTMLtoPDF.convert({ html: html, fileName: 'signed', base64: true });
+    console.log('antes createPdf')
+    await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
+    console.log('depois createPdf')
   }
 
   render() {
@@ -76,6 +77,7 @@ export default class SignDocument extends AbstractScreen {
         headerText = name;
       }
     }
+    let webView;
     return (
       <View style={styles.container}>
         <Loading visible={this.isLoading} />
@@ -96,18 +98,18 @@ export default class SignDocument extends AbstractScreen {
               </TouchableOpacity>
             </View>
           </View>
-          {this.state.unsignedHtml &&
-            <WebView source={{ html: this.state.unsignedHtml }}
-              ref={ref => (this.webview = ref)}
-              onLoadStart={this.onLoadStart}
-              injectedJavaScript={salvar_js}
-              onMessage={async (event) => {
-                this.createPDF(event.nativeEvent.data);
-              }}
-            />
-          }
-          <View style={styles.header}>
-            <Text style={styles.headerText}>{headerText}</Text>
+          <WebView source={{ html: this.state.unsignedHtml }}
+            ref={ref => (webView = ref)}
+            onMessage={event => (this.createPdf(event.nativeEvent.data))}
+          />
+          <View style={styles.footer}>
+            <TouchableHighlight
+              style={[styles.footerCenter, styles.button]}
+              underlayColor={styles.button.backgroundColor}
+              onPress={event => (webView.injectJavaScript('save()'))}
+            >
+              <Text style={styles.textButton}>SALVAR</Text>
+            </TouchableHighlight>
           </View>
         </ImageBackground >
       </View >
@@ -117,53 +119,30 @@ export default class SignDocument extends AbstractScreen {
 
 const styles = {
   ...baseStyles,
+  footer: {
+    height: 85,
+    marginHorizontal: '3%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerCenter: {
+    height: 50,
+    width: '90%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    borderRadius: 10,
+    backgroundColor: '#957657',
+  },
+  textButton: {
+    fontSize: 22,
+    fontFamily: 'Roboto-Bold',
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    color: '#FFFFFF'
+  },
 }
-
-const salvar_js = `
-document.getElementById('btSend').onclick = function() {
-
-  //HumanBody
-  var imageHumanBody = new Image();
-  var canvasHumanBody = document.getElementById('canvasHumanBody');
-  imageHumanBody.src = canvasHumanBody.toDataURL("image/png");
-  canvasHumanBody.style.display = 'none';
-  document.body.appendChild(imageHumanBody); 
-
-  //Signature
-  var imageSignature = new Image();
-  var canvasSignature = document.getElementById('canvasSignature');
-  imageSignature.src = canvasSignature.toDataURL("image/png");
-  canvasSignature.style.display = 'none';
-  document.body.appendChild(imageSignature); 
-
-  var name = document.getElementById('name');
-  name.setAttribute('value', 'deu certo?');
-  //document.getElementById('name').value='NO NO';
-
-  //Get HTML
-  body = document.body;
-  
-  console.log(body);
-  
-  //Send to React
-  window.ReactNativeWebView.postMessage(body.innerHTML)
-
-  var xhr = new XMLHttpRequest();
-  xhr.onload = function () {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      // Runs when the request is successful
-      console.log(xhr.responseText);
-    } else {
-      // Runs when it's not
-      console.log(xhr.responseText);
-    }
-  };
-  
-  var jsonData = {"name": 'Nome Mockado (hardcode)', "gender": 'M', "country": 'RJ'};
-  var formattedJsonData = JSON.stringify(jsonData);
-
-  xhr.open('POST', 'http://10.15.48.67:3000/save');
-  xhr.send(formattedJsonData);
-};
-true;
-`;

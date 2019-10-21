@@ -4,6 +4,7 @@ import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import AbstractScreen, { Loading } from './AbstractScreen';
+import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
 import api from '../services/api';
 
 export default class Login extends AbstractScreen {
@@ -43,11 +44,14 @@ export default class Login extends AbstractScreen {
     this.props.navigation.navigate('SearchAttendance');
   }
 
-  getBackground() {
-    if (this.state.unit && this.state.unit.id === 1) {
-      return require('../../assets/images/vila-nova-background.jpg');
-    } else if (this.state.unit && this.state.unit.id === 2) {
-      return require('../../assets/images/dfstar-background.png');
+  getBackground = () => {
+    if (this.state.unit) {
+      switch (this.state.unit.id) {
+        case 1:
+          return vilaNovaBackgroundImage;
+        case 2:
+          return dfStarBackgroundImage;
+      }
     }
   }
 
@@ -57,7 +61,7 @@ export default class Login extends AbstractScreen {
         <Loading visible={this.isLoading} />
         <ImageBackground source={this.getBackground()} style={styles.imgBackground}>
           <View style={styles.containerLogo}>
-            <Image source={require('../../assets/images/assinaLogo.png')} style={styles.imgLogo} />
+            <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
           </View>
           <View style={styles.containerForm}>
             <View style={styles.inputGroup}>
@@ -65,7 +69,7 @@ export default class Login extends AbstractScreen {
               <Item>
                 <Icon type='Feather' active name='user' color='#FFFFFF' size={25} />
                 <Input style={styles.textInput}
-                  placeholder='seu.usuario'
+                  placeholder='login'
                   value={this.state.username}
                   placeholderTextColor='#FFFFFF'
                   autoCapitalize='none'
@@ -101,17 +105,18 @@ export default class Login extends AbstractScreen {
 const styles = {
   container: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   imgBackground: {
     width: '100%',
-    height: '100%'
+    height: '100%',
   },
   containerLogo: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   imgLogo: {
-    marginTop: '5%'
+    width: '80%',
+    marginTop: '5%',
   },
   containerForm: {
     width: '75%',

@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import AbstractScreen, { Loading } from './AbstractScreen';
+import { footerUnitImage } from '../components/assets';
 import api from '../services/api';
 
 export default class SelectUnit extends AbstractScreen {
@@ -29,14 +30,15 @@ export default class SelectUnit extends AbstractScreen {
     this.setState({ units: units });
   }
 
-  handleUpdateUnit = (unit) => {
+  handleChangeUnit = (unit) => {
     this.setState({ unit });
-    AsyncStorage.setItem('unit', JSON.stringify(unit));
   }
 
-  next = () => {
-    if (this.state.unit !== null) {
-      this.props.navigation.replace('Login', { unit: this.state.unit });
+  next = async () => {
+    const { unit } = this.state;
+    if (unit != null) {
+      await AsyncStorage.setItem('unit', JSON.stringify(unit));
+      this.props.navigation.replace('Login', { unit });
     } else {
       alert("Selecione uma unidade.");
     }
@@ -52,17 +54,13 @@ export default class SelectUnit extends AbstractScreen {
           <Text style={styles.title}>Selecionar Unidade</Text>
         </View>
         <View style={styles.containerSelect}>
-          <Picker iosHeader="Selecione a sua Unidade"
+          <Picker mode="dropdown"
+            iosHeader="Selecione a sua Unidade"
             headerBackButtonText="Voltar"
             style={styles.select}
-            textStyle={{
-              fontFamily: 'Roboto-Bold',
-              fontSize: 24,
-              color: '#707070',
-            }}
             iosIcon={<Icon name="chevron-down" />}
             selectedValue={this.state.unit}
-            onValueChange={this.handleUpdateUnit} >
+            onValueChange={this.handleChangeUnit} >
             <Picker.Item label='Unidade' value={null} />
             {pickerItems}
           </Picker>
@@ -72,7 +70,7 @@ export default class SelectUnit extends AbstractScreen {
             <Text style={styles.textButton}>PROSSEGUIR</Text>
           </TouchableHighlight>
         </View>
-        <ImageBackground source={require('../../assets/images/footerHome.png')} style={styles.imgBackground}>
+        <ImageBackground source={footerUnitImage} style={styles.imgBackground}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>Selecione a sua Unidade</Text>
             <Text style={styles.footerText}>
@@ -105,21 +103,18 @@ const styles = {
     color: '#0a0819',
   },
   containerSelect: {
-    marginTop: '10%',
-    paddingTop: '3.8%',
-    marginLeft: '12.5%',
-    width: '75%',
-    borderRadius: 10,
-    backgroundColor: '#efefef',
-    borderColor: 'black',
-    borderWidth: 0,
     justifyContent: 'center',
+    width: '75%',
+    height: 70,
+    marginTop: '10%',
+    marginLeft: '12.5%',
+    paddingTop: '3.8%',
+    backgroundColor: '#efefef',
+    borderRadius: 10,
   },
   select: {
     marginLeft: '3%',
     marginRight: '3%',
-    fontFamily: 'Roboto-Bold',
-    fontSize: 24,
     color: '#707070',
   },
   containerButton: {

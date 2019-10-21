@@ -2,7 +2,8 @@ import React from 'react';
 import { TouchableHighlight, View, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
 import { Icon } from 'native-base';
 
-import AbstractScreen, { Loading } from './AbstractScreen';
+import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
+import { backgroundImage } from '../components/assets';
 
 export default class SearchAttendance extends AbstractScreen {
 
@@ -25,16 +26,20 @@ export default class SearchAttendance extends AbstractScreen {
     return (
       <View style={styles.container}>
         <Loading visible={this.isLoading} />
-        <ImageBackground source={require('../../assets/images/general-background.png')} style={styles.imgBackground}>
-          <View style={styles.containerMenu}>
-            <TouchableOpacity style={styles.containerImgExit} onPress={this.goHome}>
-              <Text style={styles.imgText}>Sair</Text>
-              <Icon type='MaterialIcons' name='exit-to-app' style={styles.imgExit} />
-            </TouchableOpacity>
+        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft} />
+            <View style={styles.headerRight} >
+              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
+                <Text style={styles.headerIconText}>Sair</Text>
+                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.containerForm}>
-            <Text style={styles.title}> Pesquise o N° de Atendimento </Text>
-            <Text style={styles.text}> Para ter acesso aos termos do paciente, pesquise pelo número de atendimento. </Text>
+            <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
+            <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}
+              pesquise pelo número de atendimento.</Text>
             <TextInput style={styles.textInput}
               placeholder='Pesquisar'
               placeholderTextColor='#707070'
@@ -49,48 +54,13 @@ export default class SearchAttendance extends AbstractScreen {
             </View>
           </View>
         </ImageBackground>
-      </View>
+      </View >
     );
   }
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  imgBackground: {
-    width: '100%',
-    height: '100%'
-  },
-  containerMenu: {
-    height: '6%',
-    paddingTop: '2%',
-    borderColor: 'black',
-    borderWidth: 0,
-  },
-  containerImgExit: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 0,
-  },
-  imgExit: {
-    fontSize: 40,
-    color: 'white',
-    marginRight: '5%',
-    marginLeft: '1%'
-  },
-  imgText: {
-    fontFamily: 'Roboto-Light',
-    fontSize: 24,
-    fontWeight: '300',
-    fontStyle: 'normal',
-    letterSpacing: 0.01,
-    textAlign: 'center',
-    color: '#ffffff'
-  },
+  ...baseStyles,
   containerForm: {
     marginLeft: '7.5%',
     width: '85%',
@@ -147,7 +117,4 @@ const styles = {
     letterSpacing: 0,
     color: '#FFFFFF'
   },
-  spinnerTextStyle: {
-    color: '#ffffff'
-  }
 };

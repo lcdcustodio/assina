@@ -1,65 +1,69 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { app_json } from '../components/assets';
 
 class Api {
 
+  axios: AxiosInstance;
+
   constructor() {
-    axios.defaults.baseURL = require('../../app.json').apiBaseUrl;
+    this.axios = Axios.create({
+      baseURL: app_json.apiBaseUrl,
+      timeout: 5000,
+    });
   }
 
   /**
    * TODO: Tipar retorno.
    */
   async getUnits(): Promise<any> {
-    return (await this._get('/units')).data;
+    return (await this.call({ method: 'GET', url: '/units' })).data;
   }
 
-  /**
-   * TODO: Tipar requisição.
-   */
   async login(username: string, password: string, unitId: number): Promise<void> {
-    const response: AxiosResponse<void> = await this._post('/login', {
-      'username': username,
-      'password': password,
-      'unit': { 'id': unitId },
-    });
-    axios.defaults.headers.common['Authorization'] = response.headers.authorization;
+    this.axios.defaults.headers.common['Authorization'] = (await this.call<void>({
+      method: 'POST',
+      url: '/login',
+      data: {
+        'username': username,
+        'password': password,
+        'unit': { 'id': unitId },
+      },
+    })).headers.authorization;
   }
 
   /**
    * TODO: Tipar retorno.
    */
   async getAttendance(attendanceRef: string): Promise<any> {
-    return (await this._get(`/attendances/${attendanceRef}`)).data;
+    return (await this.call({ method: 'GET', url: `/attendances/${attendanceRef}` })).data;
   }
 
   /**
    * TODO: Tipar retorno.
    */
   async getUnsignedDocument(documentRef: string): Promise<any> {
-    return (await this._get(`/documents/${documentRef}/unsigned`)).data;
+    return (await this.call({ method: 'GET', url: `/documents/${documentRef}/unsigned` })).data;
   }
 
-  async _get<T>(url: string): Promise<AxiosResponse<T>> {
+  async putSignedDocument(documentRef: string, base64: String, fileName: string): Promise<void> {
+    await this.call<void>({
+      method: 'PUT',
+      url: `/documents/${documentRef}/signed`,
+      data: {
+        fileName: fileName,
+        base64: base64,
+      },
+    });
+  }
+
+  async call<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     let response: AxiosResponse<T>;
     try {
-      response = await axios.get(url);
+      response = await this.axios(config);
     } catch (error) {
       throw ApiError.fromAxiosError(error);
     }
-    if (response.status !== 200) {
-      throw ApiError.fromResponse(response);
-    }
-    return response;
-  }
-
-  async _post<T>(url: string, data?: any): Promise<AxiosResponse<T>> {
-    let response: AxiosResponse<T>;
-    try {
-      response = await axios.post(url, data);
-    } catch (error) {
-      throw ApiError.fromAxiosError(error);
-    }
-    if (response.status !== 200) {
+    if (response.status < 200 || response.status >= 300) {
       throw ApiError.fromResponse(response);
     }
     return response;
