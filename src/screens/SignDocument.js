@@ -55,14 +55,25 @@ export default class SignDocument extends AbstractScreen {
     return `<html><head>${baseTag}</head>${html}</html>`;
   }
 
-  save_begin = (webView) => {
+  callerStopLoading = () => {
+    const { callerStopLoading } = this.state;
+    if (typeof callerStopLoading == 'function') {
+      callerStopLoading();
+    }
+  }
+
+  save = (webView) => {
     this.isLoading = true;
     webView.injectJavaScript('save()');
   }
 
-  save_end = async (html) => {
+  uploadDocument = async (event) => {
+    const pdf = await RNHTMLtoPDF.convert({
+      html: event.nativeEvent.data,
+      fileName: 'signed',
+      base64: true,
+    });
     const { documentRef } = this.state;
-    const pdf = await RNHTMLtoPDF.convert({ html: html, fileName: 'signed', base64: true });
     await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
     this.isLoading = false;
     this.goBack();
@@ -104,11 +115,11 @@ export default class SignDocument extends AbstractScreen {
           </View>
           <WebView source={{ html: this.state.unsignedHtml }}
             ref={ref => (webView = ref)}
-            onLoadEnd={this.state.callerStopLoading}
-            onMessage={event => (this.save_end(event.nativeEvent.data))}
+            onLoadEnd={this.callerStopLoading}
+            onMessage={this.uploadDocument}
           />
           <View style={styles.footer}>
-            <AssinaButton text='Salvar' style={styles.button} onPress={event => this.save_begin(webView)} />
+            <AssinaButton text='Salvar' style={styles.button} onPress={() => this.save(webView)} />
           </View>
         </ImageBackground >
       </View >
