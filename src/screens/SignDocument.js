@@ -16,6 +16,7 @@ export default class SignDocument extends AbstractScreen {
     super(props, {
       patient: null,
       documentRef: null,
+      callerStopLoading: null,
       unsignedHtml: null,
     });
   }
@@ -24,13 +25,12 @@ export default class SignDocument extends AbstractScreen {
     const { navigation } = this.props;
     const patient = navigation.getParam('patient');
     const documentRef = navigation.getParam('documentRef');
-    this.setState({ patient, documentRef });
+    const callerStopLoading = navigation.getParam('stopLoading');
+    this.setState({ patient, documentRef, callerStopLoading });
     await this.loadUnsignedHtml(documentRef);
-    navigation.getParam('stopLoading')();
   });
 
   loadUnsignedHtml = async (documentRef) => {
-    this.isLoading = true;
     let unsignedHtml;
     try {
       unsignedHtml = await api.getUnsignedDocument(documentRef);
@@ -39,7 +39,6 @@ export default class SignDocument extends AbstractScreen {
       return this.handleApiError(apiError);
     }
     unsignedHtml = this.setHtmlBase(unsignedHtml);
-    this.isLoading = false;
     this.setState({ unsignedHtml });
   }
 
@@ -56,12 +55,17 @@ export default class SignDocument extends AbstractScreen {
     return `<html><head>${baseTag}</head>${html}</html>`;
   }
 
-  createPdf = async (html) => {
+  save_begin = (webView) => {
+    this.isLoading = true;
+    webView.injectJavaScript('save()');
+  }
+
+  save_end = async (html) => {
     const { documentRef } = this.state;
     const pdf = await RNHTMLtoPDF.convert({ html: html, fileName: 'signed', base64: true });
-    console.log('antes createPdf')
     await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
-    console.log('depois createPdf')
+    this.isLoading = false;
+    this.goBack();
   }
 
   render() {
@@ -100,10 +104,11 @@ export default class SignDocument extends AbstractScreen {
           </View>
           <WebView source={{ html: this.state.unsignedHtml }}
             ref={ref => (webView = ref)}
-            onMessage={event => (this.createPdf(event.nativeEvent.data))}
+            onLoadEnd={this.state.callerStopLoading}
+            onMessage={event => (this.save_end(event.nativeEvent.data))}
           />
           <View style={styles.footer}>
-            <AssinaButton text='Salvar' style={styles.button} onPress={event => (webView.injectJavaScript('save()'))} />
+            <AssinaButton text='Salvar' style={styles.button} onPress={event => this.save_begin(webView)} />
           </View>
         </ImageBackground >
       </View >

@@ -2,16 +2,18 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+
 export const AssinaButton = (props) =>
   <TouchableOpacity style={[styles.assinaButton, props.style]} activeOpacity={0.5} onPress={props.onPress}>
-    <Text style={[styles.assinaButtonText, props.textStyle]}>{props.text.toUpperCase()}</Text>
+    <Text style={[styles.assinaButtonText, props.textStyle]}>{props.text ? props.text.toUpperCase() : ''}</Text>
   </TouchableOpacity >
 
 export const AssinaLoading = (props) =>
-  <Spinner visible={props.visible} textContent='Aguarde...' textStyle={styles.assinaLoading} />
+  <Spinner visible={props.visible} textContent='Aguarde...' textStyle={{ color: 'white' }} />
 
 export const AssinaSeparator = (props) =>
   <View style={{ marginTop: props.vertical, marginLeft: props.horizontal }}></View>
+
 
 export const styles = StyleSheet.create({
   assinaButton: {
@@ -28,9 +30,6 @@ export const styles = StyleSheet.create({
     fontStyle: "normal",
     fontSize: 22,
     letterSpacing: 0,
-    color: 'white',
-  },
-  assinaLoading: {
     color: 'white',
   },
 });
