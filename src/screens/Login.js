@@ -1,9 +1,10 @@
 import React from 'react';
-import { TouchableHighlight, View, Text, ImageBackground, Image } from 'react-native';
+import { Image, ImageBackground, Text, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import AbstractScreen, { Loading } from './AbstractScreen';
+import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
 import api from '../services/api';
 
@@ -58,8 +59,8 @@ export default class Login extends AbstractScreen {
   render() {
     return (
       <View style={styles.container}>
-        <Loading visible={this.isLoading} />
-        <ImageBackground source={this.getBackground()} style={styles.imgBackground}>
+        <AssinaLoading visible={this.isLoading} />
+        <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
           <View style={styles.containerLogo}>
             <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
           </View>
@@ -67,11 +68,11 @@ export default class Login extends AbstractScreen {
             <View style={styles.inputGroup}>
               <Text style={styles.textLabel}>Usuário</Text>
               <Item>
-                <Icon type='Feather' active name='user' color='#FFFFFF' size={25} />
+                <Icon type='Feather' active name='user' color='white' size={25} />
                 <Input style={styles.textInput}
                   placeholder='login'
                   value={this.state.username}
-                  placeholderTextColor='#FFFFFF'
+                  placeholderTextColor='white'
                   autoCapitalize='none'
                   autoCorrect={false}
                   onChange={(event) => this.handleChange('username', event)} />
@@ -80,22 +81,18 @@ export default class Login extends AbstractScreen {
             <View style={styles.inputGroup}>
               <Text style={styles.textLabel}>Senha</Text>
               <Item>
-                <Icon type='Feather' active name='lock' color='#FFFFFF' size={25} />
+                <Icon type='Feather' active name='lock' color='white' size={25} />
                 <Input secureTextEntry style={styles.textInput}
                   placeholder='******'
                   value={this.state.password}
-                  placeholderTextColor='#FFFFFF'
+                  placeholderTextColor='white'
                   autoCapitalize='none'
                   autoCorrect={false}
                   onChange={(event) => this.handleChange('password', event)} />
               </Item>
             </View>
           </View>
-          <View style={styles.containerButton}>
-            <TouchableHighlight style={styles.button} onPress={this.handleLogin} underlayColor='#ffffff'>
-              <Text style={styles.textButton}>LOGIN</Text>
-            </TouchableHighlight>
-          </View>
+          <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText} onPress={this.handleLogin} />
         </ImageBackground>
       </View>
     );
@@ -103,14 +100,7 @@ export default class Login extends AbstractScreen {
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  imgBackground: {
-    width: '100%',
-    height: '100%',
-  },
+  ...baseStyles,
   containerLogo: {
     alignItems: 'center',
   },
@@ -125,7 +115,7 @@ const styles = {
     marginLeft: '12.5%',
     borderColor: 'black',
     borderWidth: 0,
-    marginBottom: '5%'
+    marginBottom: '10%'
   },
   inputGroup: {
     marginTop: '5%',
@@ -138,7 +128,7 @@ const styles = {
     fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ffffff'
+    color: 'white',
   },
   textInput: {
     marginLeft: '3%',
@@ -148,26 +138,15 @@ const styles = {
     fontWeight: '300',
     fontStyle: 'normal',
     letterSpacing: 0.02,
-    color: '#ffffff'
-  },
-  containerButton: {
-    marginTop: '5%',
-    marginLeft: '12.5%',
-    width: '75%',
-
+    color: 'white',
   },
   button: {
-    padding: '5%',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF'
+    marginHorizontal: '12.5%',
+    backgroundColor: 'white',
   },
-  textButton: {
+  buttonText: {
+    margin: '5%',
     fontSize: 30,
-    fontFamily: 'Roboto-Bold',
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    color: '#957657'
+    color: '#957657',
   },
 };

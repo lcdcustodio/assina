@@ -1,10 +1,11 @@
 import React from 'react';
-import { TouchableHighlight, View, Text, ImageBackground } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import AbstractScreen, { Loading } from './AbstractScreen';
+import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { footerUnitImage } from '../components/assets';
 import api from '../services/api';
 
@@ -49,7 +50,7 @@ export default class SelectUnit extends AbstractScreen {
       (<Picker.Item label={item.name} key={index} value={item} />));
     return (
       <View style={styles.container}>
-        <Loading visible={this.isLoading} />
+        <AssinaLoading visible={this.isLoading} />
         <View style={styles.containerTitle}>
           <Text style={styles.title}>Selecionar Unidade</Text>
         </View>
@@ -65,11 +66,8 @@ export default class SelectUnit extends AbstractScreen {
             {pickerItems}
           </Picker>
         </View>
-        <View style={styles.containerButton}>
-          <TouchableHighlight style={styles.button} onPress={this.next} underlayColor="#957657">
-            <Text style={styles.textButton}>PROSSEGUIR</Text>
-          </TouchableHighlight>
-        </View>
+        <AssinaSeparator vertical='5%' />
+        <AssinaButton text='Prosseguir' style={styles.button} textStyle={styles.buttonText} onPress={this.next} />
         <ImageBackground source={footerUnitImage} style={styles.imgBackground}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>Selecione a sua Unidade</Text>
@@ -85,10 +83,7 @@ export default class SelectUnit extends AbstractScreen {
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
+  ...baseStyles,
   containerTitle: {
     display: 'flex',
     alignItems: 'center',
@@ -116,25 +111,6 @@ const styles = {
     marginLeft: '3%',
     marginRight: '3%',
     color: '#707070',
-  },
-  containerButton: {
-    marginTop: '5%',
-    marginLeft: '12.5%',
-    width: '75%',
-  },
-  button: {
-    padding: '2%',
-    alignItems: 'center',
-    backgroundColor: '#957657',
-    borderRadius: 10,
-  },
-  textButton: {
-    fontSize: 24,
-    fontFamily: "Roboto-Bold",
-    fontWeight: "bold",
-    fontStyle: "normal",
-    letterSpacing: 0,
-    color: '#FFFFFF'
   },
   imgBackground: {
     height: '73%',
@@ -171,7 +147,10 @@ const styles = {
     color: "#ffffff",
     textAlign: "center"
   },
-  spinnerTextStyle: {
-    color: '#FFF'
-  }
+  button: {
+    marginHorizontal: '12.5%',
+  },
+  buttonText: {
+    fontSize: 24,
+  },
 };

@@ -3,7 +3,8 @@ import { Icon } from 'native-base';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import moment from 'moment';
 
-import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
+import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import { AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import api from '../services/api';
 
@@ -45,7 +46,7 @@ export default class ViewAttendance extends AbstractScreen {
   render() {
     return (
       <View style={styles.container}>
-        <Loading visible={this.isLoading} />
+        <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.headerLeft} onPress={this.goBack}>
@@ -85,11 +86,11 @@ export default class ViewAttendance extends AbstractScreen {
   }
 
   renderAttendanceItem = ({ item }) =>
-    <TouchableOpacity onPress={item.signed ? null : () => this.openDocument(item.ref)}>
+    <TouchableOpacity activeOpacity={0.5} onPress={item.signed ? null : () => this.openDocument(item.ref)}>
       <View style={styles.containerTerm}>
         <Text style={styles.textNameTerm}>{item.title}</Text>
-        <View style={item.signed ? styles.containerStatusTermGreen : styles.containerStatusTermRed}>
-          <Text style={item.signed ? styles.textStatusTermGreen : styles.textStatusTermRed}>
+        <View style={[styles.containerStatus, item.signed ? styles.containerStatusGreen : styles.containerStatusRed]}>
+          <Text style={[styles.textStatus, item.signed ? styles.textStatusGreen : styles.textStatusRed]}>
             {item.signed ? 'Assinado' : 'Pendente'}
           </Text>
         </View>
@@ -146,40 +147,32 @@ const styles = {
     textAlign: 'left',
     color: '#ffffff',
   },
-  containerStatusTermGreen: {
+  containerStatus: {
     height: '50%',
     width: '20%',
     marginLeft: '5%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+  },
+  containerStatusGreen: {
     backgroundColor: '#42fce9',
   },
-  containerStatusTermRed: {
-    height: '50%',
-    width: '20%',
-    marginLeft: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
+  containerStatusRed: {
     backgroundColor: '#fca791',
   },
-  textStatusTermGreen: {
+  textStatus: {
     fontFamily: 'Roboto-Bold',
-    fontSize: 22,
     fontWeight: 'bold',
     fontStyle: 'normal',
+    fontSize: 22,
     letterSpacing: 1,
     textAlign: 'left',
+  },
+  textStatusGreen: {
     color: '#03664e'
   },
-  textStatusTermRed: {
-    fontFamily: 'Roboto-Bold',
-    fontSize: 22,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 1,
-    textAlign: 'left',
+  textStatusRed: {
     color: '#a72b0a'
   },
 }

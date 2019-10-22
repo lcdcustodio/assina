@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableHighlight, View, Text, TouchableOpacity, ImageBackground, TextInput } from 'react-native';
+import { ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'native-base';
 
-import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
+import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 
 export default class SearchAttendance extends AbstractScreen {
@@ -25,7 +26,7 @@ export default class SearchAttendance extends AbstractScreen {
   render() {
     return (
       <View style={styles.container}>
-        <Loading visible={this.isLoading} />
+        <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
           <View style={styles.header}>
             <View style={styles.headerLeft} />
@@ -48,9 +49,7 @@ export default class SearchAttendance extends AbstractScreen {
               autoCorrect={false}
               onChange={(event) => this.handleChange('attendanceRef', event)} />
             <View style={styles.containerButton}>
-              <TouchableHighlight style={styles.button} onPress={this.search} underlayColor='#957657'>
-                <Text style={styles.textButton}>PESQUISAR</Text>
-              </TouchableHighlight>
+              <AssinaButton text='Pesquisar' style={styles.button} onPress={this.search} />
             </View>
           </View>
         </ImageBackground>
@@ -62,12 +61,9 @@ export default class SearchAttendance extends AbstractScreen {
 const styles = {
   ...baseStyles,
   containerForm: {
-    marginLeft: '7.5%',
-    width: '85%',
+    alignItems: 'center',
     marginTop: '10%',
-    borderColor: 'black',
-    borderWidth: 0,
-    alignItems: 'center'
+    marginHorizontal: '7.5%',
   },
   title: {
     fontFamily: 'Roboto-Bold',
@@ -76,7 +72,7 @@ const styles = {
     fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ffffff'
+    color: 'white'
   },
   text: {
     marginTop: '5%',
@@ -86,7 +82,7 @@ const styles = {
     fontStyle: 'normal',
     letterSpacing: 0.01,
     textAlign: 'center',
-    color: '#ffffff'
+    color: 'white'
   },
   textInput: {
     marginTop: '10%',
@@ -100,21 +96,9 @@ const styles = {
   },
   containerButton: {
     marginTop: '10%',
-    width: '100%'
+    width: '100%',
   },
   button: {
     height: '33%',
-    paddingTop: '3%',
-    alignItems: 'center',
-    borderRadius: 10,
-    backgroundColor: '#957657'
-  },
-  textButton: {
-    fontSize: 22,
-    fontFamily: 'Roboto-Bold',
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    color: '#FFFFFF'
   },
 };

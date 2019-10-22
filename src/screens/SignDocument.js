@@ -5,9 +5,9 @@ import { WebView } from 'react-native-webview';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import moment from 'moment';
 
-import appJson from '../../app.json';
-import AbstractScreen, { Loading, styles as baseStyles } from './AbstractScreen';
-import { backgroundImage } from '../components/assets';
+import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import { AssinaLoading, AssinaButton } from '../components/assina-base';
+import { app_json, backgroundImage } from '../components/assets';
 import api from '../services/api';
 
 export default class SignDocument extends AbstractScreen {
@@ -44,7 +44,7 @@ export default class SignDocument extends AbstractScreen {
   }
 
   setHtmlBase = (html) => {
-    const baseTag = `<base href="${appJson.apiBaseUrl}/"/>`;
+    const baseTag = `<base href="${app_json.apiBaseUrl}/"/>`;
     const headTags = html.match(/<head(\s+.+)?>/i);
     if (headTags) {
       return html.replace(headTags[0], headTags[0] + baseTag);
@@ -80,7 +80,7 @@ export default class SignDocument extends AbstractScreen {
     let webView;
     return (
       <View style={styles.container}>
-        <Loading visible={this.isLoading} />
+        <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
           <View style={styles.header}>
             <View style={styles.headerLeft}>
@@ -103,13 +103,7 @@ export default class SignDocument extends AbstractScreen {
             onMessage={event => (this.createPdf(event.nativeEvent.data))}
           />
           <View style={styles.footer}>
-            <TouchableHighlight
-              style={[styles.footerCenter, styles.button]}
-              underlayColor={styles.button.backgroundColor}
-              onPress={event => (webView.injectJavaScript('save()'))}
-            >
-              <Text style={styles.textButton}>SALVAR</Text>
-            </TouchableHighlight>
+            <AssinaButton text='Salvar' style={styles.button} onPress={event => (webView.injectJavaScript('save()'))} />
           </View>
         </ImageBackground >
       </View >
@@ -126,23 +120,9 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  footerCenter: {
-    height: 50,
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   button: {
-    borderRadius: 10,
-    backgroundColor: '#957657',
-  },
-  textButton: {
-    fontSize: 22,
-    fontFamily: 'Roboto-Bold',
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    color: '#FFFFFF'
+    alignItems: 'center',
+    height: '65%',
+    width: '90%',
   },
 }

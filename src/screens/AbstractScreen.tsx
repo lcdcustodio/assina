@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import { ApiError } from '../services/api';
 
@@ -58,11 +57,6 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
     }
   }
 }
-
-export type LoadingProps = { visible: boolean; };
-
-export const Loading = (props: LoadingProps) =>
-  <Spinner visible={props.visible} textContent='Aguarde...' textStyle={{ color: '#ffffff' }} />
 
 export const styles = StyleSheet.create({
   container: {
