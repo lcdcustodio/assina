@@ -68,15 +68,14 @@ export default class SignDocument extends AbstractScreen {
   }
 
   uploadDocument = async (event) => {
-    const pdf = await RNHTMLtoPDF.convert({
-      html: event.nativeEvent.data,
-      fileName: 'signed',
-      base64: true,
-    });
+    const { data } = event.nativeEvent;
     const { documentRef } = this.state;
-    await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
+    if (data && data.length) {
+      const pdf = await RNHTMLtoPDF.convert({ html: data, fileName: 'signed', base64: true });
+      await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
+      this.goBack();
+    }
     this.isLoading = false;
-    this.goBack();
   }
 
   render() {
