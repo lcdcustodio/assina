@@ -10,6 +10,13 @@ import { AssinaLoading, AssinaButton } from '../components/assina-base';
 import { app_json, backgroundImage } from '../components/assets';
 import api from '../services/api';
 
+const defaultRnHtmlToPdf = {
+  fileName: 'signed',
+  base64: true,
+  padding: 0, // iOS
+  bgColor: '#FFFFFF', // iOS
+};
+
 export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
@@ -71,7 +78,7 @@ export default class SignDocument extends AbstractScreen {
     const { data } = event.nativeEvent;
     const { documentRef } = this.state;
     if (data && data.length) {
-      const pdf = await RNHTMLtoPDF.convert({ html: data, fileName: 'signed', base64: true });
+      const pdf = await RNHTMLtoPDF.convert({ ...defaultRnHtmlToPdf, html: data });
       await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
       this.goBack();
     }
