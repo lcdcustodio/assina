@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, Text, View } from 'react-native';
+import { ImageBackground, Platform, Text, View } from 'react-native';
 import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -51,9 +51,11 @@ export default class SelectUnit extends AbstractScreen {
     return (
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
+        <AssinaSeparator vertical='20%' />
         <View style={styles.containerTitle}>
           <Text style={styles.title}>Selecionar Unidade</Text>
         </View>
+        <AssinaSeparator vertical='10%' />
         <View style={styles.containerSelect}>
           <Picker mode="dropdown"
             iosHeader="Selecione a sua Unidade"
@@ -89,7 +91,6 @@ const styles = {
     alignItems: 'center',
   },
   title: {
-    marginTop: '20%',
     fontFamily: 'Roboto-Bold',
     fontSize: 37,
     fontWeight: 'bold',
@@ -99,18 +100,19 @@ const styles = {
   },
   containerSelect: {
     justifyContent: 'center',
-    width: '75%',
     height: 70,
-    marginTop: '10%',
-    marginLeft: '12.5%',
-    paddingTop: '3.8%',
+    marginHorizontal: '12.5%',
     backgroundColor: '#efefef',
     borderRadius: 10,
   },
   select: {
-    marginLeft: '3%',
-    marginRight: '3%',
-    color: '#707070',
+    marginHorizontal: '3%',
+    ...Platform.select({
+      ios: {},
+      default: {
+        color: '#707070',
+      }
+    }),
   },
   imgBackground: {
     height: '73%',
