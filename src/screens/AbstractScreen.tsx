@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 
 import { ApiError } from '../services/api';
@@ -24,8 +24,16 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
     return this.state.loading;
   }
 
-  set isLoading(value: boolean) {
-    this.setState({ loading: value });
+  startLoading = () => {
+    if (!this.state.loading) {
+      this.setState({ loading: true });
+    }
+  }
+
+  stopLoading = () => {
+    if (this.state.loading) {
+      this.setState({ loading: false });
+    }
   }
 
   goBack = () => {
@@ -44,17 +52,24 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
   }
 
   handleApiError = (apiError: ApiError) => {
-    if (this.isLoading) {
-      this.isLoading = false;
-    }
     switch (apiError.httpStatus) {
       case 401: case 403:
-        alert("Falha na comunicação com o servidor, dados não reconhecidos.");
+        this.warn("Falha na comunicação com o servidor, dados não reconhecidos.");
         break;
       default:
-        alert("Falha na comunicação com o servidor.");
-        console.log(apiError.toString());
+        this.fail("Falha na comunicação com o servidor.", apiError);
     }
+  }
+
+  warn = (message: string) => {
+    this.stopLoading();
+    Alert.alert('Assina', message);
+  }
+
+  fail = (message: string, error?: Error) => {
+    this.stopLoading();
+    Alert.alert('Erro', message);
+    console.log(error.toString());
   }
 }
 

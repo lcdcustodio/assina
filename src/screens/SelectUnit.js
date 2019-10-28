@@ -20,14 +20,14 @@ export default class SelectUnit extends AbstractScreen {
   }
 
   loadUnits = async () => {
-    this.isLoading = true;
+    this.startLoading();
     let units;
     try {
       units = await api.getUnits();
     } catch (apiError) {
       return this.handleApiError(apiError);
     }
-    this.isLoading = false;
+    this.stopLoading();
     this.setState({ units: units });
   }
 
@@ -41,7 +41,7 @@ export default class SelectUnit extends AbstractScreen {
       await AsyncStorage.setItem('unit', JSON.stringify(unit));
       this.props.navigation.replace('Login', { unit });
     } else {
-      alert("Selecione uma unidade.");
+      this.warn("Selecione uma unidade.");
     }
   }
 

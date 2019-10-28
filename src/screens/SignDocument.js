@@ -20,19 +20,11 @@ const defaultRnHtmlToPdf = {
 export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
-    super(props, {
-      patient: null,
-      documentRef: null,
-      callerStopLoading: null,
-      unsignedHtml: null,
-    });
+    super(props, { patient: null, documentRef: null, callerStopLoading: null, unsignedHtml: null });
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    const { navigation } = this.props;
-    const patient = navigation.getParam('patient');
-    const documentRef = navigation.getParam('documentRef');
-    const callerStopLoading = navigation.getParam('stopLoading');
+    const { patient, documentRef, callerStopLoading } = this.props.navigation.state.params;
     this.setState({ patient, documentRef, callerStopLoading });
     await this.loadUnsignedHtml(documentRef);
   });
@@ -42,6 +34,7 @@ export default class SignDocument extends AbstractScreen {
     try {
       unsignedHtml = await api.getUnsignedDocument(documentRef);
     } catch (apiError) {
+      this.state.callerStopLoading();
       this.goBack();
       return this.handleApiError(apiError);
     }
@@ -70,7 +63,7 @@ export default class SignDocument extends AbstractScreen {
   }
 
   save = (webView) => {
-    this.isLoading = true;
+    this.startLoading();
     webView.injectJavaScript('save()');
   }
 
@@ -82,7 +75,7 @@ export default class SignDocument extends AbstractScreen {
       await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
       this.goBack();
     }
-    this.isLoading = false;
+    this.stopLoading();
   }
 
   render() {

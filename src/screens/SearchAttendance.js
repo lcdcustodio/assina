@@ -5,6 +5,7 @@ import { Icon } from 'native-base';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
+import api from '../services/api';
 
 export default class SearchAttendance extends AbstractScreen {
 
@@ -15,12 +16,28 @@ export default class SearchAttendance extends AbstractScreen {
   search = async () => {
     const attendanceRef = this.state.attendanceRef.trim();
     if (attendanceRef.length === 0) {
-      alert('Por favor, preencha o número de atendimento.');
-      return;
+      return this.warn('Por favor, preencha o número de atendimento.');
     }
-    this.isLoading = true;
-    const stopLoading = () => this.isLoading = false;
-    this.props.navigation.navigate('ViewAttendance', { attendanceRef, stopLoading });
+    this.startLoading();
+    let attendance;
+    try {
+      attendance = await api.getAttendance(attendanceRef);
+    } catch (apiError) {
+      switch (apiError.httpStatus) {
+        case 404:
+          return this.warn('Atendimento inválido.');
+        default:
+          return this.handleApiError(apiError);
+      }
+    }
+    if (!attendance.documents.length) {
+      return this.warn('Não há termos para este atendimento.');
+    }
+    this.props.navigation.navigate('ViewAttendance', {
+      attendanceRef,
+      attendance,
+      callerStopLoading: this.stopLoading
+    });
   }
 
   render() {

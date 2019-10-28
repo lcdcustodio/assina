@@ -14,7 +14,7 @@ export default class Login extends AbstractScreen {
     super(props, {
       username: 'admin',
       password: '123456',
-      unit: props.navigation.getParam('unit')
+      unit: null,
     });
   }
 
@@ -26,22 +26,25 @@ export default class Login extends AbstractScreen {
   handleLogin = async () => {
     const username = this.state.username.trim();
     const password = this.state.password.trim();
-    if (username.length === 0 || password.length === 0) {
-      alert('Por favor, preencha todos os campos.');
-      return;
+    if (!username.length || !password.length) {
+      return this.warn('Por favor, preencha todos os campos.');
     }
-    const unit = this.state.unit;
+    const { unit } = this.state;
     if (unit == null) {
-      alert('Hospital selecionado não identificado.');
-      return;
+      return this.warn('Hospital selecionado não identificado.');
     }
-    this.isLoading = true;
+    this.startLoading();
     try {
       await api.login(username, password, unit.id);
     } catch (apiError) {
-      return this.handleApiError(apiError);
+      switch (apiError.httpStatus) {
+        case 401:
+          return this.warn('Usuário e/ou senha inválidos.');
+        default:
+          return this.handleApiError(apiError);
+      }
     }
-    this.isLoading = false;
+    this.stopLoading();
     this.props.navigation.navigate('SearchAttendance');
   }
 

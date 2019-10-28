@@ -15,32 +15,30 @@ export default class ViewAttendance extends AbstractScreen {
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    const { navigation } = this.props;
-    await this.searchAttendance(navigation.getParam('attendanceRef'));
-    navigation.getParam('stopLoading')();
+    const { attendanceRef, attendance, callerStopLoading } = this.props.navigation.state.params;
+    this.setState({ attendanceRef, attendance });
+    callerStopLoading();
   });
 
-  refresh = () => {
-    this.searchAttendance(this.state.attendanceRef);
-  }
-
-  searchAttendance = async (attendanceRef) => {
-    this.isLoading = true;
+  refresh = async () => {
+    this.startLoading();
     let attendance;
     try {
-      attendance = await api.getAttendance(attendanceRef);
+      attendance = await api.getAttendance(this.state.attendanceRef);
     } catch (apiError) {
       return this.handleApiError(apiError);
     }
-    this.isLoading = false;
-    this.setState({ attendanceRef, attendance });
+    this.stopLoading();
+    this.setState({ attendance });
   }
 
   openDocument = (documentRef) => {
-    const { patient } = this.state.attendance;
-    const stopLoading = () => this.isLoading = false;
-    this.isLoading = true;
-    this.props.navigation.navigate('SignDocument', { documentRef, patient, stopLoading });
+    this.startLoading();
+    this.props.navigation.navigate('SignDocument', {
+      patient: this.state.attendance.patient,
+      documentRef,
+      callerStopLoading: this.stopLoading
+    });
   }
 
   render() {
