@@ -62,12 +62,12 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
 
   warn = (message: string) => {
     this.stopLoading();
-    Alert.alert('Assina', message);
+    setTimeout(() => Alert.alert('Assina', message), 100);
   }
 
   fail = (message: string, error?: Error) => {
     this.stopLoading();
-    Alert.alert('Erro', message);
+    setTimeout(() => Alert.alert('Erro', message), 100);
     console.log(error.toString());
   }
 }
