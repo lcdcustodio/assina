@@ -8,6 +8,7 @@ import moment from 'moment';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaLoading, AssinaButton } from '../components/assina-base';
 import { app_json, backgroundImage } from '../components/assets';
+import Context from '../services/Context';
 import api from '../services/api';
 
 const defaultRnHtmlToPdf = {
@@ -20,12 +21,13 @@ const defaultRnHtmlToPdf = {
 export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
-    super(props, { patient: null, documentRef: null, callerStopLoading: null, unsignedHtml: null });
+    super(props, { documentRef: null, callerStopLoading: null, unsignedHtml: null });
+    this.context = null;
   }
 
-  didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    const { patient, documentRef, callerStopLoading } = this.props.navigation.state.params;
-    this.setState({ patient, documentRef, callerStopLoading });
+  didFocus = this.props.navigation.addListener('didFocus', async () => {
+    const { documentRef, callerStopLoading } = this.props.navigation.state.params;
+    this.setState({ documentRef, callerStopLoading });
     await this.loadUnsignedHtml(documentRef);
   });
 
@@ -36,7 +38,12 @@ export default class SignDocument extends AbstractScreen {
     } catch (apiError) {
       this.state.callerStopLoading();
       this.goBack();
-      return this.handleApiError(apiError);
+      switch (apiError.httpStatus) {
+        case 404:
+          return this.warn('Modelo de documento não cadastrado.');
+        default:
+          return this.handleApiError(apiError);
+      }
     }
     unsignedHtml = this.setHtmlBase(unsignedHtml);
     this.setState({ unsignedHtml });
@@ -69,18 +76,49 @@ export default class SignDocument extends AbstractScreen {
 
   uploadDocument = async (event) => {
     const { data } = event.nativeEvent;
-    const { documentRef } = this.state;
-    if (data && data.length) {
-      const pdf = await RNHTMLtoPDF.convert({ ...defaultRnHtmlToPdf, html: data });
-      await api.putSignedDocument(documentRef, pdf.base64.split('\n').join(''), documentRef + '.pdf');
-      this.goBack();
+    if (!data || !data.length) { // mensagem vazia para cancelar o upload
+      return this.stopLoading();
     }
-    this.stopLoading();
+    const { documentRef } = this.state;
+    const pdf = await RNHTMLtoPDF.convert({ ...defaultRnHtmlToPdf, html: data });
+    const base64 = pdf.base64.split('\n').join('');
+    try {
+
+      console.log('vai enviar')
+
+      await api.putSignedDocument(documentRef, base64, documentRef + '.pdf');
+
+
+      console.log('enviou')
+
+
+
+    } catch (apiError) {
+
+      console.log('deu erro', apiError)
+
+      return this.handleApiError(apiError);
+    }
+
+    console.log('upload antes - dirty', this.context.attendance.dirty)
+
+    this.context.attendance.dirty = true;
+
+    console.log('upload depois - dirty', this.context.attendance.dirty)
+    
+    this.goBack();
   }
 
   render() {
+    return <Context.Consumer>{context => {
+      this.context = context;
+      return this.renderConsumer();
+    }}</Context.Consumer>
+  }
+
+  renderConsumer() {
     let headerText = '';
-    const { patient } = this.state;
+    const { patient } = this.context.attendance;
     if (patient) {
       const { name, birthdate } = patient;
       if (birthdate) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
-
 import { ApiError } from '../services/api';
 
 export type State = { loading: boolean };
@@ -12,7 +11,7 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
 
   state: S;
 
-  constructor(props: P, state: S) {
+  constructor(props: P, state?: S) {
     super(props);
     this.state = {
       ...state,

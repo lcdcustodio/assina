@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
+import Context from '../services/Context'
 import api from '../services/api';
 
 export default class Login extends AbstractScreen {
@@ -14,24 +15,14 @@ export default class Login extends AbstractScreen {
     super(props, {
       username: 'admin',
       password: '123456',
-      unit: null,
     });
   }
 
-  didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    const unit = this.props.navigation.getParam('unit');
-    this.setState({ unit });
-  });
-
-  handleLogin = async () => {
+  handleLogin = async (unit) => {
     const username = this.state.username.trim();
     const password = this.state.password.trim();
     if (!username.length || !password.length) {
       return this.warn('Por favor, preencha todos os campos.');
-    }
-    const { unit } = this.state;
-    if (unit == null) {
-      return this.warn('Hospital selecionado não identificado.');
     }
     this.startLoading();
     try {
@@ -48,22 +39,20 @@ export default class Login extends AbstractScreen {
     this.props.navigation.navigate('SearchAttendance');
   }
 
-  getBackground = () => {
-    if (this.state.unit) {
-      switch (this.state.unit.id) {
-        case 1:
-          return vilaNovaBackgroundImage;
-        case 2:
-          return dfStarBackgroundImage;
-      }
+  getBackground = (unit) => {
+    if (unit) switch (unit.id) {
+      case 1:
+        return vilaNovaBackgroundImage;
+      case 2:
+        return dfStarBackgroundImage;
     }
   }
 
   render() {
-    return (
+    return <Context.Consumer>{ctx =>
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
+        <ImageBackground source={this.getBackground(ctx.unit)} style={styles.backgroundImage}>
           <View style={styles.containerLogo}>
             <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
           </View>
@@ -72,12 +61,12 @@ export default class Login extends AbstractScreen {
               <Text style={styles.textLabel}>Usuário</Text>
               <Item>
                 <Icon type='Feather' active name='user' color='white' size={25} />
-                <Input style={styles.textInput}
+                <Input value={this.state.username}
                   placeholder='login'
-                  value={this.state.username}
                   placeholderTextColor='white'
                   autoCapitalize='none'
                   autoCorrect={false}
+                  style={styles.textInput}
                   onChange={(event) => this.handleChange('username', event)} />
               </Item>
             </View>
@@ -85,20 +74,21 @@ export default class Login extends AbstractScreen {
               <Text style={styles.textLabel}>Senha</Text>
               <Item>
                 <Icon type='Feather' active name='lock' color='white' size={25} />
-                <Input secureTextEntry style={styles.textInput}
+                <Input secureTextEntry value={this.state.password}
                   placeholder='******'
-                  value={this.state.password}
                   placeholderTextColor='white'
                   autoCapitalize='none'
                   autoCorrect={false}
+                  style={styles.textInput}
                   onChange={(event) => this.handleChange('password', event)} />
               </Item>
             </View>
           </View>
-          <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText} onPress={this.handleLogin} />
+          <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
+            onPress={() => this.handleLogin(ctx.unit)} />
         </ImageBackground>
       </View>
-    );
+    }</Context.Consumer>
   }
 }
 

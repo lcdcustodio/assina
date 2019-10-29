@@ -1,6 +1,24 @@
 import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { app_json } from '../components/assets';
 
+export type UnitMessageItem = {
+  id: number;
+  name: string;
+}
+export type PatientMessage = {
+  name: string;
+  birthdate: Date;
+}
+export type DocumentMessage = {
+  ref: string;
+  title: string;
+  signed: boolean;
+}
+export type AttendanceMessage = {
+  patient: PatientMessage;
+  documents: DocumentMessage[];
+}
+
 class Api {
 
   axios: AxiosInstance;
@@ -12,11 +30,8 @@ class Api {
     });
   }
 
-  /**
-   * TODO: Tipar retorno.
-   */
-  async getUnits(): Promise<any> {
-    return (await this.call({ method: 'GET', url: '/units' })).data;
+  async getUnits(): Promise<UnitMessageItem[]> {
+    return (await this.call<UnitMessageItem[]>({ method: 'GET', url: '/units' })).data;
   }
 
   async login(username: string, password: string, unitId: number): Promise<void> {
@@ -31,18 +46,12 @@ class Api {
     })).headers.authorization;
   }
 
-  /**
-   * TODO: Tipar retorno.
-   */
-  async getAttendance(attendanceRef: string): Promise<any> {
-    return (await this.call({ method: 'GET', url: `/attendances/${attendanceRef}` })).data;
+  async getAttendance(attendanceRef: string): Promise<AttendanceMessage> {
+    return (await this.call<AttendanceMessage>({ method: 'GET', url: `/attendances/${attendanceRef}` })).data;
   }
 
-  /**
-   * TODO: Tipar retorno.
-   */
-  async getUnsignedDocument(documentRef: string): Promise<any> {
-    return (await this.call({ method: 'GET', url: `/documents/${documentRef}/unsigned` })).data;
+  async getUnsignedDocument(documentRef: string): Promise<string> {
+    return (await this.call<string>({ method: 'GET', url: `/documents/${documentRef}/unsigned` })).data;
   }
 
   async putSignedDocument(documentRef: string, base64: String, fileName: string): Promise<void> {

@@ -2,17 +2,17 @@ import React from 'react';
 import { ImageBackground, Platform, Text, View } from 'react-native';
 import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { footerUnitImage } from '../components/assets';
-import api from '../services/api';
+import Unit from '../model/Unit';
+import Context from '../services/Context';
 
 export default class SelectUnit extends AbstractScreen {
 
   constructor(props) {
-    super(props, { units: [], unit: null, });
+    super(props, { units: [], unit: null });
   }
 
   componentDidMount() {
@@ -23,32 +23,30 @@ export default class SelectUnit extends AbstractScreen {
     this.startLoading();
     let units;
     try {
-      units = await api.getUnits();
+      units = await Unit.findAll();
     } catch (apiError) {
       return this.handleApiError(apiError);
     }
     this.stopLoading();
-    this.setState({ units: units });
+    this.setState({ units });
   }
 
   handleChangeUnit = (unit) => {
     this.setState({ unit });
   }
 
-  next = async () => {
+  next = async (ctx) => {
     const { unit } = this.state;
-    if (unit != null) {
-      await AsyncStorage.setItem('unit', JSON.stringify(unit));
-      this.props.navigation.replace('Login', { unit });
-    } else {
-      this.warn("Selecione uma unidade.");
+    if (unit == null) {
+      return this.warn("Selecione uma unidade.");
     }
+    await unit.store();
+    ctx.unit = unit;
+    this.props.navigation.replace('Login');
   }
 
   render() {
-    let pickerItems = this.state.units.map((item, index) =>
-      (<Picker.Item label={item.name} key={index} value={item} />));
-    return (
+    return <Context.Consumer>{ctx =>
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
         <AssinaSeparator vertical='20%' />
@@ -65,11 +63,15 @@ export default class SelectUnit extends AbstractScreen {
             selectedValue={this.state.unit}
             onValueChange={this.handleChangeUnit} >
             <Picker.Item label='Unidade' value={null} />
-            {pickerItems}
+            {this.state.units.map((item, index) =>
+              <Picker.Item label={item.name} key={index} value={item} />
+            )}
           </Picker>
         </View>
         <AssinaSeparator vertical='5%' />
-        <AssinaButton text='Prosseguir' style={styles.button} textStyle={styles.buttonText} onPress={this.next} />
+        <AssinaButton text='Prosseguir'
+          style={styles.button} textStyle={styles.buttonText}
+          onPress={() => this.next(ctx)} />
         <ImageBackground source={footerUnitImage} style={styles.imgBackground}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>Selecione a sua Unidade</Text>
@@ -80,7 +82,7 @@ export default class SelectUnit extends AbstractScreen {
           </View>
         </ImageBackground>
       </View>
-    );
+    }</Context.Consumer>
   }
 }
 

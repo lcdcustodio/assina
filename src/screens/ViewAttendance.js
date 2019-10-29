@@ -6,68 +6,75 @@ import moment from 'moment';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
-import api from '../services/api';
+import Context from '../services/Context';
 
 export default class ViewAttendance extends AbstractScreen {
 
   constructor(props) {
-    super(props, { attendanceRef: null, attendance: null });
+    super(props);
+    this.context = null;
   }
 
-  didFocus = this.props.navigation.addListener('didFocus', async (res) => {
-    const { attendanceRef, attendance, callerStopLoading } = this.props.navigation.state.params;
-    this.setState({ attendanceRef, attendance });
-    callerStopLoading();
+  didFocus = this.props.navigation.addListener('didFocus', async () => {
+    this.props.navigation.state.params.callerStopLoading();
+
+    console.log('didFocus antes - dirty', this.context.attendance.dirty)
+
+    if (this.context && this.context.attendance.dirty) {
+      console.log("REFRESCANDO")
+      await this.refresh();
+    }
   });
 
   refresh = async () => {
     this.startLoading();
-    let attendance;
+    const { unit, attendance } = this.context;
     try {
-      attendance = await api.getAttendance(this.state.attendanceRef);
+      this.context.attendance = await unit.findAttendance(attendance.ref);
     } catch (apiError) {
       return this.handleApiError(apiError);
     }
     this.stopLoading();
-    this.setState({ attendance });
   }
 
   openDocument = (documentRef) => {
     this.startLoading();
-    this.props.navigation.navigate('SignDocument', {
-      patient: this.state.attendance.patient,
-      documentRef,
-      callerStopLoading: this.stopLoading
-    });
+    this.props.navigation.navigate('SignDocument', { documentRef, callerStopLoading: this.stopLoading });
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.headerLeft} onPress={this.goBack}>
-              <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.headerIcon} />
+    return <Context.Consumer>{context => {
+      this.context = context;
+      return this.renderConsumer();
+    }}</Context.Consumer>
+  }
+
+  renderConsumer() {
+    return <View style={styles.container}>
+      <AssinaLoading visible={this.isLoading} />
+      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.headerLeft} onPress={this.goBack}>
+            <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.headerIcon} />
+          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={[{ marginRight: '10%' }, styles.headerRight]}
+              onPress={this.refresh}>
+              <Icon type='MaterialCommunityIcons' name='reload' style={styles.headerIcon} />
             </TouchableOpacity>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={[{ marginRight: '10%' }, styles.headerRight]} onPress={this.refresh}>
-                <Icon type='MaterialCommunityIcons' name='reload' style={styles.headerIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
-                <Text style={styles.headerIconText}>Sair</Text>
-                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
+              <Text style={styles.headerIconText}>Sair</Text>
+              <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
+            </TouchableOpacity>
           </View>
-          {this.state.attendance && this.renderAttendance()}
-        </ImageBackground>
-      </View>
-    );
+        </View>
+        {this.renderAttendance()}
+      </ImageBackground>
+    </View>
   }
 
   renderAttendance = () => {
-    const { patient, documents } = this.state.attendance;
+    const { patient, documents } = this.context.attendance;
     const { birthdate } = patient;
     const birthday = birthdate ? moment(birthdate).format('DD/MM/YYYY') : '';
     const age = birthdate ? moment().diff(birthdate, 'years') + ' anos' : '';
@@ -78,13 +85,14 @@ export default class ViewAttendance extends AbstractScreen {
         <FlatList
           data={documents}
           keyExtractor={item => item.ref}
-          renderItem={this.renderAttendanceItem} />
+          renderItem={this.renderDocument} />
       </View>
     );
   }
 
-  renderAttendanceItem = ({ item }) =>
-    <TouchableOpacity activeOpacity={0.5} onPress={item.signed ? null : () => this.openDocument(item.ref)}>
+  renderDocument = ({ item }) =>
+    <TouchableOpacity activeOpacity={0.5}
+      onPress={item.signed ? null : () => this.openDocument(item.ref)}>
       <View style={styles.containerTerm}>
         <Text style={styles.textNameTerm}>{item.title}</Text>
         <View style={[styles.containerStatus, item.signed ? styles.containerStatusGreen : styles.containerStatusRed]}>

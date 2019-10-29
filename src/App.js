@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import GeneralStatusBarColor from './components/GeneralStatusBarColor';
+import Unit from './model/Unit';
+import Context from './services/Context';
 
 import Login from './screens/Login';
 import SearchAttendance from './screens/SearchAttendance';
@@ -16,19 +17,15 @@ export default class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      unit: null,
-    }
+    this.state = { unit: null };
   }
 
   componentDidMount() {
-    AsyncStorage.getItem('unit').then(data => {
-      const unit = JSON.parse(data);
-      this.setState({ unit });
-    });
+    Unit.load().then(unit => this.setState({ unit }));
   }
 
   render() {
+    const { unit } = this.state;
     const RootStack = createStackNavigator(
       {
         Login,
@@ -38,17 +35,17 @@ export default class App extends Component {
         ViewAttendance,
       },
       {
-        initialRouteName: this.state.unit ? 'Login' : 'SelectUnit',
+        initialRouteName: unit ? 'Login' : 'SelectUnit',
         headerMode: 'none',
-        initialRouteParams: { 'unit': this.state.unit }
       }
     );
-
     const AppContainer = createAppContainer(RootStack);
     return (
       <View style={{ flex: 1 }}>
         <GeneralStatusBarColor backgroundColor="#957657" barStyle="light-content" />
-        <AppContainer />
+        <Context.Provider value={{ unit, attendance: null }}>
+          <AppContainer />
+        </Context.Provider>
       </View>
     );
   }

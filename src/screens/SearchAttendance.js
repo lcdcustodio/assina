@@ -5,7 +5,7 @@ import { Icon } from 'native-base';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
-import api from '../services/api';
+import Context from '../services/Context';
 
 export default class SearchAttendance extends AbstractScreen {
 
@@ -13,7 +13,7 @@ export default class SearchAttendance extends AbstractScreen {
     super(props, { attendanceRef: '3051240' });
   }
 
-  search = async () => {
+  search = async (ctx) => {
     const attendanceRef = this.state.attendanceRef.trim();
     if (attendanceRef.length === 0) {
       return this.warn('Por favor, preencha o número de atendimento.');
@@ -21,7 +21,7 @@ export default class SearchAttendance extends AbstractScreen {
     this.startLoading();
     let attendance;
     try {
-      attendance = await api.getAttendance(attendanceRef);
+      attendance = await ctx.unit.findAttendance(attendanceRef);
     } catch (apiError) {
       switch (apiError.httpStatus) {
         case 404:
@@ -30,18 +30,15 @@ export default class SearchAttendance extends AbstractScreen {
           return this.handleApiError(apiError);
       }
     }
-    if (!attendance.documents.length) {
+    if (attendance.isEmpty) {
       return this.warn('Não há termos para este atendimento.');
     }
-    this.props.navigation.navigate('ViewAttendance', {
-      attendanceRef,
-      attendance,
-      callerStopLoading: this.stopLoading
-    });
+    ctx.attendance = attendance;
+    this.props.navigation.navigate('ViewAttendance', { callerStopLoading: this.stopLoading });
   }
 
   render() {
-    return (
+    return <Context.Consumer>{ctx =>
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
@@ -66,12 +63,14 @@ export default class SearchAttendance extends AbstractScreen {
               autoCorrect={false}
               onChange={(event) => this.handleChange('attendanceRef', event)} />
             <View style={styles.containerButton}>
-              <AssinaButton text='Pesquisar' style={styles.button} onPress={this.search} />
+              <AssinaButton text='Pesquisar'
+                style={styles.button}
+                onPress={() => this.search(ctx)} />
             </View>
           </View>
         </ImageBackground>
       </View >
-    );
+    }</Context.Consumer>
   }
 }
 
