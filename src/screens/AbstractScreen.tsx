@@ -7,68 +7,55 @@ export type State = { loading: boolean };
 export type Props = { navigation: NavigationStackProp<any> };
 
 export default abstract class AbstractScreen<S extends State = State, P extends Props = Props>
-  extends React.Component<P> {
+  extends React.Component<P /*, S*/> {
 
-  state: S;
+  public state: S; // sobreescreve o original. Remover quando resolver o problema do handleChange.
 
-  constructor(props: P, state?: S) {
+  private constructor(props: P, state?: S) {
     super(props);
-    this.state = {
-      ...state,
-      loading: false,
-    }
+    this.state = { ...state, loading: false }
   }
 
-  get isLoading(): boolean {
-    return this.state.loading;
-  }
+  protected get isLoading(): boolean { return this.state.loading }
 
-  startLoading = () => {
-    if (!this.state.loading) {
-      this.setState({ loading: true });
-    }
-  }
+  protected startLoading = (): void => { if (!this.state.loading) this.setState({ loading: true }) }
 
-  stopLoading = () => {
-    if (this.state.loading) {
-      this.setState({ loading: false });
-    }
-  }
+  protected stopLoading = (): void => { if (this.state.loading) this.setState({ loading: false }) }
 
-  goBack = () => {
-    this.props.navigation.pop();
-  }
+  protected goHome = (): void => { this.props.navigation.popToTop() }
 
-  goHome = () => {
-    this.props.navigation.popToTop();
-  }
+  protected goBack = (): void => { this.props.navigation.pop() }
 
   /**
    * TODO: Melhorar tipagem do estado e tipar evento.
    */
-  handleChange = (attributeName: string, event: any) => {
+  protected handleChange = (attributeName: string, event: any): void => {
     this.setState({ [attributeName]: event.nativeEvent.text });
   }
 
-  handleApiError = (apiError: ApiError) => {
+  protected handleApiError = (apiError: ApiError): void => {
     switch (apiError.httpStatus) {
       case 401: case 403:
-        this.warn("Falha na comunicação com o servidor, dados não reconhecidos.");
-        break;
+        return this.warn('Erro de autorização. Sua sessão pode ter expirado.');
+      case 500:
+        return this.fail('Erro no servidor. Favor tentar novamente mais tarde.');
       default:
-        this.fail("Falha na comunicação com o servidor.", apiError);
+        return this.fail('Falha na comunicação com o servidor.', apiError);
     }
   }
 
-  warn = (message: string) => {
-    this.stopLoading();
-    setTimeout(() => Alert.alert('Assina', message), 100);
+  protected warn = (message: string): void => this.alert('Assina', message)
+
+  protected fail = (message: string, error?: Error): void => {
+    this.alert('Erro', message);
+    if (error) {
+      console.log('ASSINA [FAIL]', error.toString());
+    }
   }
 
-  fail = (message: string, error?: Error) => {
+  private alert = (title: string, message?: string, buttons?: any, options?: any): void => {
     this.stopLoading();
-    setTimeout(() => Alert.alert('Erro', message), 100);
-    console.log(error.toString());
+    setTimeout(() => Alert.alert(title, message, buttons, options), 100);
   }
 }
 
@@ -84,8 +71,8 @@ export const styles = StyleSheet.create({
   header: {
     height: 85,
     marginHorizontal: '3%',
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   headerLeft: {
     flexDirection: 'row',
@@ -103,13 +90,13 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    fontFamily: "Roboto-Bold",
+    fontFamily: 'Roboto-Bold',
     fontSize: 20,
-    fontWeight: "bold",
-    fontStyle: "normal",
+    fontWeight: 'bold',
+    fontStyle: 'normal',
     letterSpacing: 0,
-    textAlign: "left",
-    color: "#ffffff",
+    textAlign: 'left',
+    color: '#ffffff',
   },
   headerIcon: {
     marginRight: '5%',
@@ -118,12 +105,12 @@ export const styles = StyleSheet.create({
     color: 'white',
   },
   headerIconText: {
-    fontFamily: "Roboto-Light",
+    fontFamily: 'Roboto-Light',
     fontSize: 24,
-    fontWeight: "300",
-    fontStyle: "normal",
+    fontWeight: '300',
+    fontStyle: 'normal',
     letterSpacing: 0.01,
-    textAlign: "center",
-    color: "#ffffff",
+    textAlign: 'center',
+    color: '#ffffff',
   },
 })

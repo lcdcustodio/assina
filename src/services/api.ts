@@ -21,20 +21,20 @@ export type AttendanceMessage = {
 
 class Api {
 
-  axios: AxiosInstance;
+  private axios: AxiosInstance;
 
-  constructor() {
+  public constructor() {
     this.axios = Axios.create({
       baseURL: app_json.apiBaseUrl,
       timeout: 5000,
     });
   }
 
-  async getUnits(): Promise<UnitMessageItem[]> {
+  public async getUnits(): Promise<UnitMessageItem[]> {
     return (await this.call<UnitMessageItem[]>({ method: 'GET', url: '/units' })).data;
   }
 
-  async login(username: string, password: string, unitId: number): Promise<void> {
+  public async login(username: string, password: string, unitId: number): Promise<void> {
     this.axios.defaults.headers.common['Authorization'] = (await this.call<void>({
       method: 'POST',
       url: '/login',
@@ -46,15 +46,15 @@ class Api {
     })).headers.authorization;
   }
 
-  async getAttendance(attendanceRef: string): Promise<AttendanceMessage> {
+  public async getAttendance(attendanceRef: string): Promise<AttendanceMessage> {
     return (await this.call<AttendanceMessage>({ method: 'GET', url: `/attendances/${attendanceRef}` })).data;
   }
 
-  async getUnsignedDocument(documentRef: string): Promise<string> {
+  public async getUnsignedDocument(documentRef: string): Promise<string> {
     return (await this.call<string>({ method: 'GET', url: `/documents/${documentRef}/unsigned` })).data;
   }
 
-  async putSignedDocument(documentRef: string, base64: String, fileName: string): Promise<void> {
+  public async putSignedDocument(documentRef: string, base64: String, fileName: string): Promise<void> {
     await this.call<void>({
       method: 'PUT',
       url: `/documents/${documentRef}/signed`,
@@ -65,7 +65,7 @@ class Api {
     });
   }
 
-  async call<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  private async call<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     let response: AxiosResponse<T>;
     try {
       response = await this.axios(config);

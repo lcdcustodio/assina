@@ -7,7 +7,6 @@ import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
 import Context from '../services/Context'
-import api from '../services/api';
 
 export default class Login extends AbstractScreen {
 
@@ -26,7 +25,7 @@ export default class Login extends AbstractScreen {
     }
     this.startLoading();
     try {
-      await api.login(username, password, unit.id);
+      await unit.login(username, password);
     } catch (apiError) {
       switch (apiError.httpStatus) {
         case 401:

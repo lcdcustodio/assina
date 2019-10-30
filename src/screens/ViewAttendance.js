@@ -1,7 +1,6 @@
 import React from 'react';
 import { Icon } from 'native-base';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
-import moment from 'moment';
 
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaLoading } from '../components/assina-base';
@@ -17,11 +16,7 @@ export default class ViewAttendance extends AbstractScreen {
 
   didFocus = this.props.navigation.addListener('didFocus', async () => {
     this.props.navigation.state.params.callerStopLoading();
-
-    console.log('didFocus antes - dirty', this.context.attendance.dirty)
-
-    if (this.context && this.context.attendance.dirty) {
-      console.log("REFRESCANDO")
+    if (this.context && this.context.attendance.isDirty) {
       await this.refresh();
     }
   });
@@ -37,9 +32,20 @@ export default class ViewAttendance extends AbstractScreen {
     this.stopLoading();
   }
 
-  openDocument = (documentRef) => {
+  openDocument = async (document) => {
     this.startLoading();
-    this.props.navigation.navigate('SignDocument', { documentRef, callerStopLoading: this.stopLoading });
+    try {
+      await document.downloadUnsignedHtml();
+    } catch (apiError) {
+      switch (apiError.httpStatus) {
+        case 404:
+          return this.warn('Modelo de documento não cadastrado.');
+        default:
+          return this.handleApiError(apiError);
+      }
+    }
+    this.context.document = document;
+    this.props.navigation.navigate('SignDocument', { callerStopLoading: this.stopLoading });
   }
 
   render() {
@@ -75,13 +81,10 @@ export default class ViewAttendance extends AbstractScreen {
 
   renderAttendance = () => {
     const { patient, documents } = this.context.attendance;
-    const { birthdate } = patient;
-    const birthday = birthdate ? moment(birthdate).format('DD/MM/YYYY') : '';
-    const age = birthdate ? moment().diff(birthdate, 'years') + ' anos' : '';
     return (
       <View style={styles.containerContent}>
         <Text style={styles.textName}>{patient.name}</Text>
-        <Text style={styles.textBirthday}> {birthday} | {age}</Text>
+        <Text style={styles.textBirthday}>{patient.birthdateAsString} | {patient.ageAsString}</Text>
         <FlatList
           data={documents}
           keyExtractor={item => item.ref}
@@ -92,7 +95,7 @@ export default class ViewAttendance extends AbstractScreen {
 
   renderDocument = ({ item }) =>
     <TouchableOpacity activeOpacity={0.5}
-      onPress={item.signed ? null : () => this.openDocument(item.ref)}>
+      onPress={item.signed ? null : () => this.openDocument(item)}>
       <View style={styles.containerTerm}>
         <Text style={styles.textNameTerm}>{item.title}</Text>
         <View style={[styles.containerStatus, item.signed ? styles.containerStatusGreen : styles.containerStatusRed]}>
