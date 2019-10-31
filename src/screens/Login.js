@@ -4,7 +4,7 @@ import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
-import { AssinaButton, AssinaLoading } from '../components/assina-base';
+import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
 import Context from '../services/Context'
 
@@ -52,37 +52,37 @@ export default class Login extends AbstractScreen {
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={this.getBackground(ctx.unit)} style={styles.backgroundImage}>
+          <AssinaSeparator vertical='5%' />
           <View style={styles.containerLogo}>
             <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
           </View>
+          <AssinaSeparator vertical='12%' />
           <View style={styles.containerForm}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.textLabel}>Usuário</Text>
-              <Item>
-                <Icon type='Feather' active name='user' color='white' size={25} />
-                <Input value={this.state.username}
-                  placeholder='login'
-                  placeholderTextColor='white'
-                  autoCapitalize='none'
-                  autoCorrect={false}
-                  style={styles.textInput}
-                  onChange={(event) => this.handleChange('username', event)} />
-              </Item>
-            </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.textLabel}>Senha</Text>
-              <Item>
-                <Icon type='Feather' active name='lock' color='white' size={25} />
-                <Input secureTextEntry value={this.state.password}
-                  placeholder='******'
-                  placeholderTextColor='white'
-                  autoCapitalize='none'
-                  autoCorrect={false}
-                  style={styles.textInput}
-                  onChange={(event) => this.handleChange('password', event)} />
-              </Item>
-            </View>
+            <Text style={styles.textLabel}>Usuário</Text>
+            <Item>
+              <Icon type='Feather' active name='user' color='white' size={25} />
+              <Input value={this.state.username}
+                placeholder='login'
+                placeholderTextColor='white'
+                autoCapitalize='none'
+                autoCorrect={false}
+                style={styles.textInput}
+                onChange={(event) => this.handleChange('username', event)} />
+            </Item>
+            <AssinaSeparator vertical='15%' />
+            <Text style={styles.textLabel}>Senha</Text>
+            <Item>
+              <Icon type='Feather' active name='lock' color='white' size={25} />
+              <Input secureTextEntry value={this.state.password}
+                placeholder='******'
+                placeholderTextColor='white'
+                autoCapitalize='none'
+                autoCorrect={false}
+                style={styles.textInput}
+                onChange={(event) => this.handleChange('password', event)} />
+            </Item>
           </View>
+          <AssinaSeparator vertical='6.5%' />
           <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
             onPress={() => this.handleLogin(ctx.unit)} />
         </ImageBackground>
@@ -94,24 +94,16 @@ export default class Login extends AbstractScreen {
 const styles = {
   ...baseStyles,
   containerLogo: {
-    alignItems: 'center',
+    height: '30%',
+    marginHorizontal: '10%',
   },
   imgLogo: {
-    width: '80%',
-    marginTop: '5%',
+    width: '100%',
+    height: '100%',
   },
   containerForm: {
-    width: '75%',
     height: '35%',
-    marginTop: '10%',
-    marginLeft: '12.5%',
-    borderColor: 'black',
-    borderWidth: 0,
-    marginBottom: '10%'
-  },
-  inputGroup: {
-    marginTop: '5%',
-    marginBottom: '10%',
+    marginHorizontal: '12.5%',
   },
   textLabel: {
     fontFamily: 'Roboto-Bold',
@@ -123,7 +115,7 @@ const styles = {
     color: 'white',
   },
   textInput: {
-    marginLeft: '3%',
+    marginHorizontal: '3%',
     opacity: 0.6,
     fontFamily: 'Roboto',
     fontSize: 30,
