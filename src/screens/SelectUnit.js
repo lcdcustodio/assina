@@ -7,7 +7,7 @@ import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { footerUnitImage } from '../components/assets';
 import Unit from '../model/Unit';
-import Context from '../services/Context';
+import Context from '../components/Context';
 
 export default class SelectUnit extends AbstractScreen {
 

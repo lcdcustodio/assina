@@ -9,7 +9,6 @@ type Context = {
   document: Document;
   callerStopLoading: () => void;
 }
-
 export default React.createContext<Context>({
   unit: null,
   attendance: null,

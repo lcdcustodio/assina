@@ -5,7 +5,7 @@ import { Icon } from 'native-base';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
-import Context from '../services/Context';
+import Context from '../components/Context';
 
 export default class SearchAttendance extends AbstractScreen {
 

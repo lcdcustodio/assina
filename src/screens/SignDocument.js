@@ -6,7 +6,7 @@ import { WebView } from 'react-native-webview';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaLoading, AssinaButton } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
-import Context from '../services/Context';
+import Context from '../components/Context';
 
 export default class SignDocument extends AbstractScreen {
 

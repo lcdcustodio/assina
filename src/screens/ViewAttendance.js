@@ -5,7 +5,7 @@ import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-n
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
-import Context from '../services/Context';
+import Context from '../components/Context';
 
 export default class ViewAttendance extends AbstractScreen {
 
