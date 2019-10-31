@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
-import Context from '../services/Context'
+import Context from '../components/Context'
 
 export default class Login extends AbstractScreen {
 

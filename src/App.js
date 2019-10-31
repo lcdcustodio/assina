@@ -3,9 +3,9 @@ import { View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import GeneralStatusBarColor from './components/GeneralStatusBarColor';
+import { AssinaStatusBar } from './components/assina-base';
 import Unit from './model/Unit';
-import Context from './services/Context';
+import Context from './components/Context';
 
 import Login from './screens/Login';
 import SearchAttendance from './screens/SearchAttendance';
@@ -42,7 +42,7 @@ export default class App extends Component {
     const AppContainer = createAppContainer(RootStack);
     return (
       <View style={{ flex: 1 }}>
-        <GeneralStatusBarColor backgroundColor="#957657" barStyle="light-content" />
+        <AssinaStatusBar />
         <Context.Provider value={{
           unit,
           attendance: null,
