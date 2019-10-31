@@ -11,27 +11,9 @@ import Context from '../services/Context';
 export default class SignDocument extends AbstractScreen {
 
   constructor(props) {
-    super(props, { callerStopLoading: null });
+    super(props);
     this.context = null;
     this.webView = null;
-    this.isLoaded = false;
-  }
-
-  didFocus = this.props.navigation.addListener('didFocus', () => {
-    const { callerStopLoading } = this.props.navigation.state.params;
-    if (this.isLoaded) { // carregou antes do foco
-      callerStopLoading();
-    } else { // para o loading quando carregar
-      this.setState({ callerStopLoading });
-    }
-  });
-
-  webViewLoaded = () => {
-    this.isLoaded = true;
-    const { callerStopLoading } = this.state;
-    if (typeof callerStopLoading == 'function') {
-      callerStopLoading();
-    }
   }
 
   save = () => {
@@ -85,7 +67,7 @@ export default class SignDocument extends AbstractScreen {
           </View>
           <WebView source={{ html: this.context.document.unsignedHtml }}
             ref={ref => (this.webView = ref)}
-            onLoadEnd={this.webViewLoaded}
+            onLoadEnd={this.context.callerStopLoading}
             onMessage={this.uploadDocument}
           />
           <View style={styles.footer}>

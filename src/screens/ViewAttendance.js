@@ -15,8 +15,8 @@ export default class ViewAttendance extends AbstractScreen {
   }
 
   didFocus = this.props.navigation.addListener('didFocus', async () => {
-    this.props.navigation.state.params.callerStopLoading();
-    if (this.context && this.context.attendance.isDirty) {
+    this.context.callerStopLoading();
+    if (this.context.attendance.isDirty) {
       await this.refresh();
     }
   });
@@ -45,7 +45,8 @@ export default class ViewAttendance extends AbstractScreen {
       }
     }
     this.context.document = document;
-    this.props.navigation.navigate('SignDocument', { callerStopLoading: this.stopLoading });
+    this.context.callerStopLoading = this.stopLoading;
+    this.props.navigation.navigate('SignDocument');
   }
 
   render() {

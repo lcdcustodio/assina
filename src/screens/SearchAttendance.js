@@ -34,7 +34,8 @@ export default class SearchAttendance extends AbstractScreen {
       return this.warn('Não há termos para este atendimento.');
     }
     ctx.attendance = attendance;
-    this.props.navigation.navigate('ViewAttendance', { callerStopLoading: this.stopLoading });
+    ctx.callerStopLoading = this.stopLoading;
+    this.props.navigation.navigate('ViewAttendance');
   }
 
   render() {

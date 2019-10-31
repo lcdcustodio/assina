@@ -7,10 +7,12 @@ type Context = {
   unit: Unit;
   attendance: Attendance;
   document: Document;
+  callerStopLoading: () => void;
 }
 
 export default React.createContext<Context>({
   unit: null,
   attendance: null,
   document: null,
+  callerStopLoading: null,
 });

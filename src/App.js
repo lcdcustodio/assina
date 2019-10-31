@@ -43,7 +43,12 @@ export default class App extends Component {
     return (
       <View style={{ flex: 1 }}>
         <GeneralStatusBarColor backgroundColor="#957657" barStyle="light-content" />
-        <Context.Provider value={{ unit, attendance: null }}>
+        <Context.Provider value={{
+          unit,
+          attendance: null,
+          document: null,
+          callerStopLoading: null,
+        }}>
           <AppContainer />
         </Context.Provider>
       </View>
