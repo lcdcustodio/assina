@@ -25,7 +25,7 @@ export default class SelectUnit extends Screen {
     try {
       units = await Unit.findAll();
     } catch (apiError) {
-      return this.handleApiError(apiError);
+      return this.handleError(apiError);
     }
     this.stopLoading();
     this.setState({ units });

@@ -6,14 +6,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
-import Context from '../components/Context'
-import Unit from '../model/Unit';
 
 type LoginState = ScreenState & {
   username: string;
   password: string;
 };
-
+const HTTP_ERRORS = [
+  { status: 401, message: 'Usuário e/ou senha inválidos.' },
+  { status: 403, message: 'Usuário e/ou senha inválidos.' },
+];
 export default class Login extends Screen<LoginState> {
 
   private constructor(props: ScreenProps) {
@@ -23,7 +24,7 @@ export default class Login extends Screen<LoginState> {
     });
   }
 
-  private handleLogin = async (unit: Unit) => {
+  private handleLogin = async (): Promise<void> => {
     const username = this.state.username.trim();
     const password = this.state.password.trim();
     if (!username.length || !password.length) {
@@ -31,21 +32,16 @@ export default class Login extends Screen<LoginState> {
     }
     this.startLoading();
     try {
-      await unit.login(username, password);
-    } catch (apiError) {
-      switch (apiError.httpStatus) {
-        case 401: case 403:
-          return this.warn('Usuário e/ou senha inválidos.');
-        default:
-          return this.handleApiError(apiError);
-      }
+      await this.context.unit.login(username, password);
+    } catch (error) {
+      return this.handleError(error, HTTP_ERRORS);
     }
     this.stopLoading();
     this.props.navigation.navigate('SearchAttendance');
   }
 
-  private getBackground = (unit: Unit) => {
-    if (unit) switch (unit.id) {
+  private getBackground = (): number => {
+    switch (this.context.unit.id) {
       case 1:
         return vilaNovaBackgroundImage;
       case 2:
@@ -54,46 +50,44 @@ export default class Login extends Screen<LoginState> {
   }
 
   public render() {
-    return <Context.Consumer>{ctx =>
-      <View style={styles.container}>
-        <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={this.getBackground(ctx.unit)} style={styles.backgroundImage}>
-          <AssinaSeparator vertical='5%' />
-          <View style={styles.containerLogo}>
-            <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
-          </View>
-          <AssinaSeparator vertical='12%' />
-          <View style={styles.containerForm}>
-            <Text style={styles.textLabel}>Usuário</Text>
-            <Item>
-              <Icon name='user' color='white' size={25} />
-              <Input value={this.state.username}
-                placeholder='login'
-                placeholderTextColor='white'
-                autoCapitalize='none'
-                autoCorrect={false}
-                style={styles.textInput}
-                onChange={(event) => this.handleTextChange('username', event)} />
-            </Item>
-            <AssinaSeparator vertical='15%' />
-            <Text style={styles.textLabel}>Senha</Text>
-            <Item>
-              <Icon name='lock' color='white' size={25} />
-              <Input secureTextEntry value={this.state.password}
-                placeholder='******'
-                placeholderTextColor='white'
-                autoCapitalize='none'
-                autoCorrect={false}
-                style={styles.textInput}
-                onChange={(event) => this.handleTextChange('password', event)} />
-            </Item>
-          </View>
-          <AssinaSeparator vertical='6.5%' />
-          <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
-            onPress={() => this.handleLogin(ctx.unit)} />
-        </ImageBackground>
-      </View>
-    }</Context.Consumer>
+    return <View style={styles.container}>
+      <AssinaLoading visible={this.isLoading} />
+      <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
+        <AssinaSeparator vertical='5%' />
+        <View style={styles.containerLogo}>
+          <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
+        </View>
+        <AssinaSeparator vertical='12%' />
+        <View style={styles.containerForm}>
+          <Text style={styles.textLabel}>Usuário</Text>
+          <Item>
+            <Icon name='user' color='white' size={25} />
+            <Input value={this.state.username}
+              placeholder='login'
+              placeholderTextColor='white'
+              autoCapitalize='none'
+              autoCorrect={false}
+              style={styles.textInput}
+              onChange={(event) => this.handleTextChange('username', event)} />
+          </Item>
+          <AssinaSeparator vertical='15%' />
+          <Text style={styles.textLabel}>Senha</Text>
+          <Item>
+            <Icon name='lock' color='white' size={25} />
+            <Input secureTextEntry value={this.state.password}
+              placeholder='******'
+              placeholderTextColor='white'
+              autoCapitalize='none'
+              autoCorrect={false}
+              style={styles.textInput}
+              onChange={(event) => this.handleTextChange('password', event)} />
+          </Item>
+        </View>
+        <AssinaSeparator vertical='6.5%' />
+        <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
+          onPress={this.handleLogin} />
+      </ImageBackground>
+    </View>
   }
 }
 

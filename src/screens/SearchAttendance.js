@@ -27,7 +27,7 @@ export default class SearchAttendance extends Screen {
         case 404:
           return this.warn('Atendimento inválido.');
         default:
-          return this.handleApiError(apiError);
+          return this.handleError(apiError);
       }
     }
     if (attendance.isEmpty) {

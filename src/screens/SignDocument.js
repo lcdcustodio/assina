@@ -29,7 +29,7 @@ export default class SignDocument extends Screen {
     try {
       await this.context.document.uploadSignedHtml(data);
     } catch (apiError) {
-      return this.handleApiError(apiError);
+      return this.handleError(apiError);
     }
     this.context.attendance.isDirty = true;
     this.goBack();

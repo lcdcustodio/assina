@@ -27,7 +27,7 @@ export default class ViewAttendance extends Screen {
     try {
       this.context.attendance = await unit.findAttendance(attendance.ref);
     } catch (apiError) {
-      return this.handleApiError(apiError);
+      return this.handleError(apiError);
     }
     this.stopLoading();
   }
@@ -41,7 +41,7 @@ export default class ViewAttendance extends Screen {
         case 404:
           return this.warn('Modelo de documento não cadastrado.');
         default:
-          return this.handleApiError(apiError);
+          return this.handleError(apiError);
       }
     }
     this.context.document = document;

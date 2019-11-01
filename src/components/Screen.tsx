@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Alert, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 import { ApiError } from '../services/api';
+import Context from './Context'
 
 export type ScreenProps = {
   navigation: NavigationStackProp<any>;
@@ -9,9 +10,24 @@ export type ScreenProps = {
 export type ScreenState = {
   loading: boolean;
 };
+export type HttpErrorMessage = {
+  status?: number;
+  message: string;
+  type?: 'warn' | 'fail';
+};
+const DEFAULT_HTTP_ERRORS: HttpErrorMessage[] = [
+  { status: 401, message: 'Erro de autorização. Sua sessão pode ter expirado.' },
+  { status: 403, message: 'Erro de autorização. Sua sessão pode ter expirado.' },
+  { status: 500, message: 'Erro no servidor. Favor tentar novamente mais tarde.', type: 'fail' },
+  { status: null, message: 'Problemas de conexão. Favor tentar novamente mais tarde.', type: 'fail' },
+];
 
 export default abstract class Screen<S extends ScreenState = ScreenState, P extends ScreenProps = ScreenProps>
   extends React.Component<P, S> {
+
+  public static contextType = Context;
+
+  public context!: React.ContextType<typeof Context>;
 
   protected constructor(props: P, subState: Pick<S, Exclude<keyof S, keyof ScreenState>>) {
     super(props);
@@ -32,14 +48,11 @@ export default abstract class Screen<S extends ScreenState = ScreenState, P exte
     this.setState({ [key]: event.nativeEvent.text } as unknown); // cast 'super desonesto'
   }
 
-  protected handleApiError = (apiError: ApiError): void => {
-    switch (apiError.httpStatus) {
-      case 401: case 403:
-        return this.warn('Erro de autorização. Sua sessão pode ter expirado.');
-      case 500:
-        return this.fail('Erro no servidor. Favor tentar novamente mais tarde.');
-      default:
-        return this.fail('Falha na comunicação com o servidor.', apiError);
+  protected handleError = (error: any, httpMessages?: HttpErrorMessage[]): void => {
+    if (error instanceof ApiError) {
+      this.handleApiError(error, httpMessages);
+    } else {
+      this.fail('Erro de sistema. Contacte o suporte.', error);
     }
   }
 
@@ -55,6 +68,21 @@ export default abstract class Screen<S extends ScreenState = ScreenState, P exte
   private alert(title: string, message?: string, buttons?: any, options?: any): void {
     this.stopLoading();
     setTimeout(() => Alert.alert(title, message, buttons, options), 100);
+  }
+
+  private handleApiError(apiError: ApiError, httpMessages: HttpErrorMessage[]): void {
+    const messages = httpMessages ? httpMessages.concat(DEFAULT_HTTP_ERRORS) : DEFAULT_HTTP_ERRORS;
+    for (let message of messages) {
+      if (message.status == apiError.httpStatus) {
+        switch (message.type) {
+          case 'warn': case undefined: case null:
+            return this.warn(message.message);
+          case 'fail':
+            return this.fail(message.message, apiError);
+        }
+      }
+    }
+    this.fail(`Erro inesperado no servidor (${apiError.httpStatus}).`);
   }
 }
 
