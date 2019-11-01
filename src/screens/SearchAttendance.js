@@ -2,12 +2,12 @@ import React from 'react';
 import { ImageBackground, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'native-base';
 
-import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import Screen, { styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import Context from '../components/Context';
 
-export default class SearchAttendance extends AbstractScreen {
+export default class SearchAttendance extends Screen {
 
   constructor(props) {
     super(props, { attendanceRef: '3051240' });
@@ -62,7 +62,7 @@ export default class SearchAttendance extends AbstractScreen {
               value={this.state.attendanceRef}
               autoCapitalize='none'
               autoCorrect={false}
-              onChange={(event) => this.handleChange('attendanceRef', event)} />
+              onChange={(event) => this.handleTextChange('attendanceRef', event)} />
             <View style={styles.containerButton}>
               <AssinaButton text='Pesquisar'
                 style={styles.button}

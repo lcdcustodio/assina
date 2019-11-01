@@ -3,21 +3,27 @@ import { Image, ImageBackground, Text, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
 import Context from '../components/Context'
+import Unit from '../model/Unit';
 
-export default class Login extends AbstractScreen {
+type LoginState = ScreenState & {
+  username: string;
+  password: string;
+};
 
-  constructor(props) {
+export default class Login extends Screen<LoginState> {
+
+  private constructor(props: ScreenProps) {
     super(props, {
       username: 'admin',
       password: '123456',
     });
   }
 
-  handleLogin = async (unit) => {
+  private handleLogin = async (unit: Unit) => {
     const username = this.state.username.trim();
     const password = this.state.password.trim();
     if (!username.length || !password.length) {
@@ -28,7 +34,7 @@ export default class Login extends AbstractScreen {
       await unit.login(username, password);
     } catch (apiError) {
       switch (apiError.httpStatus) {
-        case 401:
+        case 401: case 403:
           return this.warn('Usuário e/ou senha inválidos.');
         default:
           return this.handleApiError(apiError);
@@ -38,7 +44,7 @@ export default class Login extends AbstractScreen {
     this.props.navigation.navigate('SearchAttendance');
   }
 
-  getBackground = (unit) => {
+  private getBackground = (unit: Unit) => {
     if (unit) switch (unit.id) {
       case 1:
         return vilaNovaBackgroundImage;
@@ -47,7 +53,7 @@ export default class Login extends AbstractScreen {
     }
   }
 
-  render() {
+  public render() {
     return <Context.Consumer>{ctx =>
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
@@ -60,26 +66,26 @@ export default class Login extends AbstractScreen {
           <View style={styles.containerForm}>
             <Text style={styles.textLabel}>Usuário</Text>
             <Item>
-              <Icon type='Feather' active name='user' color='white' size={25} />
+              <Icon name='user' color='white' size={25} />
               <Input value={this.state.username}
                 placeholder='login'
                 placeholderTextColor='white'
                 autoCapitalize='none'
                 autoCorrect={false}
                 style={styles.textInput}
-                onChange={(event) => this.handleChange('username', event)} />
+                onChange={(event) => this.handleTextChange('username', event)} />
             </Item>
             <AssinaSeparator vertical='15%' />
             <Text style={styles.textLabel}>Senha</Text>
             <Item>
-              <Icon type='Feather' active name='lock' color='white' size={25} />
+              <Icon name='lock' color='white' size={25} />
               <Input secureTextEntry value={this.state.password}
                 placeholder='******'
                 placeholderTextColor='white'
                 autoCapitalize='none'
                 autoCorrect={false}
                 style={styles.textInput}
-                onChange={(event) => this.handleChange('password', event)} />
+                onChange={(event) => this.handleTextChange('password', event)} />
             </Item>
           </View>
           <AssinaSeparator vertical='6.5%' />
@@ -108,10 +114,10 @@ const styles = {
   textLabel: {
     fontFamily: 'Roboto-Bold',
     fontSize: 30,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+    fontWeight: 'bold' as const,
+    fontStyle: 'normal' as const,
     letterSpacing: 0,
-    textAlign: 'left',
+    textAlign: 'left' as const,
     color: 'white',
   },
   textInput: {
@@ -119,8 +125,8 @@ const styles = {
     opacity: 0.6,
     fontFamily: 'Roboto',
     fontSize: 30,
-    fontWeight: '300',
-    fontStyle: 'normal',
+    fontWeight: '300' as const,
+    fontStyle: 'normal' as const,
     letterSpacing: 0.02,
     color: 'white',
   },

@@ -3,13 +3,13 @@ import { ImageBackground, Platform, Text, View } from 'react-native';
 import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import Screen, { styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import { footerUnitImage } from '../components/assets';
 import Unit from '../model/Unit';
 import Context from '../components/Context';
 
-export default class SelectUnit extends AbstractScreen {
+export default class SelectUnit extends Screen {
 
   constructor(props) {
     super(props, { units: [], unit: null });
@@ -31,7 +31,7 @@ export default class SelectUnit extends AbstractScreen {
     this.setState({ units });
   }
 
-  handleChangeUnit = (unit) => {
+  handleUnitChange = (unit) => {
     this.setState({ unit });
   }
 
@@ -61,7 +61,7 @@ export default class SelectUnit extends AbstractScreen {
             style={styles.select}
             iosIcon={<Icon name="chevron-down" />}
             selectedValue={this.state.unit}
-            onValueChange={this.handleChangeUnit} >
+            onValueChange={this.handleUnitChange} >
             <Picker.Item label='Unidade' value={null} />
             {this.state.units.map((item, index) =>
               <Picker.Item label={item.name} key={index} value={item} />

@@ -2,12 +2,12 @@ import React from 'react';
 import { Icon } from 'native-base';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 
-import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import Screen, { styles as baseStyles } from '../components/Screen';
 import { AssinaLoading } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import Context from '../components/Context';
 
-export default class ViewAttendance extends AbstractScreen {
+export default class ViewAttendance extends Screen {
 
   constructor(props) {
     super(props);

@@ -1,19 +1,21 @@
 import React from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 import { ApiError } from '../services/api';
 
-export type State = { loading: boolean };
-export type Props = { navigation: NavigationStackProp<any> };
+export type ScreenProps = {
+  navigation: NavigationStackProp<any>;
+};
+export type ScreenState = {
+  loading: boolean;
+};
 
-export default abstract class AbstractScreen<S extends State = State, P extends Props = Props>
-  extends React.Component<P /*, S*/> {
+export default abstract class Screen<S extends ScreenState = ScreenState, P extends ScreenProps = ScreenProps>
+  extends React.Component<P, S> {
 
-  public state: S; // sobreescreve o original. Remover quando resolver o problema do handleChange.
-
-  private constructor(props: P, state?: S) {
+  protected constructor(props: P, subState: Pick<S, Exclude<keyof S, keyof ScreenState>>) {
     super(props);
-    this.state = { ...state, loading: false }
+    this.state = { loading: false, ...subState } as S; // cast 'desonesto'.
   }
 
   protected get isLoading(): boolean { return this.state.loading }
@@ -26,11 +28,8 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
 
   protected goBack = (): void => { this.props.navigation.pop() }
 
-  /**
-   * TODO: Melhorar tipagem do estado e tipar evento.
-   */
-  protected handleChange = (attributeName: string, event: any): void => {
-    this.setState({ [attributeName]: event.nativeEvent.text });
+  protected handleTextChange = (key: keyof SubType<S, string>, event: NativeSyntheticEvent<TextInputChangeEventData>): void => {
+    this.setState({ [key]: event.nativeEvent.text } as unknown); // cast 'super desonesto'
   }
 
   protected handleApiError = (apiError: ApiError): void => {
@@ -53,7 +52,7 @@ export default abstract class AbstractScreen<S extends State = State, P extends 
     }
   }
 
-  private alert = (title: string, message?: string, buttons?: any, options?: any): void => {
+  private alert(title: string, message?: string, buttons?: any, options?: any): void {
     this.stopLoading();
     setTimeout(() => Alert.alert(title, message, buttons, options), 100);
   }
@@ -114,3 +113,10 @@ export const styles = StyleSheet.create({
     color: '#ffffff',
   },
 })
+
+/**
+ * @see https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
+ */
+type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? Key : never };
+type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
+type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;
