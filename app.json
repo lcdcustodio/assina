@@ -2,6 +2,7 @@
   "name": "assina",
   "displayName": "Assina",
   "apiBaseUrl": "http://10.25.32.141:8081/assina-api",
-  "apiBaseUrl2": "http://10.15.48.93:8080/assina-api",
-  "apiBaseUrl3": "http://10.15.24.90:8080/assina-api"
+  "apiBaseUrl-pre-staging": "http://10.25.32.141:8081/assina-api",
+  "apiBaseUrl-local-cabo": "http://10.15.48.93:8080/assina-api",
+  "apiBaseUrl-local-wifi": "http://10.15.24.90:8080/assina-api"
 }
