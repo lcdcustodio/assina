@@ -41,7 +41,7 @@ export default class Unit {
   }
 }
 
-interface StoredUnit {
+type StoredUnit = {
   id: number;
   name: string;
 }

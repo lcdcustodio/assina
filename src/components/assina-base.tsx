@@ -1,5 +1,6 @@
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Platform, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Icon } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 /**
@@ -10,12 +11,41 @@ import Spinner from 'react-native-loading-spinner-overlay';
 export const AssinaButton = (props: {
   text?: string;
   style?: typeof TouchableOpacity.prototype.props.style;
-  textStyle?: typeof Text.prototype.props.style;
+  textStyle?: TextStyle;
   onPress?: typeof TouchableOpacity.prototype.props.onPress;
 }) =>
   <TouchableOpacity style={[styles.assinaButton, props.style]} activeOpacity={0.5} onPress={props.onPress}>
     <Text style={[styles.assinaButtonText, props.textStyle]}>{props.text ? props.text.toUpperCase() : ''}</Text>
   </TouchableOpacity >
+
+
+/**
+ * Botões de cabeçalho.
+ */
+type AssinaHeaderButtonProps = {
+  onPress?: typeof TouchableOpacity.prototype.props.onPress;
+  viewStyle?: typeof TouchableOpacity.prototype.props.style;
+  text?: string;
+  iconType?: typeof Icon.prototype.props.type;
+  iconName?: typeof Icon.prototype.props.name;
+};
+export const AssinaHeaderButton = (props: AssinaHeaderButtonProps) =>
+  <TouchableOpacity style={props.viewStyle} onPress={props.onPress}>
+    {props.text &&
+      <Text style={controlStyles.assinaHeaderButtonText}>{props.text}</Text>
+    }
+    {props.iconType && props.iconName &&
+      <Icon type={props.iconType} name={props.iconName} style={controlStyles.assinaHeaderButtonIcon} />
+    }
+  </TouchableOpacity>
+type AssinaHeaderButtonSpecificProps = Pick<AssinaHeaderButtonProps, 'onPress' | 'viewStyle'>;
+AssinaHeaderButton.Back = (props: AssinaHeaderButtonSpecificProps) =>
+  <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='arrow-left' viewStyle={props.viewStyle} onPress={props.onPress} />
+AssinaHeaderButton.Reload = (props: AssinaHeaderButtonSpecificProps) =>
+  <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='reload' viewStyle={props.viewStyle} onPress={props.onPress} />
+AssinaHeaderButton.Exit = (props: AssinaHeaderButtonSpecificProps) =>
+  <AssinaHeaderButton text='Sair' iconType='MaterialIcons' iconName='exit-to-app' viewStyle={props.viewStyle} onPress={props.onPress} />
+
 
 /**
  * Exibição de carregamento na tela.
@@ -23,7 +53,7 @@ export const AssinaButton = (props: {
  * @param props Props.
  */
 export const AssinaLoading = (props: { visible?: boolean }) =>
-  <Spinner visible={props.visible} textContent='Aguarde...' textStyle={styles.assinaLoading} />
+  <Spinner visible={props.visible} textContent='Aguarde...' textStyle={styles.text} />
 
 
 /**
@@ -43,56 +73,86 @@ export const AssinaSeparator = (props: {
  * Barra de status.
  */
 export const AssinaStatusBar = () =>
-  <GeneralStatusBarColor backgroundColor={styles.assinaStatusBar.backgroundColor} barStyle="light-content" />
-
-/**
- * Barra de Status com cor de fundo no IOS e Android.
- * 
- * @param props Props.
- * @see https://medium.com/reactbrasil/pt-br-react-native-configurando-a-status-bar-background-color-no-android-e-ios-a21b2f49c1d9
- * @see https://medium.com/reactbrasil/react-native-setting-a-status-bar-background-color-on-android-and-ios-1cba14a4e3f9
- */
-const GeneralStatusBarColor = (props: StatusBar['props']) =>
-  <View style={{ height: styles.assinaStatusBar.height, backgroundColor: props.backgroundColor }}>
-    <StatusBar translucent {...props} />
+  <View style={styles.assinaStatusBar}>
+    <StatusBar backgroundColor={styles.assinaStatusBar.backgroundColor} barStyle='light-content' translucent={true} />
   </View>
 
-/**
- * Estilos básicos do aplicativo.
- */
-const baseStyles = StyleSheet.create({
-  theme: {
-    color: 'white',
+
+/*********************************** STYLES ***********************************/
+
+const theme = StyleSheet.create({
+  main: {
     backgroundColor: '#957657',
-  }
+    color: 'white',
+  },
 });
 
-/**
- * Estilos padrão dos componentes.
- */
-const styles = StyleSheet.create({
-  ...baseStyles,
+const textStyle: TextStyle = {
+  color: theme.main.color,
+  fontFamily: 'Roboto',
+  fontSize: 22,
+  fontStyle: 'normal',
+  fontWeight: 'normal',
+  letterSpacing: 0,
+  textAlign: 'left',
+};
+const textBoldStyle: TextStyle = {
+  ...textStyle,
+  fontFamily: 'Roboto-Bold',
+  fontWeight: 'bold',
+};
+const textLightStyle: TextStyle = {
+  ...textStyle,
+  fontFamily: 'Roboto-Light',
+  fontWeight: '300',
+  letterSpacing: 0.01,
+}
+
+const viewStyle: ViewStyle = {
+}
+const viewBackgroundStyle: ViewStyle = {
+  backgroundColor: theme.main.backgroundColor,
+}
+const viewRoundStyle: ViewStyle = {
+  ...viewBackgroundStyle,
+  borderRadius: 10,
+};
+
+const controlStyles = StyleSheet.create({
   assinaButton: {
+    ...viewRoundStyle,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: baseStyles.theme.backgroundColor,
-    borderRadius: 10,
   },
   assinaButtonText: {
+    ...textBoldStyle,
     margin: '2%',
-    fontFamily: "Roboto-Bold",
-    fontWeight: "bold",
-    fontStyle: "normal",
-    fontSize: 22,
-    letterSpacing: 0,
-    color: baseStyles.theme.color,
-  },
-  assinaLoading: {
-    color: baseStyles.theme.color,
   },
   assinaStatusBar: {
     height: (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
-    backgroundColor: baseStyles.theme.backgroundColor,
-  }
+    backgroundColor: theme.main.backgroundColor,
+  },
+  assinaHeaderButtonIcon: {
+    marginRight: '5%',
+    marginLeft: '1%',
+    fontSize: 40,
+    color: theme.main.color,
+  },
+  assinaHeaderButtonText: {
+    ...textLightStyle,
+    textAlign: 'center',
+    fontSize: 24,
+  },
+});
+
+export const styles = StyleSheet.create({
+  ...theme,
+  text: textStyle,
+  textBold: textBoldStyle,
+  textLight: textLightStyle,
+  view: viewStyle,
+  viewBackground: viewBackgroundStyle,
+  viewRound: viewRoundStyle,
+  ...controlStyles,
 });

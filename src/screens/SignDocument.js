@@ -3,12 +3,12 @@ import { Icon } from 'native-base';
 import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import AbstractScreen, { styles as baseStyles } from './AbstractScreen';
+import Screen, { styles as baseStyles } from '../components/Screen';
 import { AssinaLoading, AssinaButton } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import Context from '../components/Context';
 
-export default class SignDocument extends AbstractScreen {
+export default class SignDocument extends Screen {
 
   constructor(props) {
     super(props);
@@ -29,7 +29,7 @@ export default class SignDocument extends AbstractScreen {
     try {
       await this.context.document.uploadSignedHtml(data);
     } catch (apiError) {
-      return this.handleApiError(apiError);
+      return this.handleError(apiError);
     }
     this.context.attendance.isDirty = true;
     this.goBack();
