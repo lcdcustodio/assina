@@ -2,6 +2,7 @@ import React from 'react';
 
 import Unit from '../model/Unit';
 import Attendance from '../model/Attendance';
+import Document from '../model/Document';
 
 type ContextType = {
   unit: Unit;

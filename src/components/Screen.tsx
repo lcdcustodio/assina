@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Alert, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
 import { ApiError } from '../services/api';
@@ -21,7 +21,6 @@ const DEFAULT_HTTP_ERRORS: HttpErrorMessage[] = [
   { status: 500, message: 'Erro no servidor. Favor tentar novamente mais tarde.', type: 'fail' },
   { status: null, message: 'Problemas de conexão. Favor tentar novamente mais tarde.', type: 'fail' },
 ];
-
 export default abstract class Screen<S extends ScreenState = ScreenState, P extends ScreenProps = ScreenProps>
   extends React.Component<P, S> {
 
