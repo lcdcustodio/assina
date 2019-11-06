@@ -7,7 +7,8 @@ export type UnitMessageItem = {
 }
 export type PatientMessage = {
   name: string;
-  birthdate: Date;
+  email?: string;
+  birthdate?: Date;
 }
 export type DocumentMessage = {
   ref: string;

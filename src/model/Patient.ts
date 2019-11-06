@@ -5,10 +5,12 @@ import { PatientMessage } from '../services/api';
 export default class Patient {
 
   public readonly name: string;
-  public readonly birthdate: Date;
+  public readonly email?: string;
+  public readonly birthdate?: Date;
 
   constructor(message: PatientMessage) {
     this.name = message.name;
+    this.email = message.email;
     this.birthdate = message.birthdate;
   }
 
