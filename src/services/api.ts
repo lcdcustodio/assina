@@ -66,6 +66,14 @@ class Api {
     });
   }
 
+  public async postEmail(documentRef: string, email: string): Promise<void> {
+    await this.call<void>({
+      method: 'POST',
+      url: `/documents/${documentRef}/email`,
+      data: { to: [email] },
+    });
+  }
+
   private async call<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     let response: AxiosResponse<T>;
     try {

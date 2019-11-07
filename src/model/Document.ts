@@ -27,6 +27,10 @@ export default class Document {
     const base64 = pdf.base64.split('\n').join('');
     await api.putSignedDocument(this.ref, base64, this.ref + '.pdf');
   }
+
+  public async sendEmail(email: string): Promise<void> {
+    await api.postEmail(this.ref, email);
+  }
 }
 
 const defaultRnHtmlToPdf = {
