@@ -1,19 +1,26 @@
 import React from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-
-import Screen, {
-  ScreenProps,
-  styles as screenStyles // <--- TODO REMOVER (utilizar do assina-base)
-} from '../components/Screen';
+import Modal from '../components/ModalEmail';
 import { AssinaHeaderButton, AssinaLoading, styles as baseStyles } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import Document from '../model/Document';
 
-export default class ViewAttendance extends Screen {
+import Screen, {
+  ScreenProps,
+  ScreenState,
+  styles as screenStyles // <--- TODO REMOVER (utilizar do assina-base)
+} from '../components/Screen';
+
+type State = ScreenState & {
+  modalSendEmail: boolean;
+}
+export default class ViewAttendance extends Screen<State> {
 
   constructor(props: ScreenProps) {
-    super(props, {});
+    super(props, {
+      modalSendEmail: false
+    });
   }
 
   didFocus = async () => {
@@ -48,10 +55,35 @@ export default class ViewAttendance extends Screen {
     this.props.navigation.navigate('SignDocument');
   }
 
+  showPopUpSendEmail = (document: Document) => {
+    this.context.document = document;
+    this.setState({ modalSendEmail: true })
+  }
+
+  close = () =>{
+    this.setState({ modalSendEmail: false })
+  }
+
+  send = (email: string) => {
+    if(email.length === 0) return this.warn('Por favor, preencha o e-mail');
+    if(this.validateEmail(email)){
+      this.context.document.sendEmail(email);
+      this.close();
+    } else { 
+      return this.warn('E-mail inválido!');
+    }
+  }
+
+  validateEmail = (email: string ) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+
   render() {
     const { patient, documents } = this.context.attendance;
     return <View style={styles.container}>
       <NavigationEvents onDidFocus={this.didFocus} />
+      <Modal visible={this.state.modalSendEmail} email={patient.email} close={this.close} send={this.send}/>
       <AssinaLoading visible={this.isLoading} />
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
         <View style={styles.header}>
@@ -69,11 +101,19 @@ export default class ViewAttendance extends Screen {
               onPress={document.signed ? null : () => this.openDocument(document)}>
               <View style={styles.containerTerm}>
                 <Text style={styles.textNameTerm}>{document.title}</Text>
+
                 <View style={[styles.containerStatus, document.signed ? styles.backgroundGreen : styles.backgroundRed]}>
                   <Text style={[styles.textStatus, document.signed ? styles.colorGreen : styles.colorRed]}>
                     {document.signed ? 'Assinado' : 'Pendente'}
                   </Text>
                 </View>
+                {
+                  document.signed ?
+                    <TouchableOpacity activeOpacity={0.5} >
+                      <AssinaHeaderButton.Email viewStyle={[{ marginLeft: '7%' }]} onPress={() => this.showPopUpSendEmail(document)} />
+                    </TouchableOpacity>
+                    : <Text></Text>
+                }
               </View>
               <Text>{'\n'}</Text>
             </TouchableOpacity>

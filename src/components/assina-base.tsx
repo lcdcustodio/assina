@@ -43,9 +43,10 @@ AssinaHeaderButton.Back = (props: AssinaHeaderButtonSpecificProps) =>
   <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='arrow-left' viewStyle={props.viewStyle} onPress={props.onPress} />
 AssinaHeaderButton.Reload = (props: AssinaHeaderButtonSpecificProps) =>
   <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='reload' viewStyle={props.viewStyle} onPress={props.onPress} />
+AssinaHeaderButton.Email = (props: AssinaHeaderButtonSpecificProps) =>
+    <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='email' viewStyle={props.viewStyle} onPress={props.onPress} />
 AssinaHeaderButton.Exit = (props: AssinaHeaderButtonSpecificProps) =>
   <AssinaHeaderButton text='Sair' iconType='MaterialIcons' iconName='exit-to-app' viewStyle={props.viewStyle} onPress={props.onPress} />
-
 
 /**
  * Exibição de carregamento na tela.

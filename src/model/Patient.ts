@@ -5,7 +5,7 @@ import { PatientMessage } from '../services/api';
 export default class Patient {
 
   public readonly name: string;
-  public readonly email?: string;
+  public email?: string;
   public readonly birthdate?: Date;
 
   constructor(message: PatientMessage) {
