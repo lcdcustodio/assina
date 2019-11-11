@@ -66,25 +66,20 @@ export default class ModalEmail extends Component<ModalEmailProps, ModalEmailSta
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     flexDirection: "row",
     paddingLeft: '5%',
     paddingRight: '5%',
-    paddingTop: '30%'
+    paddingTop: '50%'
   },
   container: {
-    paddingBottom: '2%',
-    margin: '0%',
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 4,
-    borderColor: '#000000',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    height: 350 
+    height: 300,
+    paddingTop: '3%'
   },
   inputText: {
-    marginBottom: '5%',
     width: '100%',
     height: 50,
     color: '#000000',
@@ -93,24 +88,24 @@ const styles = StyleSheet.create({
     fontSize: 30
   },
   containerButton: {
-    width: '100%'
+    width: '100%',
   },
   button: {
-    height: '40%'
+    height: '50%',
   },
   text: {
     fontFamily: 'Roboto-Light',
     letterSpacing: 0.01,
-    fontSize: 40, 
+    fontSize: 30, 
     height: 50,
-    alignSelf: "center", 
     marginLeft: '5%',
     color: '#957657',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   closeButton: {
-    fontSize: 80, 
-    color: '#957657'
+    fontSize: 50, 
+    color: '#957657',
+    paddingRight: '5%'
   },
   headerContainer: {
     width: '100%', 
