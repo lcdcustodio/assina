@@ -102,18 +102,20 @@ export default class ViewAttendance extends Screen<State> {
               <View style={styles.containerTerm}>
                 <Text style={styles.textNameTerm}>{document.title}</Text>
 
+                {
+                  document.signed ?
+                    <TouchableOpacity activeOpacity={0.5} >
+                      <AssinaHeaderButton.Email onPress={() => this.showPopUpSendEmail(document)} />
+                    </TouchableOpacity>
+                    : <Text></Text>
+                }
+
                 <View style={[styles.containerStatus, document.signed ? styles.backgroundGreen : styles.backgroundRed]}>
                   <Text style={[styles.textStatus, document.signed ? styles.colorGreen : styles.colorRed]}>
                     {document.signed ? 'Assinado' : 'Pendente'}
                   </Text>
                 </View>
-                {
-                  document.signed ?
-                    <TouchableOpacity activeOpacity={0.5} >
-                      <AssinaHeaderButton.Email viewStyle={[{ marginLeft: '7%' }]} onPress={() => this.showPopUpSendEmail(document)} />
-                    </TouchableOpacity>
-                    : <Text></Text>
-                }
+
               </View>
               <Text>{'\n'}</Text>
             </TouchableOpacity>
@@ -139,42 +141,40 @@ const styles = {
   textBirthdate: {
     ...baseStyles.text,
     marginTop: '1%',
-    marginBottom: '6%',
-    fontSize: 24,
+    marginBottom: '5%',
+    fontSize: 22,
   },
   containerTerm: {
     ...baseStyles.viewRound,
     flexDirection: 'row' as const,
     justifyContent: 'space-between' as const,
     alignItems: 'center' as const,
-    paddingHorizontal: '3%',
+    paddingHorizontal: '5%',
     height: 100,
     opacity: 0.5,
     backgroundColor: '#70450e',
   },
   textNameTerm: {
     ...baseStyles.text,
-    width: '70%',
-    fontSize: 24,
-    letterSpacing: 1,
+    width: '50%',
+    fontSize: 22,
   },
   containerStatus: {
     ...baseStyles.viewRound,
     height: '50%',
     width: '20%',
-    marginLeft: '5%',
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
+  },
+  textStatus: {
+    ...baseStyles.textBold,
+    letterSpacing: 1,
   },
   backgroundGreen: {
     backgroundColor: '#42fce9',
   },
   backgroundRed: {
     backgroundColor: '#fca791',
-  },
-  textStatus: {
-    ...baseStyles.textBold,
-    letterSpacing: 1,
   },
   colorGreen: {
     color: '#03664e'
