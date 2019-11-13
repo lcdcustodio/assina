@@ -55,6 +55,8 @@ export default abstract class Screen<S extends ScreenState = ScreenState, P exte
     }
   }
 
+  protected info = (message: string): void => this.alert('Assina', message)
+
   protected warn = (message: string): void => this.alert('Assina', message)
 
   protected fail = (message: string, error?: Error): void => {

@@ -1,36 +1,84 @@
 import React from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import Modal from '../components/ModalEmail';
-import { AssinaHeaderButton, AssinaLoading, styles as baseStyles } from '../components/assina-base';
+import { AssinaHeaderButton, AssinaLoading, styles as baseStyles, AssinaIcon } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
+import EmailModal from '../components/EmailModal';
 import Document from '../model/Document';
-
 import Screen, {
-  ScreenProps,
-  ScreenState,
+  ScreenProps, ScreenState,
   styles as screenStyles // <--- TODO REMOVER (utilizar do assina-base)
 } from '../components/Screen';
 
-type State = ScreenState & {
-  modalSendEmail: boolean;
-}
-export default class ViewAttendance extends Screen<State> {
+const EMAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  constructor(props: ScreenProps) {
-    super(props, {
-      modalSendEmail: false
-    });
+type ViewAttendanceState = ScreenState & { emailModal: boolean };
+
+export default class ViewAttendance extends Screen<ViewAttendanceState> {
+
+  private constructor(props: ScreenProps) {
+    super(props, { emailModal: false });
   }
 
-  didFocus = async () => {
+  public render(): JSX.Element {
+    const { emailModal } = this.state;
+    const { patient, documents } = this.context.attendance;
+    return <View style={styles.container}>
+      <NavigationEvents onDidFocus={() => this.didFocus()} />
+      <EmailModal key={emailModal.toString()} visible={emailModal} defaultEmail={patient.email}
+        close={() => this.closeEmailModal()} send={(email) => this.sendEmail(email)} />
+      <AssinaLoading visible={this.isLoading} />
+      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+        <View style={styles.header}>
+          <AssinaHeaderButton.Back viewStyle={styles.headerLeft} onPress={this.goBack} />
+          <View style={styles.headerRight}>
+            <AssinaHeaderButton.Reload viewStyle={[{ marginRight: '10%' }, styles.headerRight]} onPress={() => this.refresh()} />
+            <AssinaHeaderButton.Exit viewStyle={styles.headerRight} onPress={this.goHome} />
+          </View>
+        </View>
+        <View style={styles.containerContent}>
+          <Text style={styles.textName}>{patient.name}</Text>
+          <Text style={styles.textBirthdate}>{patient.birthdateAsString} | {patient.ageAsString}</Text>
+          <FlatList data={documents} keyExtractor={document => document.ref} renderItem={({ item: document }) =>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => this.openDocument(document)}>
+              <View style={styles.containerTerm}>
+                <Text style={styles.textNameTerm}>{document.title}</Text>
+                {document.signed &&
+                  <AssinaIcon.Email onPress={() => this.openEmailModal(document)} />
+                }
+                {document.signed ?
+                  <View style={[styles.containerStatus, styles.backgroundGreen]}>
+                    <Text style={[styles.textStatus, styles.colorGreen]}>Assinado</Text>
+                  </View>
+                  :
+                  <View style={[styles.containerStatus, styles.backgroundRed]}>
+                    <Text style={[styles.textStatus, styles.colorRed]}>Pendente</Text>
+                  </View>
+                }
+              </View>
+              <Text>{'\n'}</Text>
+            </TouchableOpacity>
+          } />
+        </View>
+      </ImageBackground>
+    </View>
+  }
+
+  private didFocus(): void {
     this.context.callerStopLoading();
-    if (this.context.attendance.isDirty) {
-      await this.refresh();
-    }
+    if (this.context.attendance.isDirty) this.refresh();
   }
 
-  refresh = async () => {
+  private openEmailModal(document: Document): void {
+    this.context.document = document;
+    this.setState({ emailModal: true })
+  }
+
+  private closeEmailModal(): void {
+    this.setState({ emailModal: false })
+  }
+
+  private async refresh(): Promise<void> {
     this.startLoading();
     const { unit, attendance } = this.context;
     try {
@@ -41,88 +89,32 @@ export default class ViewAttendance extends Screen<State> {
     this.stopLoading();
   }
 
-  openDocument = async (document: Document) => {
+  private async openDocument(document: Document): Promise<void> {
+    if (document.signed) return;
     this.startLoading();
     try {
       await document.downloadUnsignedHtml();
     } catch (error) {
-      return this.handleError(error, [
-        { status: 404, message: 'Modelo de documento não cadastrado.' },
-      ]);
+      return this.handleError(error, [{ status: 404, message: 'Modelo de documento não cadastrado.' }]);
     }
     this.context.document = document;
     this.context.callerStopLoading = this.stopLoading;
     this.props.navigation.navigate('SignDocument');
   }
 
-  showPopUpSendEmail = (document: Document) => {
-    this.context.document = document;
-    this.setState({ modalSendEmail: true })
-  }
-
-  close = () =>{
-    this.setState({ modalSendEmail: false })
-  }
-
-  send = (email: string) => {
-    if(email.length === 0) return this.warn('Por favor, preencha o e-mail');
-    if(this.validateEmail(email)){
-      this.context.document.sendEmail(email);
-      this.close();
-    } else { 
-      return this.warn('E-mail inválido!');
+  private async sendEmail(email: string): Promise<void> {
+    email = (email != null ? email.trim() : '');
+    if (email.length === 0) return this.warn('Por favor, preencha o e-mail');
+    if (!EMAIL_REGEXP.test(email)) return this.warn('E-mail inválido!');
+    this.startLoading();
+    this.closeEmailModal();
+    try {
+      await this.context.document.sendEmail(email);
+    } catch (error) {
+      return this.handleError(error);
     }
-  }
-
-  validateEmail = (email: string ) => {
-    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
-  }
-
-  render() {
-    const { patient, documents } = this.context.attendance;
-    return <View style={styles.container}>
-      <NavigationEvents onDidFocus={this.didFocus} />
-      <Modal visible={this.state.modalSendEmail} email={patient.email} close={this.close} send={this.send}/>
-      <AssinaLoading visible={this.isLoading} />
-      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-        <View style={styles.header}>
-          <AssinaHeaderButton.Back viewStyle={styles.headerLeft} onPress={this.goBack} />
-          <View style={styles.headerRight}>
-            <AssinaHeaderButton.Reload viewStyle={[{ marginRight: '10%' }, styles.headerRight]} onPress={this.refresh} />
-            <AssinaHeaderButton.Exit viewStyle={styles.headerRight} onPress={this.goHome} />
-          </View>
-        </View>
-        <View style={styles.containerContent}>
-          <Text style={styles.textName}>{patient.name}</Text>
-          <Text style={styles.textBirthdate}>{patient.birthdateAsString} | {patient.ageAsString}</Text>
-          <FlatList data={documents} keyExtractor={document => document.ref} renderItem={({ item: document }) =>
-            <TouchableOpacity activeOpacity={0.5}
-              onPress={document.signed ? null : () => this.openDocument(document)}>
-              <View style={styles.containerTerm}>
-                <Text style={styles.textNameTerm}>{document.title}</Text>
-
-                {
-                  document.signed ?
-                    <TouchableOpacity activeOpacity={0.5} >
-                      <AssinaHeaderButton.Email onPress={() => this.showPopUpSendEmail(document)} />
-                    </TouchableOpacity>
-                    : <Text></Text>
-                }
-
-                <View style={[styles.containerStatus, document.signed ? styles.backgroundGreen : styles.backgroundRed]}>
-                  <Text style={[styles.textStatus, document.signed ? styles.colorGreen : styles.colorRed]}>
-                    {document.signed ? 'Assinado' : 'Pendente'}
-                  </Text>
-                </View>
-
-              </View>
-              <Text>{'\n'}</Text>
-            </TouchableOpacity>
-          } />
-        </View>
-      </ImageBackground>
-    </View>
+    this.stopLoading();
+    this.info('Email enviado com sucesso');
   }
 }
 
@@ -156,7 +148,7 @@ const styles = {
   },
   textNameTerm: {
     ...baseStyles.text,
-    width: '50%',
+    width: '70%',
     fontSize: 22,
   },
   containerStatus: {
