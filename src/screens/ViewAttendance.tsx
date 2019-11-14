@@ -1,7 +1,8 @@
 import React from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
-import { AssinaHeaderButton, AssinaLoading, styles as baseStyles, AssinaIcon } from '../components/assina-base';
+
+import { AssinaHeaderButton, AssinaIcon, AssinaLoading, styles as baseStyles } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import EmailModal from '../components/EmailModal';
 import Document from '../model/Document';
@@ -41,18 +42,18 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
           <Text style={styles.textBirthdate}>{patient.birthdateAsString} | {patient.ageAsString}</Text>
           <FlatList data={documents} keyExtractor={document => document.ref} renderItem={({ item: document }) =>
             <TouchableOpacity activeOpacity={0.5} onPress={() => this.openDocument(document)}>
-              <View style={styles.containerTerm}>
-                <Text style={styles.textNameTerm}>{document.title}</Text>
+              <View style={styles.documentBox}>
+                <Text style={styles.documentTitle}>{document.title}</Text>
                 {document.signed &&
                   <AssinaIcon.Email onPress={() => this.openEmailModal(document)} />
                 }
                 {document.signed ?
-                  <View style={[styles.containerStatus, styles.backgroundGreen]}>
-                    <Text style={[styles.textStatus, styles.colorGreen]}>Assinado</Text>
+                  <View style={[styles.statusBox, styles.signedStatusBox]}>
+                    <Text style={[styles.statusText, styles.signedStatusText]}>Assinado</Text>
                   </View>
                   :
-                  <View style={[styles.containerStatus, styles.backgroundRed]}>
-                    <Text style={[styles.textStatus, styles.colorRed]}>Pendente</Text>
+                  <View style={[styles.statusBox, styles.unsignedStatusBox]}>
+                    <Text style={[styles.statusText, styles.unsignedStatusText]}>Pendente</Text>
                   </View>
                 }
               </View>
@@ -113,7 +114,6 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
     } catch (error) {
       return this.handleError(error);
     }
-    this.stopLoading();
     this.info('Email enviado com sucesso');
   }
 }
@@ -136,7 +136,7 @@ const styles = {
     marginBottom: '5%',
     fontSize: 22,
   },
-  containerTerm: {
+  documentBox: {
     ...baseStyles.viewRound,
     flexDirection: 'row' as const,
     justifyContent: 'space-between' as const,
@@ -146,32 +146,32 @@ const styles = {
     opacity: 0.5,
     backgroundColor: '#70450e',
   },
-  textNameTerm: {
+  documentTitle: {
     ...baseStyles.text,
     width: '70%',
     fontSize: 22,
   },
-  containerStatus: {
+  statusBox: {
     ...baseStyles.viewRound,
     height: '50%',
     width: '20%',
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
   },
-  textStatus: {
+  signedStatusBox: {
+    backgroundColor: '#42fce9',
+  },
+  unsignedStatusBox: {
+    backgroundColor: '#fca791',
+  },
+  statusText: {
     ...baseStyles.textBold,
     letterSpacing: 1,
   },
-  backgroundGreen: {
-    backgroundColor: '#42fce9',
-  },
-  backgroundRed: {
-    backgroundColor: '#fca791',
-  },
-  colorGreen: {
+  signedStatusText: {
     color: '#03664e'
   },
-  colorRed: {
+  unsignedStatusText: {
     color: '#a72b0a'
   },
 }

@@ -11,45 +11,14 @@ type LoginState = ScreenState & {
   username: string;
   password: string;
 };
-const HTTP_ERRORS = [
-  { status: 401, message: 'Usuário e/ou senha inválidos.' },
-  { status: 403, message: 'Usuário e/ou senha inválidos.' },
-];
 export default class Login extends Screen<LoginState> {
 
   private constructor(props: ScreenProps) {
-    super(props, {
-      username: 'admin',
-      password: '123456',
-    });
+    super(props, { username: 'admin', password: '123456' });
   }
 
-  private handleLogin = async (): Promise<void> => {
-    const username = this.state.username.trim();
-    const password = this.state.password.trim();
-    if (!username.length || !password.length) {
-      return this.warn('Por favor, preencha todos os campos.');
-    }
-    this.startLoading();
-    try {
-      await this.context.unit.login(username, password);
-    } catch (error) {
-      return this.handleError(error, HTTP_ERRORS);
-    }
-    this.stopLoading();
-    this.props.navigation.navigate('SearchAttendance');
-  }
-
-  private getBackground = (): number => {
-    switch (this.context.unit.id) {
-      case 1:
-        return vilaNovaBackgroundImage;
-      case 2:
-        return dfStarBackgroundImage;
-    }
-  }
-
-  public render() {
+  public render(): JSX.Element {
+    const { username, password } = this.state;
     return <View style={styles.container}>
       <AssinaLoading visible={this.isLoading} />
       <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
@@ -62,32 +31,53 @@ export default class Login extends Screen<LoginState> {
           <Text style={styles.textLabel}>Usuário</Text>
           <Item>
             <Icon name='user' color='white' size={25} />
-            <Input value={this.state.username}
-              placeholder='login'
-              placeholderTextColor='white'
-              autoCapitalize='none'
-              autoCorrect={false}
-              style={styles.textInput}
-              onChange={(event) => this.handleTextChange('username', event)} />
+            <Input value={username} placeholder='login'
+              placeholderTextColor='white' style={styles.textInput}
+              autoCorrect={false} onChange={(event) => this.handleTextChange('username', event)} />
           </Item>
           <AssinaSeparator vertical='15%' />
           <Text style={styles.textLabel}>Senha</Text>
           <Item>
             <Icon name='lock' color='white' size={25} />
-            <Input secureTextEntry value={this.state.password}
-              placeholder='******'
-              placeholderTextColor='white'
-              autoCapitalize='none'
-              autoCorrect={false}
-              style={styles.textInput}
-              onChange={(event) => this.handleTextChange('password', event)} />
+            <Input secureTextEntry value={password} placeholder='******'
+              placeholderTextColor='white' style={styles.textInput}
+              autoCorrect={false} onChange={(event) => this.handleTextChange('password', event)} />
           </Item>
         </View>
         <AssinaSeparator vertical='6.5%' />
         <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
-          onPress={this.handleLogin} />
+          onPress={() => this.handleLogin()} />
       </ImageBackground>
     </View>
+  }
+
+  private getBackground(): number {
+    switch (this.context.unit.id) {
+      case 1:
+        return vilaNovaBackgroundImage;
+      case 2:
+        return dfStarBackgroundImage;
+    }
+  }
+
+  private async handleLogin(): Promise<void> {
+    let { username, password } = this.state;
+    username = username.trim();
+    password = password.trim();
+    if (!username.length || !password.length) {
+      return this.warn('Por favor, preencha todos os campos.');
+    }
+    this.startLoading();
+    try {
+      await this.context.unit.login(username, password);
+    } catch (error) {
+      return this.handleError(error, [
+        { status: 401, message: 'Usuário e/ou senha inválidos.' },
+        { status: 403, message: 'Usuário e/ou senha inválidos.' },
+      ]);
+    }
+    this.stopLoading();
+    this.props.navigation.navigate('SearchAttendance');
   }
 }
 

@@ -3,17 +3,25 @@ import { Platform, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, Tou
 import { Icon, NativeBase } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+
+/**
+ * TODO Obter o tipo de estilo de qualquer componente.
+ */
+type StyledProps<T> = { style?: T };
+//type StyledFunctional<T> = new (Pick<>)
+export type Style<T> = T extends StyledProps<infer S> ? S : never;
+
+
 /**
  * Botão de uso geral.
- * 
- * @param props Props.
  */
-export const AssinaButton = (props: {
+export type AssinaButtonProps = {
   onPress?: TouchableOpacityProps['onPress'];
   style?: TouchableOpacityProps['style'];
   text?: string;
   textStyle?: TextStyle;
-}) =>
+};
+export const AssinaButton = (props: AssinaButtonProps) =>
   <TouchableOpacity style={[styles.assinaButton, props.style]} activeOpacity={0.5} onPress={props.onPress}>
     <Text style={[styles.assinaButtonText, props.textStyle]}>{props.text ? props.text.toUpperCase() : ''}</Text>
   </TouchableOpacity >
@@ -42,6 +50,7 @@ export const AssinaIcon = (props: AssinaIconProps) =>
     }
   </TouchableOpacity>
 AssinaIcon.Email = (props: AssinaIconSpecificProps) => <AssinaIcon iconType='MaterialCommunityIcons' iconName='email' {...props} />
+AssinaIcon.Barcode = (props: AssinaIconSpecificProps) => <AssinaIcon iconType='MaterialCommunityIcons' iconName='barcode-scan' {...props} />
 
 
 /**
