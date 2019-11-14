@@ -48,7 +48,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
   }
 
   private scan(): void {
-    this.info("MOCK!");
+    this.props.navigation.navigate('Teste');
   }
 
   private async search(): Promise<void> {

@@ -19,6 +19,7 @@
     "native-base": "^2.13.8",
     "react": "16.8.6",
     "react-native": "0.60.5",
+    "react-native-camera": "^3.9.0",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-html-to-pdf": "^0.8.0",
     "react-native-loading-spinner-overlay": "^1.0.1",
