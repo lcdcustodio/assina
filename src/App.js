@@ -13,8 +13,6 @@ import SelectUnit from './screens/SelectUnit';
 import SignDocument from './screens/SignDocument';
 import ViewAttendance from './screens/ViewAttendance';
 
-import Teste from './screens/Teste';
-
 export default class App extends Component {
 
   constructor(props) {
@@ -35,8 +33,6 @@ export default class App extends Component {
         SelectUnit,
         SignDocument,
         ViewAttendance,
-
-        Teste,
       },
       {
         initialRouteName: unit ? 'Login' : 'SelectUnit',

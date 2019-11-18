@@ -4,51 +4,59 @@ import { Icon } from 'native-base';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import BarcodeModal from '../components/BarcodeModal';
 import { backgroundImage } from '../components/assets';
 import Attendance from '../model/Attendance';
 
-type SearchAttendanceState = ScreenState & { attendanceRef: string };
-
+type SearchAttendanceState = ScreenState & {
+  attendanceModal: boolean,
+  attendanceRef: string,
+};
 export default class SearchAttendance extends Screen<SearchAttendanceState> {
 
   constructor(props: ScreenProps) {
-    super(props, { attendanceRef: '3051240' });
+    super(props, {
+      attendanceModal: false,
+      attendanceRef: '3051240',
+    });
   }
 
   public render(): JSX.Element {
-    return <View style={styles.container}>
-      <AssinaLoading visible={this.isLoading} />
-      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft} />
-          <View style={styles.headerRight} >
-            <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
-              <Text style={styles.headerIconText}>Sair</Text>
-              <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
-            </TouchableOpacity>
+    const { attendanceModal, attendanceRef } = this.state;
+    return (
+      <View style={styles.container}>
+        <BarcodeModal getVisibility={() => attendanceModal}
+          setVisibility={(attendanceModal) => this.setState({ attendanceModal })}
+          onRead={(attendanceRef) => this.setState({ attendanceRef })} />
+        <AssinaLoading visible={this.isLoading} />
+        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+          <View style={styles.header}>
+            <View style={styles.headerLeft} />
+            <View style={styles.headerRight} >
+              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
+                <Text style={styles.headerIconText}>Sair</Text>
+                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        <View style={styles.containerForm}>
-          <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
-          <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}
-            pesquise pelo número de atendimento.</Text>
-          <AssinaSeparator vertical='10%' />
-          <View style={styles.attendanceBox}>
-            <TextInput value={this.state.attendanceRef} placeholder='Pesquisar'
-              placeholderTextColor='#707070' style={styles.attendanceInput}
-              autoCorrect={false} onChange={(event) => this.handleTextChange('attendanceRef', event)} />
-            <AssinaIcon.Barcode iconStyle={styles.attendanceIcon} onPress={() => this.scan()} />
+          <View style={styles.containerForm}>
+            <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
+            <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}
+              pesquise pelo número de atendimento.</Text>
+            <AssinaSeparator vertical='10%' />
+            <View style={styles.attendanceBox}>
+              <TextInput value={attendanceRef} placeholder='Pesquisar'
+                placeholderTextColor='#707070' style={styles.attendanceInput}
+                autoCorrect={false} onChange={(event) => this.handleTextChange('attendanceRef', event)} />
+              <AssinaIcon.Barcode iconStyle={styles.attendanceIcon}
+                onPress={() => this.setState({ attendanceModal: true })} />
+            </View>
+            <View style={styles.containerButton}>
+              <AssinaButton text='Pesquisar' style={styles.button} onPress={() => this.search()} />
+            </View>
           </View>
-          <View style={styles.containerButton}>
-            <AssinaButton text='Pesquisar' style={styles.button} onPress={() => this.search()} />
-          </View>
-        </View>
-      </ImageBackground>
-    </View >
-  }
-
-  private scan(): void {
-    this.props.navigation.navigate('Teste');
+        </ImageBackground>
+      </View >);
   }
 
   private async search(): Promise<void> {
