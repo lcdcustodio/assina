@@ -1,11 +1,11 @@
 import React from 'react';
-import { ImageBackground, Text, TextInput, TextStyle, TouchableOpacity, View } from 'react-native';
-import { Icon } from 'native-base';
+import { ImageBackground, Text, TextInput, TextStyle, View } from 'react-native';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import BarCodeModal from '../components/BarCodeModal';
 import { backgroundImage } from '../components/assets';
+import AssinaHeader from '../components/AssinaHeader';
 import Attendance from '../model/Attendance';
 
 type SearchAttendanceState = ScreenState & {
@@ -30,15 +30,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
           onRead={(attendanceRef) => this.setState({ attendanceRef })} />
         <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft} />
-            <View style={styles.headerRight} >
-              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
-                <Text style={styles.headerIconText}>Sair</Text>
-                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <AssinaHeader right={<AssinaHeader.Exit onPress={this.goHome} />} />
           <View style={styles.containerForm}>
             <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
             <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}

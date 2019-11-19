@@ -6,6 +6,7 @@ import { WebView } from 'react-native-webview';
 import Screen, { styles as baseStyles } from '../components/Screen';
 import { AssinaLoading, AssinaButton } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
+import AssinaHeader from '../components/AssinaHeader';
 import Context from '../components/Context';
 
 export default class SignDocument extends Screen {
@@ -49,22 +50,11 @@ export default class SignDocument extends Screen {
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
         <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <TouchableOpacity onPress={this.goBack}>
-                <Icon type='MaterialCommunityIcons' name='arrow-left' style={styles.headerIcon} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.headerCenter}>
-              <Text style={styles.headerText}>{headerText}</Text>
-            </View>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.headerRight} onPress={this.goHome}>
-                <Text style={styles.headerIconText}>Sair</Text>
-                <Icon type='MaterialIcons' name='exit-to-app' style={styles.headerIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          <AssinaHeader
+            left={<AssinaHeader.Back onPress={this.goBack} />}
+            right={<AssinaHeader.Exit onPress={this.goHome} />}>
+            <Text style={styles.headerText}>{headerText}</Text>
+          </AssinaHeader>
           <WebView source={{ html: this.context.document.unsignedHtml }}
             ref={ref => (this.webView = ref)}
             onLoadEnd={this.context.callerStopLoading}

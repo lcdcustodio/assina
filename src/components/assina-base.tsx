@@ -54,34 +54,6 @@ AssinaIcon.Barcode = (props: AssinaIconSpecificProps) => <AssinaIcon iconType='M
 
 
 /**
- * Botões de cabeçalho.
- */
-type AssinaHeaderButtonProps = {
-  onPress?: TouchableOpacityProps['onPress'];
-  viewStyle?: TouchableOpacityProps['style'];
-  text?: string;
-  iconType?: NativeBase.Icon['type'];
-  iconName?: NativeBase.Icon['name'];
-};
-export const AssinaHeaderButton = (props: AssinaHeaderButtonProps) =>
-  <TouchableOpacity style={props.viewStyle} onPress={props.onPress}>
-    {props.text &&
-      <Text style={baseStyles.assinaHeaderButtonText}>{props.text}</Text>
-    }
-    {props.iconType && props.iconName &&
-      <Icon type={props.iconType} name={props.iconName} style={baseStyles.assinaHeaderButtonIcon} />
-    }
-  </TouchableOpacity>
-type AssinaHeaderButtonSpecificProps = Pick<AssinaHeaderButtonProps, 'onPress' | 'viewStyle'>;
-AssinaHeaderButton.Back = (props: AssinaHeaderButtonSpecificProps) =>
-  <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='arrow-left' viewStyle={props.viewStyle} onPress={props.onPress} />
-AssinaHeaderButton.Reload = (props: AssinaHeaderButtonSpecificProps) =>
-  <AssinaHeaderButton iconType='MaterialCommunityIcons' iconName='reload' viewStyle={props.viewStyle} onPress={props.onPress} />
-AssinaHeaderButton.Exit = (props: AssinaHeaderButtonSpecificProps) =>
-  <AssinaHeaderButton text='Sair' iconType='MaterialIcons' iconName='exit-to-app' viewStyle={props.viewStyle} onPress={props.onPress} />
-
-
-/**
  * Exibição de carregamento na tela.
  * 
  * @param props Props.
@@ -164,18 +136,6 @@ const baseStyles = StyleSheet.create({
   assinaButtonText: {
     ...textBoldStyle,
     margin: '2%',
-  },
-  /* AssinaHeaderButton */
-  assinaHeaderButtonIcon: {
-    marginRight: '5%',
-    marginLeft: '1%',
-    fontSize: 40,
-    color: theme.main.color,
-  },
-  assinaHeaderButtonText: {
-    ...textLightStyle,
-    textAlign: 'center',
-    fontSize: 24,
   },
   /* AssinaIcon */
   assinaIcon_View: {},

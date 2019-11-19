@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Modal, StyleSheet, View, ViewStyle } from 'react-native';
 import { RNCamera, RNCameraProps } from 'react-native-camera';
 
-import { AssinaHeaderButton } from './assina-base';
+import AssinaHeader from './AssinaHeader';
 
 type BarCodeModalProps = {
   getVisibility: () => boolean;
@@ -15,15 +15,13 @@ export default class BarCodeModal extends Component<BarCodeModalProps> {
     super(props);
   }
 
-  public render(): JSX.Element {
-    const { getVisibility, setVisibility, onRead } = this.props;
+  public render(): ReactNode {
+    const { getVisibility, setVisibility } = this.props;
+    const { modal, camera } = styles;
     return <Modal visible={getVisibility()}>
-      <View style={styles.modal}>
-        <View style={styles.header}>
-          <AssinaHeaderButton.Back viewStyle={styles.button}
-            onPress={() => setVisibility(false)} />
-        </View>
-        <RNCamera type={RNCamera.Constants.Type.back} captureAudio={false} style={styles.camera}
+      <View style={modal}>
+        <AssinaHeader left={<AssinaHeader.Back onPress={() => setVisibility(false)} />} />
+        <RNCamera type={RNCamera.Constants.Type.back} captureAudio={false} style={camera}
           onBarCodeRead={this.onGeneralRead} onGoogleVisionBarcodesDetected={this.onMlkitRead} />
       </View>
     </Modal>
@@ -51,16 +49,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     backgroundColor: 'black',
-  } as ViewStyle,
-  header: {
-    height: 85,
-    paddingHorizontal: '3%',
-    backgroundColor: '#957657',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  } as ViewStyle,
-  button: {
-    justifyContent: 'center',
   } as ViewStyle,
   camera: {
     flex: 1,

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
-import { AssinaHeaderButton, AssinaIcon, AssinaLoading, styles as baseStyles } from '../components/assina-base';
+import { AssinaIcon, AssinaLoading, styles as baseStyles } from '../components/assina-base';
 import { backgroundImage } from '../components/assets';
 import EmailModal from '../components/EmailModal';
+import AssinaHeader from '../components/AssinaHeader';
 import Document from '../model/Document';
 import Screen, {
   ScreenProps, ScreenState,
@@ -21,7 +22,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
     super(props, { emailModal: false });
   }
 
-  public render(): JSX.Element {
+  public render(): ReactNode {
     const { emailModal } = this.state;
     const { patient, documents } = this.context.attendance;
     return <View style={styles.container}>
@@ -30,13 +31,13 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
         close={() => this.closeEmailModal()} send={(email) => this.sendEmail(email)} />
       <AssinaLoading visible={this.isLoading} />
       <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-        <View style={styles.header}>
-          <AssinaHeaderButton.Back viewStyle={styles.headerLeft} onPress={this.goBack} />
-          <View style={styles.headerRight}>
-            <AssinaHeaderButton.Reload viewStyle={[{ marginRight: '10%' }, styles.headerRight]} onPress={() => this.refresh()} />
-            <AssinaHeaderButton.Exit viewStyle={styles.headerRight} onPress={this.goHome} />
-          </View>
-        </View>
+        <AssinaHeader
+          left={<AssinaHeader.Back onPress={this.goBack} />}
+          right={[
+            <AssinaHeader.Reload onPress={() => this.refresh()} />,
+            <AssinaHeader.Separator />,
+            <AssinaHeader.Exit onPress={this.goHome} />
+          ]} />
         <View style={styles.containerContent}>
           <Text style={styles.textName}>{patient.name}</Text>
           <Text style={styles.textBirthdate}>{patient.birthdateAsString} | {patient.ageAsString}</Text>

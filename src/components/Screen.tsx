@@ -96,27 +96,6 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  header: {
-    height: 85,
-    marginHorizontal: '3%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  headerCenter: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerRight: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
   headerText: {
     fontFamily: 'Roboto-Bold',
     fontSize: 20,
@@ -124,21 +103,6 @@ export const styles = StyleSheet.create({
     fontStyle: 'normal',
     letterSpacing: 0,
     textAlign: 'left',
-    color: '#ffffff',
-  },
-  headerIcon: {
-    marginRight: '5%',
-    marginLeft: '1%',
-    fontSize: 40,
-    color: 'white',
-  },
-  headerIconText: {
-    fontFamily: 'Roboto-Light',
-    fontSize: 24,
-    fontWeight: '300',
-    fontStyle: 'normal',
-    letterSpacing: 0.01,
-    textAlign: 'center',
     color: '#ffffff',
   },
 })
