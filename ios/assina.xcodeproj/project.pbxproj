@@ -34,6 +34,7 @@
 		9966840C447244CF9F2ADDB0 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A200FEA853C84224BCE9C891 /* Entypo.ttf */; };
 		A1609B97854248A8985107C9 /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AFA392E93879400496ACD1E7 /* Roboto.ttf */; };
 		AA16F53DFD30415BA6F37E20 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FF5837AAF03A4C7B8F159832 /* Zocial.ttf */; };
+		C56A37EB2384303D00299EFF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C56A37EA2384303D00299EFF /* GoogleService-Info.plist */; };
 		CCD9A6AB10A248A2AEC7AB34 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE333C0FC7324303AE1C1B74 /* FontAwesome5_Regular.ttf */; };
 		D073EEB90EA640419C1BBA12 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C675BAC7104B402C97292447 /* MaterialCommunityIcons.ttf */; };
 		DCBF231957594B1F9E51DFEF /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE9944399F854848A20B0530 /* Foundation.ttf */; };
@@ -96,6 +97,7 @@
 		BE9944399F854848A20B0530 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/native-base/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		C10C172569603EAF594AA929 /* Pods-assina.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-assina.release.xcconfig"; path = "Target Support Files/Pods-assina/Pods-assina.release.xcconfig"; sourceTree = "<group>"; };
 		C303055CC2964BB3AC133683 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/native-base/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
+		C56A37EA2384303D00299EFF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C675BAC7104B402C97292447 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		C752D208CE80358370BF1366 /* Pods-assina-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-assina-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-assina-tvOS/Pods-assina-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		CE333C0FC7324303AE1C1B74 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/native-base/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				C56A37EA2384303D00299EFF /* GoogleService-Info.plist */,
 			);
 			name = assina;
 			sourceTree = "<group>";
@@ -417,6 +420,7 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				C56A37EB2384303D00299EFF /* GoogleService-Info.plist in Resources */,
 				3ED3EAD906014B7DB7E7FCB3 /* Roboto-Bold.ttf in Resources */,
 				34439F9E657447F8B3D0737F /* Roboto-Light.ttf in Resources */,
 				4875BE5C25924457908735BA /* Roboto-Regular.ttf in Resources */,
