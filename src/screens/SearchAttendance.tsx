@@ -4,7 +4,7 @@ import { Icon } from 'native-base';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
-import BarcodeModal from '../components/BarcodeModal';
+import BarCodeModal from '../components/BarCodeModal';
 import { backgroundImage } from '../components/assets';
 import Attendance from '../model/Attendance';
 
@@ -25,7 +25,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
     const { attendanceModal, attendanceRef } = this.state;
     return (
       <View style={styles.container}>
-        <BarcodeModal getVisibility={() => attendanceModal}
+        <BarCodeModal getVisibility={() => attendanceModal}
           setVisibility={(attendanceModal) => this.setState({ attendanceModal })}
           onRead={(attendanceRef) => this.setState({ attendanceRef })} />
         <AssinaLoading visible={this.isLoading} />

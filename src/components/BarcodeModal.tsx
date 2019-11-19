@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { Modal, StyleSheet, View, ViewStyle } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import { RNCamera, RNCameraProps } from 'react-native-camera';
 
 import { AssinaHeaderButton } from './assina-base';
 
-type BarcodeModalProps = {
+type BarCodeModalProps = {
   getVisibility: () => boolean;
   setVisibility: (isVisible: boolean) => void;
-  onRead: (attendanceRef: string) => void;
+  onRead: (code: string) => void;
 }
-export default class BarcodeModal extends Component<BarcodeModalProps> {
+export default class BarCodeModal extends Component<BarCodeModalProps> {
 
-  private constructor(props: BarcodeModalProps) {
+  private constructor(props: BarCodeModalProps) {
     super(props);
   }
 
@@ -23,11 +23,26 @@ export default class BarcodeModal extends Component<BarcodeModalProps> {
           <AssinaHeaderButton.Back viewStyle={styles.button}
             onPress={() => setVisibility(false)} />
         </View>
-        <RNCamera type={RNCamera.Constants.Type.back} captureAudio={false}
-          style={styles.camera}
-          onBarCodeRead={(event) => { setVisibility(false); onRead(event.data); }} />
+        <RNCamera type={RNCamera.Constants.Type.back} captureAudio={false} style={styles.camera}
+          onBarCodeRead={this.onGeneralRead} onGoogleVisionBarcodesDetected={this.onMlkitRead} />
       </View>
     </Modal>
+  }
+
+  private onRead(code: string) {
+    const { setVisibility, onRead } = this.props;
+    setVisibility(false);
+    onRead(code);
+  }
+
+  private onGeneralRead: RNCameraProps['onBarCodeRead'] = ({ data }) => {
+    this.onRead(data);
+  }
+
+  private onMlkitRead: RNCameraProps['onGoogleVisionBarcodesDetected'] = ({ barcodes }) => {
+    if (barcodes.length) {
+      this.onRead(barcodes[0].data);
+    }
   }
 }
 
