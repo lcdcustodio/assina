@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
-import { AssinaIcon, AssinaLoading, styles as baseStyles } from '../components/assina-base';
-import { backgroundImage } from '../components/assets';
+import { assets, AssinaIcon, AssinaLoading } from '../components/assina-base';
+import baseStyles from '../components/assina-styles';
 import EmailModal from '../components/EmailModal';
 import AssinaHeader from '../components/AssinaHeader';
 import Document from '../model/Document';
@@ -30,7 +30,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
       <EmailModal key={emailModal.toString()} visible={emailModal} defaultEmail={patient.email}
         close={() => this.closeEmailModal()} send={(email) => this.sendEmail(email)} />
       <AssinaLoading visible={this.isLoading} />
-      <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+      <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
         <AssinaHeader
           left={<AssinaHeader.Back onPress={this.goBack} />}
           right={[

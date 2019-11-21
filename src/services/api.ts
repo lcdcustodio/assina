@@ -1,5 +1,5 @@
 import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { app_json } from '../components/assets';
+import { assets } from '../components/assina-base';
 
 export type UnitMessageItem = {
   id: number;
@@ -26,7 +26,7 @@ class Api {
 
   public constructor() {
     this.axios = Axios.create({
-      baseURL: app_json.apiBaseUrl,
+      baseURL: assets.appJson.apiBaseUrl,
       timeout: 5000,
     });
   }

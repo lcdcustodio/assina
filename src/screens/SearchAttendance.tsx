@@ -2,9 +2,8 @@ import React from 'react';
 import { ImageBackground, Text, TextInput, TextStyle, View } from 'react-native';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
-import { AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import { assets, AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import BarCodeModal from '../components/BarCodeModal';
-import { backgroundImage } from '../components/assets';
 import AssinaHeader from '../components/AssinaHeader';
 import Attendance from '../model/Attendance';
 
@@ -29,7 +28,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
           setVisibility={(attendanceModal) => this.setState({ attendanceModal })}
           onRead={(attendanceRef) => this.setState({ attendanceRef })} />
         <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+        <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
           <AssinaHeader right={<AssinaHeader.Exit onPress={this.goHome} />} />
           <View style={styles.containerForm}>
             <Text style={styles.title}>Pesquise o N° de Atendimento</Text>

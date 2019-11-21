@@ -1,47 +1,53 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet, Modal, TextInput, TouchableOpacity } from "react-native"
 import { Icon } from 'native-base';
+import React, { Component } from 'react';
+import { Modal, StyleSheet, Switch, Text, TextStyle, TextInput, TouchableOpacity, View, ViewStyle } from "react-native";
+
 import { AssinaButton, AssinaSeparator } from './assina-base';
+import baseStyles, { IconStyle } from './assina-styles';
 
 type EmailModalProps = {
   visible: boolean;
   defaultEmail: string;
   close: () => void;
-  send: (email: string) => void;
+  send: (email: string, sendAllSigned: boolean) => void;
 }
 type EmailModalState = {
   email: string;
+  sendAllSigned: boolean;
 }
 export default class EmailModal extends Component<EmailModalProps, EmailModalState> {
 
   private constructor(props: EmailModalProps) {
     super(props);
-    this.state = { email: props.defaultEmail };
+    this.state = {
+      email: props.defaultEmail,
+      sendAllSigned: false,
+    };
   }
 
   public render(): JSX.Element {
     const { visible, close, send } = this.props;
-    const { email } = this.state;
+    const { email, sendAllSigned } = this.state;
     return <Modal animationType="fade" transparent={true} visible={visible} >
-      <View style={[styles.overlay]}>
-        <View style={[styles.container]}>
-          <View style={styles.headerContainer}>
-            <Text style={styles.text}>E-mail</Text>
+      <View style={baseStyles.viewModalBackground}>
+        <View style={[styles.dialog]}>
+          <View style={styles.titleBar}>
+            <Text style={styles.title}>E-mail</Text>
             <TouchableOpacity activeOpacity={0.5} onPress={close}>
               <Icon type='MaterialCommunityIcons' name='close-box' style={styles.closeButton} />
             </TouchableOpacity>
           </View>
-          <AssinaSeparator vertical='5%' />
-          <View style={{ marginHorizontal: '5%' }}>
-            <View style={{ marginBottom: '5%' }}>
-              <TextInput keyboardType={'email-address'}
-                placeholderTextColor='#707070' style={styles.inputText}
-                value={email} onChangeText={(email) => this.setState({ email })} />
-            </View>
-            <View style={styles.containerButton}>
-              <AssinaButton text='Enviar' style={styles.button} onPress={() => send(email)} />
-            </View>
+          <AssinaSeparator vertical={20} />
+          <TextInput keyboardType={'email-address'}
+            placeholderTextColor='#707070' style={styles.textInput}
+            value={email} onChangeText={(email) => this.setState({ email })} />
+          <AssinaSeparator vertical={20} />
+          <View style={styles.formItem}>
+            <Text style={styles.formLabel}>Enviar todos os termos assinados</Text>
+            <Switch />
           </View>
+          <AssinaSeparator vertical={20} />
+          <AssinaButton text='Enviar' style={styles.sendButton} onPress={() => send(email, sendAllSigned)} />
         </View>
       </View>
     </Modal>
@@ -49,53 +55,44 @@ export default class EmailModal extends Component<EmailModalProps, EmailModalSta
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    flexDirection: "row",
-    paddingLeft: '5%',
-    paddingRight: '5%',
-    paddingTop: '50%'
-  },
-  container: {
-    width: '100%',
-    backgroundColor: '#ffffff',
-    borderRadius: 4,
-    height: 300,
-    paddingTop: '3%'
-  },
-  inputText: {
-    width: '100%',
-    height: 50,
-    color: '#000000',
-    borderColor: '#70450e',
-    borderWidth: 1,
-    fontSize: 30
-  },
-  containerButton: {
-    width: '100%',
-  },
-  button: {
-    height: '50%',
-  },
-  text: {
-    fontFamily: 'Roboto-Light',
-    letterSpacing: 0.01,
-    fontSize: 30,
-    height: 50,
-    marginLeft: '5%',
-    color: '#957657',
-    fontWeight: 'bold'
-  },
-  closeButton: {
-    fontSize: 50,
-    color: '#957657',
-    paddingRight: '5%'
-  },
-  headerContainer: {
-    width: '100%',
+  dialog: {
+    ...baseStyles.viewRound,
+    width: '60%',
+    backgroundColor: 'white',
+    paddingHorizontal: '3%',
+    paddingTop: 20,
+    paddingBottom: 30,
+  } as ViewStyle,
+  titleBar: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignContent: "center"
-  }
+    alignItems: 'center',
+  } as ViewStyle,
+  title: {
+    ...baseStyles.textBold,
+    fontSize: 30,
+    color: '#957657',
+  } as TextStyle,
+  closeButton: {
+    marginRight: -7,
+    fontSize: 50,
+    color: '#957657',
+  } as IconStyle,
+  textInput: {
+    ...baseStyles.text,
+    borderWidth: 1,
+    borderColor: '#70450e',
+    color: '#957657',
+  } as TextStyle,
+  formItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  } as ViewStyle,
+  formLabel: {
+    ...baseStyles.text,
+    color: '#957657',
+  } as TextStyle,
+  sendButton: {
+    height: 50,
+  } as ViewStyle,
 })

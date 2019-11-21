@@ -4,8 +4,7 @@ import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import Screen, { styles as baseStyles } from '../components/Screen';
-import { AssinaLoading, AssinaButton } from '../components/assina-base';
-import { backgroundImage } from '../components/assets';
+import { assets, AssinaLoading, AssinaButton } from '../components/assina-base';
 import AssinaHeader from '../components/AssinaHeader';
 import Context from '../components/Context';
 
@@ -49,7 +48,7 @@ export default class SignDocument extends Screen {
     return (
       <View style={styles.container}>
         <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+        <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
           <AssinaHeader
             left={<AssinaHeader.Back onPress={this.goBack} />}
             right={<AssinaHeader.Exit onPress={this.goHome} />}>

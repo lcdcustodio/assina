@@ -4,8 +4,7 @@ import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Screen, { styles as baseStyles } from '../components/Screen';
-import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
-import { footerUnitImage } from '../components/assets';
+import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import Unit from '../model/Unit';
 import Context from '../components/Context';
 
@@ -72,7 +71,7 @@ export default class SelectUnit extends Screen {
         <AssinaButton text='Prosseguir'
           style={styles.button} textStyle={styles.buttonText}
           onPress={() => this.next(ctx)} />
-        <ImageBackground source={footerUnitImage} style={styles.imgBackground}>
+        <ImageBackground source={assets.footerUnitImage} style={styles.imgBackground}>
           <View style={styles.footer}>
             <Text style={styles.footerTitle}>Selecione a sua Unidade</Text>
             <Text style={styles.footerText}>
