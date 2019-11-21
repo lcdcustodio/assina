@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Modal, StyleSheet, Switch, Text, TextStyle, TextInput, TouchableOpacity, View, ViewStyle } from "react-native";
 
 import { AssinaButton, AssinaSeparator } from './assina-base';
-import baseStyles, { IconStyle } from './assina-styles';
+import baseStyles, { palette, IconStyle } from './assina-styles';
 
 type EmailModalProps = {
   visible: boolean;
@@ -44,7 +44,10 @@ export default class EmailModal extends Component<EmailModalProps, EmailModalSta
           <AssinaSeparator vertical={20} />
           <View style={styles.formItem}>
             <Text style={styles.formLabel}>Enviar todos os termos assinados</Text>
-            <Switch />
+            <Switch value={sendAllSigned}
+              onValueChange={(value) => this.setState({ sendAllSigned: value })}
+              thumbColor={palette.primary}
+              trackColor={{ false: null, true: '#70450e' }} />
           </View>
           <AssinaSeparator vertical={20} />
           <AssinaButton text='Enviar' style={styles.sendButton} onPress={() => send(email, sendAllSigned)} />

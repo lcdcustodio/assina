@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Platform, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from 'react-native';
 import { Icon, NativeBase } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
-import styles, { IconStyle, TouchableStyle, defaultTouchableActiveOpacity, pallete } from './assina-styles';
+import styles, { IconStyle, TouchableStyle, defaultTouchableActiveOpacity, palette } from './assina-styles';
 
 
 export type OneOrMany<T> = T | T[];
@@ -145,6 +145,6 @@ export const AssinaStatusBar = () => {
 const assinaStatusBarDefaultStyles = StyleSheet.create({
   viewDefaults: {
     height: (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
-    backgroundColor: pallete.primary,
+    backgroundColor: palette.primary,
   } as ViewStyle,
 });

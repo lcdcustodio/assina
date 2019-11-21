@@ -9,7 +9,7 @@ export const defaultTouchableActiveOpacity = 0.5;
 /**
  * Palheta de cores
  */
-export const pallete = {
+export const palette = {
     primary: '#957657',
     secondary: 'white',
 };
@@ -19,7 +19,7 @@ export const pallete = {
  * Icon (NativeBase)
  */
 const iconStyle: IconStyle = {
-    color: pallete.secondary,
+    color: palette.secondary,
     fontSize: 40,
 };
 
@@ -28,7 +28,7 @@ const iconStyle: IconStyle = {
  * Text
  */
 const textStyle: TextStyle = {
-    color: pallete.secondary,
+    color: palette.secondary,
     fontFamily: 'Roboto',
     fontSize: 22,
     fontStyle: 'normal',
@@ -55,7 +55,7 @@ const textLightStyle: TextStyle = {
 const viewStyle: ViewStyle = {
 };
 const viewBackgroundStyle: ViewStyle = {
-    backgroundColor: pallete.primary,
+    backgroundColor: palette.primary,
 };
 const viewModalBackgroundStyle: ViewStyle = {
     flex: 1,
