@@ -4,8 +4,7 @@ import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
-import { AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
-import { logoImage, vilaNovaBackgroundImage, dfStarBackgroundImage } from '../components/assets';
+import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 
 type LoginState = ScreenState & {
   username: string;
@@ -24,7 +23,7 @@ export default class Login extends Screen<LoginState> {
       <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
         <AssinaSeparator vertical='5%' />
         <View style={styles.containerLogo}>
-          <Image source={logoImage} resizeMode='contain' style={styles.imgLogo} />
+          <Image source={assets.logoImage} resizeMode='contain' style={styles.imgLogo} />
         </View>
         <AssinaSeparator vertical='12%' />
         <View style={styles.containerForm}>
@@ -54,9 +53,9 @@ export default class Login extends Screen<LoginState> {
   private getBackground(): number {
     switch (this.context.unit.id) {
       case 1:
-        return vilaNovaBackgroundImage;
+        return assets.vilaNovaBackgroundImage;
       case 2:
-        return dfStarBackgroundImage;
+        return assets.dfStarBackgroundImage;
     }
   }
 

@@ -1,23 +1,20 @@
 import React, { Component, FunctionComponent, ReactElement, ReactNode } from 'react';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from 'react-native';
-import { Icon, NativeBase } from 'native-base';
+import { StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Icon } from 'native-base';
 
-import { AssinaSeparator, styles as baseStyles } from './assina-base';
-
-type ReactElements = ReactElement | ReactElement[];
-type TouchableStyle = TouchableOpacityProps['style'];
-type IconStyle = NativeBase.Icon['style'];
+import { OneOrMany, IconName, IconType, TouchableOnPress, addKey, AssinaSeparator } from './assina-base';
+import baseStyles, { IconStyle, TouchableStyle } from './assina-styles';
 
 /**
  * Botão de cabeçalho
  */
 type AssinaHeaderButtonProps = {
-  onPress?: TouchableOpacityProps['onPress'];
+  onPress?: TouchableOnPress;
   style?: TouchableStyle;
   text?: string;
   textStyle?: TextStyle;
-  iconType?: NativeBase.Icon['type'];
-  iconName?: NativeBase.Icon['name'];
+  iconType?: IconType;
+  iconName?: IconName;
   iconStyle?: IconStyle;
 };
 
@@ -39,8 +36,8 @@ const AssinaHeaderButton: FunctionComponent<AssinaHeaderButtonProps> = (props) =
  * Cabeçalho
  */
 export type AssinaHeaderProps = {
-  left?: ReactElements;
-  right?: ReactElements;
+  left?: OneOrMany<ReactElement>;
+  right?: OneOrMany<ReactElement>;
   style?: ViewStyle;
   blockStyle?: ViewStyle;
 };
@@ -68,10 +65,10 @@ export default class AssinaHeader extends Component<AssinaHeaderProps> {
     return (
       <View style={[mainContainer, style]}>
         {left &&
-          <View style={{ ...actualBlockStyle, justifyContent: 'flex-start' }}>{this.index(left)}</View>
+          <View style={{ ...actualBlockStyle, justifyContent: 'flex-start' }}>{addKey(left)}</View>
         }
         {right &&
-          <View style={{ ...actualBlockStyle, justifyContent: 'flex-end' }}>{this.index(right)}</View>
+          <View style={{ ...actualBlockStyle, justifyContent: 'flex-end' }}>{addKey(right)}</View>
         }
         {children &&
           <View style={centerContainer}>
@@ -80,12 +77,6 @@ export default class AssinaHeader extends Component<AssinaHeaderProps> {
         }
       </View>
     );
-  }
-
-  private index(nodes: ReactElements): ReactElements {
-    return Array.isArray(nodes)
-      ? nodes.map((n, i) => React.cloneElement(n, { key: i }))
-      : nodes;
   }
 }
 
@@ -122,12 +113,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   } as ViewStyle, // TouchableStyle,
 
-  buttonText: {
-    ...baseStyles.text,
-  } as TextStyle,
-
-  buttonIcon: {
-    fontSize: 40,
-    color: baseStyles.main.color,
-  } as IconStyle,
+  buttonText: baseStyles.text,
+  buttonIcon: baseStyles.icon,
 });

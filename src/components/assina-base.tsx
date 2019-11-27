@@ -1,64 +1,120 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Platform, StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps, View, ViewStyle } from 'react-native';
 import { Icon, NativeBase } from 'native-base';
 import Spinner from 'react-native-loading-spinner-overlay';
+import styles, { IconStyle, TouchableStyle, defaultTouchableActiveOpacity, palette } from './assina-styles';
+
+
+export type OneOrMany<T> = T | T[];
+
+
+export function addKey(elements: OneOrMany<ReactElement>) {
+  return Array.isArray(elements)
+    ? elements.map((n, i) => React.cloneElement(n, { key: i }))
+    : elements;
+}
+
+
+export type IconName = NativeBase.Icon['name'];
+export type IconType = NativeBase.Icon['type'];
+export type TouchableOnPress = TouchableOpacityProps['onPress'];
 
 
 /**
- * TODO Obter o tipo de estilo de qualquer componente.
+ * Assets
  */
-type StyledProps<T> = { style?: T };
-//type StyledFunctional<T> = new (Pick<>)
-export type Style<T> = T extends StyledProps<infer S> ? S : never;
+export type AppJson = {
+  apiBaseUrl: string;
+};
+const rootPath = '../..';
+const assetPath = `${rootPath}/assets`;
+const imagePath = `${assetPath}/images`;
+export const assets = {
+  appJson: require(`${rootPath}/app.json`) as AppJson,
+  footerUnitImage: require(`${imagePath}/footerHome.png`) as number,
+  logoImage: require(`${imagePath}/assinaLogo.png`) as number,
+  backgroundImage: require(`${imagePath}/general-background.png`) as number,
+  vilaNovaBackgroundImage: require(`${imagePath}/vila-nova-background.jpg`) as number,
+  dfStarBackgroundImage: require(`${imagePath}/dfstar-background.png`) as number,
+};
 
 
 /**
  * Botão de uso geral.
  */
 export type AssinaButtonProps = {
-  onPress?: TouchableOpacityProps['onPress'];
-  style?: TouchableOpacityProps['style'];
+  onPress?: TouchableOnPress;
+  style?: TouchableStyle;
   text?: string;
   textStyle?: TextStyle;
 };
-export const AssinaButton = (props: AssinaButtonProps) =>
-  <TouchableOpacity style={[styles.assinaButton, props.style]} activeOpacity={0.5} onPress={props.onPress}>
-    <Text style={[styles.assinaButtonText, props.textStyle]}>{props.text ? props.text.toUpperCase() : ''}</Text>
-  </TouchableOpacity >
+export const AssinaButton = (props: AssinaButtonProps) => {
+  const { onPress, style, text, textStyle } = props;
+  const { touchableDefaults, textDefaults } = assinaButtonDefaultStyles;
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={defaultTouchableActiveOpacity} style={[touchableDefaults, style]}>
+      <Text style={[textDefaults, textStyle]}>{text ? text.toUpperCase() : ''}</Text>
+    </TouchableOpacity >
+  );
+};
+const assinaButtonDefaultStyles = StyleSheet.create({
+  touchableDefaults: {
+    ...styles.viewRound,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  } as TouchableStyle,
+  textDefaults: {
+    ...styles.textBold,
+    margin: '2%',
+  } as TextStyle,
+});
 
 
 /**
  * Ícone pressionável.
  */
-type AssinaIconProps = {
-  onPress?: TouchableOpacityProps['onPress'];
-  viewStyle?: TouchableOpacityProps['style'];
-  iconType?: NativeBase.Icon['type'];
-  iconName?: NativeBase.Icon['name'];
-  iconStyle?: NativeBase.Icon['style'];
+export type AssinaIconProps = {
+  onPress?: TouchableOnPress;
+  style?: TouchableStyle;
+  iconType?: IconType;
+  iconName?: IconName;
+  iconStyle?: IconStyle;
   text?: string;
   textStyle?: TextStyle;
 };
-type AssinaIconSpecificProps = Omit<AssinaIconProps, 'iconType' | 'iconName' | 'text'>;
-export const AssinaIcon = (props: AssinaIconProps) =>
-  <TouchableOpacity style={[baseStyles.assinaIcon_View, props.viewStyle]} activeOpacity={0.5} onPress={props.onPress}>
-    {props.text &&
-      <Text style={[baseStyles.assinaIcon_Text, props.textStyle]}>{props.text}</Text>
-    }
-    {props.iconType && props.iconName &&
-      <Icon type={props.iconType} name={props.iconName} style={[baseStyles.assinaIcon_Icon, props.iconStyle]} />
-    }
-  </TouchableOpacity>
+export const AssinaIcon = (props: AssinaIconProps) => {
+  const { onPress, style, iconType, iconName, iconStyle, text, textStyle } = props;
+  const { iconDefaults, textDefaults, touchableDefaults } = assinaIconDefaultStyles;
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={defaultTouchableActiveOpacity} style={[touchableDefaults, style]}>
+      {text && <Text style={[textDefaults, textStyle]}>{text}</Text>}
+      {iconType && iconName && <Icon type={iconType} name={iconName} style={[iconDefaults, iconStyle]} />}
+    </TouchableOpacity>
+  );
+};
+export type AssinaIconSpecificProps = Omit<AssinaIconProps, 'iconType' | 'iconName' | 'text'>;
 AssinaIcon.Email = (props: AssinaIconSpecificProps) => <AssinaIcon iconType='MaterialCommunityIcons' iconName='email' {...props} />
 AssinaIcon.Barcode = (props: AssinaIconSpecificProps) => <AssinaIcon iconType='MaterialCommunityIcons' iconName='barcode-scan' {...props} />
+//
+const assinaIconDefaultStyles = StyleSheet.create({
+  iconDefaults: styles.icon,
+  textDefaults: {
+    ...styles.textLight,
+    textAlign: 'center',
+    fontSize: 24,
+  } as TextStyle,
+  touchableDefaults: {} as TouchableStyle,
+});
 
 
 /**
  * Exibição de carregamento na tela.
- * 
- * @param props Props.
  */
-export const AssinaLoading = (props: { visible?: boolean }) =>
+export type AssinaLoadingProps = {
+  visible?: boolean;
+};
+export const AssinaLoading = (props: AssinaLoadingProps) =>
   <Spinner visible={props.visible} textContent='Aguarde...' textStyle={styles.text} />
 
 
@@ -66,102 +122,29 @@ export const AssinaLoading = (props: { visible?: boolean }) =>
  * Separador de conteúdo vertical ou horizontal. Para evitar problemas com os
  * bugs de margin e padding do React Native, é recomendado utilizar este
  * componente ao invés de embutir margens em outros componentes funcionais.
- * 
- * @param props Props.
  */
-export const AssinaSeparator = (props: {
+export type AssinaSeparatorProps = {
   vertical?: ViewStyle['marginTop'];
   horizontal?: ViewStyle['marginLeft'];
-}) =>
+};
+export const AssinaSeparator = (props: AssinaSeparatorProps) =>
   <View style={{ marginTop: props.vertical, marginLeft: props.horizontal }} />
 
 
 /**
- * Barra de status.
+ * Barra de status do dispositivo.
  */
-export const AssinaStatusBar = () =>
-  <View style={styles.assinaStatusBar}>
-    <StatusBar backgroundColor={styles.assinaStatusBar.backgroundColor} barStyle='light-content' translucent={true} />
-  </View>
-
-
-/*********************************** STYLES ***********************************/
-
-const theme = StyleSheet.create({
-  main: {
-    backgroundColor: '#957657',
-    color: 'white',
-  },
-});
-
-const textStyle: TextStyle = {
-  color: theme.main.color,
-  fontFamily: 'Roboto',
-  fontSize: 22,
-  fontStyle: 'normal',
-  fontWeight: 'normal',
-  letterSpacing: 0,
-  textAlign: 'left',
-};
-const textBoldStyle: TextStyle = {
-  ...textStyle,
-  fontFamily: 'Roboto-Bold',
-  fontWeight: 'bold',
-};
-const textLightStyle: TextStyle = {
-  ...textStyle,
-  fontFamily: 'Roboto-Light',
-  fontWeight: '300',
-  letterSpacing: 0.01,
+export const AssinaStatusBar = () => {
+  const { viewDefaults } = assinaStatusBarDefaultStyles;
+  return (
+    <View style={viewDefaults}>
+      <StatusBar backgroundColor={viewDefaults.backgroundColor} barStyle='light-content' translucent={true} />
+    </View>
+  );
 }
-
-const viewStyle: ViewStyle = {
-}
-const viewBackgroundStyle: ViewStyle = {
-  backgroundColor: theme.main.backgroundColor,
-}
-const viewRoundStyle: ViewStyle = {
-  ...viewBackgroundStyle,
-  borderRadius: 10,
-};
-
-const baseStyles = StyleSheet.create({
-  /* AssinaButton */
-  assinaButton: {
-    ...viewRoundStyle,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  assinaButtonText: {
-    ...textBoldStyle,
-    margin: '2%',
-  },
-  /* AssinaIcon */
-  assinaIcon_View: {},
-  assinaIcon_Icon: {
-    fontSize: 40,
-    color: theme.main.color,
-  },
-  assinaIcon_Text: {
-    ...textLightStyle,
-    textAlign: 'center',
-    fontSize: 24,
-  },
-  /* AssinaStatusBar */
-  assinaStatusBar: {
+const assinaStatusBarDefaultStyles = StyleSheet.create({
+  viewDefaults: {
     height: (Platform.OS === 'ios' ? 20 : StatusBar.currentHeight),
-    backgroundColor: theme.main.backgroundColor,
-  },
-});
-
-export const styles = StyleSheet.create({
-  ...theme,
-  text: textStyle,
-  textBold: textBoldStyle,
-  textLight: textLightStyle,
-  view: viewStyle,
-  viewBackground: viewBackgroundStyle,
-  viewRound: viewRoundStyle,
-  ...baseStyles,
+    backgroundColor: palette.primary,
+  } as ViewStyle,
 });
