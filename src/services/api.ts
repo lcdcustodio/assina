@@ -27,7 +27,7 @@ class Api {
   public constructor() {
     this.axios = Axios.create({
       baseURL: assets.appJson.apiBaseUrl,
-      timeout: 5000,
+      timeout: 30000,
     });
   }
 

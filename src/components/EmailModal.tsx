@@ -37,19 +37,19 @@ export default class EmailModal extends Component<EmailModalProps, EmailModalSta
               <Icon type='MaterialCommunityIcons' name='close-box' style={styles.closeButton} />
             </TouchableOpacity>
           </View>
-          <AssinaSeparator vertical={20} />
-          <TextInput keyboardType={'email-address'}
+          <AssinaSeparator vertical={25} />
+          <TextInput keyboardType={'email-address'} autoCorrect={false}
             placeholderTextColor='#707070' style={styles.textInput}
             value={email} onChangeText={(email) => this.setState({ email })} />
-          <AssinaSeparator vertical={20} />
+          <AssinaSeparator vertical={25} />
           <View style={styles.formItem}>
             <Text style={styles.formLabel}>Enviar todos os termos assinados</Text>
             <Switch value={sendAllSigned}
               onValueChange={(value) => this.setState({ sendAllSigned: value })}
               thumbColor={palette.primary}
-              trackColor={{ false: '#ddd', true: 'brown' }} />
+              trackColor={{ false: '#ddd', true: 'burlywood' }} />
           </View>
-          <AssinaSeparator vertical={20} />
+          <AssinaSeparator vertical={25} />
           <AssinaButton text='Enviar' style={styles.sendButton} onPress={() => send(email, sendAllSigned)} />
         </View>
       </View>
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   } as IconStyle,
   textInput: {
     ...baseStyles.text,
+    height: 40,
     borderWidth: 1,
     borderColor: '#70450e',
     color: '#957657',
