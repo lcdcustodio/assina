@@ -28,7 +28,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
     return <View style={styles.container}>
       <NavigationEvents onDidFocus={() => this.didFocus()} />
       <EmailModal key={emailModal.toString()} visible={emailModal} defaultEmail={patient.email}
-        close={() => this.closeEmailModal()} send={(email) => this.sendEmail(email)} />
+        close={() => this.closeEmailModal()} send={(email, sendAllSigned) => this.sendEmail(email, sendAllSigned)} />
       <AssinaLoading visible={this.isLoading} />
       <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
         <AssinaHeader
@@ -104,14 +104,18 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
     this.props.navigation.navigate('SignDocument');
   }
 
-  private async sendEmail(email: string): Promise<void> {
+  private async sendEmail(email: string, sendAllSigned: boolean): Promise<void> {
     email = (email != null ? email.trim() : '');
     if (email.length === 0) return this.warn('Por favor, preencha o e-mail');
     if (!EMAIL_REGEXP.test(email)) return this.warn('E-mail inválido!');
     this.startLoading();
     this.closeEmailModal();
     try {
-      await this.context.document.sendEmail(email);
+      if (sendAllSigned) {
+        await this.context.attendance.sendEmail(email);
+      } else {
+        await this.context.document.sendEmail(email);
+      }
     } catch (error) {
       return this.handleError(error);
     }

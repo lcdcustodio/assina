@@ -29,7 +29,7 @@ export default class Document {
   }
 
   public async sendEmail(email: string): Promise<void> {
-    await api.postEmail(this.ref, email);
+    await api.postDocumentEmail(this.ref, email);
   }
 }
 

@@ -47,7 +47,7 @@ export default class EmailModal extends Component<EmailModalProps, EmailModalSta
             <Switch value={sendAllSigned}
               onValueChange={(value) => this.setState({ sendAllSigned: value })}
               thumbColor={palette.primary}
-              trackColor={{ false: null, true: '#70450e' }} />
+              trackColor={{ false: '#ddd', true: 'brown' }} />
           </View>
           <AssinaSeparator vertical={20} />
           <AssinaButton text='Enviar' style={styles.sendButton} onPress={() => send(email, sendAllSigned)} />

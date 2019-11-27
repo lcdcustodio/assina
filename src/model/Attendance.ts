@@ -1,6 +1,7 @@
 import Patient from './Patient';
 import Document from './Document';
 import { AttendanceMessage } from '../services/api';
+import api from '../services/api';
 
 export default class Attendance {
 
@@ -18,5 +19,9 @@ export default class Attendance {
 
   public get isEmpty(): boolean {
     return !this.documents.length;
+  }
+
+  public async sendEmail(email: string): Promise<void> {
+    await api.postAttendanceEmail(this.ref, email);
   }
 }

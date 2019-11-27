@@ -66,10 +66,18 @@ class Api {
     });
   }
 
-  public async postEmail(documentRef: string, email: string): Promise<void> {
+  public async postDocumentEmail(documentRef: string, email: string): Promise<void> {
     await this.call<void>({
       method: 'POST',
       url: `/documents/${documentRef}/email`,
+      data: { to: [email] },
+    });
+  }
+
+  public async postAttendanceEmail(attendanceRef: string, email: string): Promise<void> {
+    await this.call<void>({
+      method: 'POST',
+      url: `/attendances/${attendanceRef}/email`,
       data: { to: [email] },
     });
   }
