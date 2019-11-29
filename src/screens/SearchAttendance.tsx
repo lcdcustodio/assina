@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ImageBackground, Text, TextInput, TextStyle, View } from 'react-native';
 
 import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
@@ -20,7 +20,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
     });
   }
 
-  public render(): JSX.Element {
+  public render(): ReactNode {
     const { attendanceModal, attendanceRef } = this.state;
     return (
       <View style={styles.container}>

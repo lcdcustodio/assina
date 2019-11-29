@@ -25,10 +25,8 @@ class Api {
   private axios: AxiosInstance;
 
   public constructor() {
-    this.axios = Axios.create({
-      baseURL: assets.appJson.apiBaseUrl,
-      timeout: 30000,
-    });
+    const { baseUrl: baseURL, timeoutMillis: timeout } = assets.appJson.api;
+    this.axios = Axios.create({ baseURL, timeout });
   }
 
   public async getUnits(): Promise<UnitMessageItem[]> {

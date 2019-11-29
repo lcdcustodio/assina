@@ -24,7 +24,10 @@ export type TouchableOnPress = TouchableOpacityProps['onPress'];
  * Assets
  */
 export type AppJson = {
-  apiBaseUrl: string;
+  api: {
+    baseUrl: string;
+    timeoutMillis: number;
+  };
 };
 const rootPath = '../..';
 const assetPath = `${rootPath}/assets`;

@@ -1,48 +1,22 @@
-import React from 'react';
-import { Icon } from 'native-base';
-import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import React, { ReactNode } from 'react';
+import { ImageBackground, NativeSyntheticEvent, Text, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import Screen, { styles as baseStyles } from '../components/Screen';
+import Screen, { ScreenProps, styles as baseStyles } from '../components/Screen';
 import { assets, AssinaLoading, AssinaButton } from '../components/assina-base';
 import AssinaHeader from '../components/AssinaHeader';
-import Context from '../components/Context';
+import { WebViewMessage } from 'react-native-webview/lib/WebViewTypes';
 
 export default class SignDocument extends Screen {
 
-  constructor(props) {
-    super(props);
-    this.context = null;
+  private webView: WebView;
+
+  private constructor(props: ScreenProps) {
+    super(props, {});
     this.webView = null;
   }
 
-  save = () => {
-    this.startLoading();
-    this.webView.injectJavaScript('save()');
-  }
-
-  uploadDocument = async (event) => {
-    const { data } = event.nativeEvent;
-    if (!data || !data.length) { // mensagem vazia para cancelar o upload
-      return this.stopLoading();
-    }
-    try {
-      await this.context.document.uploadSignedHtml(data);
-    } catch (apiError) {
-      return this.handleError(apiError);
-    }
-    this.context.attendance.isDirty = true;
-    this.goBack();
-  }
-
-  render() {
-    return <Context.Consumer>{context => {
-      this.context = context;
-      return this.renderConsumer();
-    }}</Context.Consumer>
-  }
-
-  renderConsumer() {
+  public render(): ReactNode {
     const { name, birthdate, birthdateAsString, ageAsString } = this.context.attendance.patient;
     const headerText = birthdate ? `${name} | ${birthdateAsString} | ${ageAsString}` : name;
     return (
@@ -57,14 +31,33 @@ export default class SignDocument extends Screen {
           <WebView source={{ html: this.context.document.unsignedHtml }}
             ref={ref => (this.webView = ref)}
             onLoadEnd={this.context.callerStopLoading}
-            onMessage={this.uploadDocument}
+            onMessage={event => this.uploadDocument(event)}
           />
           <View style={styles.footer}>
-            <AssinaButton text='Salvar' style={styles.button} onPress={this.save} />
+            <AssinaButton text='Salvar' style={styles.button} onPress={() => this.save()} />
           </View>
         </ImageBackground >
       </View >
     );
+  }
+
+  private save(): void {
+    this.startLoading();
+    this.webView.injectJavaScript('save()');
+  }
+
+  private async uploadDocument(event: NativeSyntheticEvent<WebViewMessage>) {
+    const { data } = event.nativeEvent;
+    if (!data || !data.length) { // mensagem vazia para cancelar o upload
+      return this.stopLoading();
+    }
+    try {
+      await this.context.document.uploadSignedHtml(data);
+    } catch (error) {
+      return this.handleError(error);
+    }
+    this.context.attendance.isDirty = true;
+    this.goBack();
   }
 }
 
@@ -76,10 +69,10 @@ const styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+  } as ViewStyle,
   button: {
     alignItems: 'center',
     height: '65%',
     width: '90%',
-  },
+  } as ViewStyle,
 }
