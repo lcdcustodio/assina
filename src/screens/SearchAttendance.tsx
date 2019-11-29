@@ -99,10 +99,9 @@ const styles = {
     alignItems: 'center' as const,
   },
   attendanceInput: {
+    ...baseStyles.textBold,
     flex: 1,
     color: '#707070',
-    fontSize: 22,
-    fontWeight: "bold",
   } as TextStyle,
   attendanceIcon: {
     color: '#707070',
