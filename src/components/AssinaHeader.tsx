@@ -95,7 +95,7 @@ export const styles = StyleSheet.create({
   } as ViewStyle,
 
   centerContainer: {
-    zIndex: -1,
+    zIndex: 0,
     position: 'absolute',
     top: 0, right: 0, bottom: 0, left: 0,
     flexDirection: 'row',
@@ -103,6 +103,7 @@ export const styles = StyleSheet.create({
   } as ViewStyle,
 
   block: {
+    zIndex: 1,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',

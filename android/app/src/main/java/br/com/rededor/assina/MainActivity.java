@@ -1,4 +1,4 @@
-package com.assina;
+package br.com.rededor.assina;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -1,6 +1,6 @@
-import { Icon } from 'native-base';
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import { Modal, StyleSheet, Switch, Text, TextStyle, TextInput, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Icon } from 'native-base';
 
 import { AssinaButton, AssinaSeparator } from './assina-base';
 import baseStyles, { palette, IconStyle } from './assina-styles';
@@ -25,7 +25,7 @@ export default class EmailModal extends Component<EmailModalProps, EmailModalSta
     };
   }
 
-  public render(): JSX.Element {
+  public render(): ReactNode {
     const { visible, close, send } = this.props;
     const { email, sendAllSigned } = this.state;
     return <Modal animationType="fade" transparent={true} visible={visible} >
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
   textInput: {
     ...baseStyles.text,
     height: 40,
+    padding: 0,
     borderWidth: 1,
     borderColor: '#70450e',
     color: '#957657',

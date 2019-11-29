@@ -117,7 +117,10 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
         await this.context.document.sendEmail(email);
       }
     } catch (error) {
-      return this.handleError(error);
+      return this.handleError(error, [{
+        status: 504, message:
+          'O servidor de email está demorando para responder, mas continuaremos tentando enviar sua mensagem.'
+      }]);
     }
     this.info('Email enviado com sucesso');
   }

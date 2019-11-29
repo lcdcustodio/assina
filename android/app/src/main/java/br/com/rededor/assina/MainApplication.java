@@ -1,4 +1,4 @@
-package com.assina;
+package br.com.rededor.assina;
 
 import android.app.Application;
 import android.util.Log;

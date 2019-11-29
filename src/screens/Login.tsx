@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Image, ImageBackground, Text, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -16,7 +16,7 @@ export default class Login extends Screen<LoginState> {
     super(props, { username: 'admin', password: '123456' });
   }
 
-  public render(): JSX.Element {
+  public render(): ReactNode {
     const { username, password } = this.state;
     return <View style={styles.container}>
       <AssinaLoading visible={this.isLoading} />

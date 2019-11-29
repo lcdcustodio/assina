@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.assina",
+    package = "br.com.rededor.assina",
 )
 
 android_resource(
     name = "res",
-    package = "com.assina",
+    package = "br.com.rededor.assina",
     res = "src/main/res",
 )
 
