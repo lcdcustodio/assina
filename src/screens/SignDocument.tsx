@@ -1,9 +1,10 @@
 import React, { ReactNode } from 'react';
-import { ImageBackground, NativeSyntheticEvent, Text, View, ViewStyle } from 'react-native';
+import { ImageBackground, NativeSyntheticEvent, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import Screen, { ScreenProps, styles as baseStyles } from '../components/Screen';
 import { assets, AssinaLoading, AssinaButton } from '../components/assina-base';
+import baseStyles from '../components/assina-styles';
+import Screen, { ScreenProps } from '../components/Screen';
 import AssinaHeader from '../components/AssinaHeader';
 import { WebViewMessage } from 'react-native-webview/lib/WebViewTypes';
 
@@ -20,24 +21,22 @@ export default class SignDocument extends Screen {
     const { name, birthdate, birthdateAsString, ageAsString } = this.context.attendance.patient;
     const headerText = birthdate ? `${name} | ${birthdateAsString} | ${ageAsString}` : name;
     return (
-      <View style={styles.container}>
+      <ImageBackground source={assets.backgroundImage} style={baseStyles.imageBackground}>
         <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
-          <AssinaHeader
-            left={<AssinaHeader.Back onPress={this.goBack} />}
-            right={<AssinaHeader.Exit onPress={this.goHome} />}>
-            <Text style={styles.headerText}>{headerText}</Text>
-          </AssinaHeader>
-          <WebView source={{ html: this.context.document.unsignedHtml }}
-            ref={ref => (this.webView = ref)}
-            onLoadEnd={this.context.callerStopLoading}
-            onMessage={event => this.uploadDocument(event)}
-          />
-          <View style={styles.footer}>
-            <AssinaButton text='Salvar' style={styles.button} onPress={() => this.save()} />
-          </View>
-        </ImageBackground >
-      </View >
+        <AssinaHeader
+          left={<AssinaHeader.Back onPress={this.goBack} />}
+          right={<AssinaHeader.Exit onPress={this.goHome} />}>
+          <Text style={styles.headerText}>{headerText}</Text>
+        </AssinaHeader>
+        <WebView source={{ html: this.context.document.unsignedHtml }}
+          ref={ref => (this.webView = ref)}
+          onLoadEnd={this.context.callerStopLoading}
+          onMessage={event => this.uploadDocument(event)}
+        />
+        <View style={styles.footer}>
+          <AssinaButton text='Salvar' style={styles.button} onPress={() => this.save()} />
+        </View>
+      </ImageBackground >
     );
   }
 
@@ -62,7 +61,10 @@ export default class SignDocument extends Screen {
 }
 
 const styles = {
-  ...baseStyles,
+  headerText: {
+    ...baseStyles.textBold,
+    fontSize: 20,
+  } as TextStyle,
   footer: {
     height: 85,
     marginHorizontal: '3%',

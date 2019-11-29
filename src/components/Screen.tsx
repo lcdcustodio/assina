@@ -1,8 +1,11 @@
 import React from 'react';
-import { Alert, NativeSyntheticEvent, StyleSheet, TextInputChangeEventData } from 'react-native';
+import { Alert, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
 import { NavigationStackProp } from 'react-navigation-stack';
-import { ApiError } from '../services/api';
+
 import Context from './Context'
+import { SubType } from './assina-base';
+import { ApiError } from '../services/api';
+
 
 export type ScreenProps = {
   navigation: NavigationStackProp<any>;
@@ -86,30 +89,3 @@ export default abstract class Screen<S extends ScreenState = ScreenState, P exte
     this.fail(`Erro inesperado no servidor (${apiError.httpStatus}).`);
   }
 }
-
-export const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  backgroundImage: {
-    width: '100%',
-    height: '100%',
-  },
-  headerText: {
-    fontFamily: 'Roboto-Bold',
-    fontSize: 20,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
-    color: '#ffffff',
-  },
-})
-
-/**
- * @see https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
- */
-type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? Key : never };
-type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
-type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;

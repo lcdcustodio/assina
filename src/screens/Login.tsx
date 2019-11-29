@@ -3,8 +3,9 @@ import { Image, ImageBackground, Text, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import baseStyles from '../components/assina-styles';
+import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 
 type LoginState = ScreenState & {
   username: string;
@@ -18,12 +19,12 @@ export default class Login extends Screen<LoginState> {
 
   public render(): ReactNode {
     const { username, password } = this.state;
-    return <View style={styles.container}>
-      <AssinaLoading visible={this.isLoading} />
-      <ImageBackground source={this.getBackground()} style={styles.backgroundImage}>
+    return (
+      <ImageBackground source={this.getBackground()} style={baseStyles.imageBackground}>
+        <AssinaLoading visible={this.isLoading} />
         <AssinaSeparator vertical='5%' />
         <View style={styles.containerLogo}>
-          <Image source={assets.logoImage} resizeMode='contain' style={styles.imgLogo} />
+          <Image source={assets.logoImage} resizeMode='contain' style={baseStyles.image} />
         </View>
         <AssinaSeparator vertical='12%' />
         <View style={styles.containerForm}>
@@ -47,7 +48,7 @@ export default class Login extends Screen<LoginState> {
         <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
           onPress={() => this.handleLogin()} />
       </ImageBackground>
-    </View>
+    );
   }
 
   private getBackground(): number {
@@ -81,37 +82,23 @@ export default class Login extends Screen<LoginState> {
 }
 
 const styles = {
-  ...baseStyles,
   containerLogo: {
     height: '30%',
     marginHorizontal: '10%',
-  },
-  imgLogo: {
-    width: '100%',
-    height: '100%',
   },
   containerForm: {
     height: '35%',
     marginHorizontal: '12.5%',
   },
   textLabel: {
-    fontFamily: 'Roboto-Bold',
+    ...baseStyles.textBold,
     fontSize: 30,
-    fontWeight: 'bold' as const,
-    fontStyle: 'normal' as const,
-    letterSpacing: 0,
-    textAlign: 'left' as const,
-    color: 'white',
   },
   textInput: {
+    ...baseStyles.text,
     marginHorizontal: '3%',
     opacity: 0.6,
-    fontFamily: 'Roboto',
     fontSize: 30,
-    fontWeight: '300' as const,
-    fontStyle: 'normal' as const,
-    letterSpacing: 0.02,
-    color: 'white',
   },
   button: {
     marginHorizontal: '12.5%',

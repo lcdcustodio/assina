@@ -5,6 +5,14 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import styles, { IconStyle, TouchableStyle, defaultTouchableActiveOpacity, palette } from './assina-styles';
 
 
+/**
+ * @see https://medium.com/dailyjs/typescript-create-a-condition-based-subset-types-9d902cea5b8c
+ */
+export type FilterFlags<Base, Condition> = { [Key in keyof Base]: Base[Key] extends Condition ? Key : never };
+export type AllowedNames<Base, Condition> = FilterFlags<Base, Condition>[keyof Base];
+export type SubType<Base, Condition> = Pick<Base, AllowedNames<Base, Condition>>;
+
+
 export type OneOrMany<T> = T | T[];
 
 

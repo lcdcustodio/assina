@@ -4,7 +4,8 @@ import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
-import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
+import baseStyles from '../components/assina-styles';
+import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 import Unit from '../model/Unit';
 
 type SelectUnitState = ScreenState & {
@@ -23,7 +24,7 @@ export default class SelectUnit extends Screen<SelectUnitState> {
 
   public render(): ReactNode {
     const { units, unit } = this.state;
-    return <View style={styles.container}>
+    return <View>
       <AssinaLoading visible={this.isLoading} />
       <AssinaSeparator vertical='20%' />
       <View style={styles.containerTitle}>
@@ -84,17 +85,13 @@ export default class SelectUnit extends Screen<SelectUnitState> {
 }
 
 const styles = {
-  ...baseStyles,
   containerTitle: {
     display: 'flex',
     alignItems: 'center',
   } as ViewStyle,
   title: {
-    fontFamily: 'Roboto-Bold',
+    ...baseStyles.textBold,
     fontSize: 37,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-    letterSpacing: 0,
     color: '#0a0819',
   } as TextStyle,
   containerSelect: {
@@ -129,24 +126,18 @@ const styles = {
     borderWidth: 0,
   } as ViewStyle,
   footerTitle: {
+    ...baseStyles.textBold,
     marginBottom: '2.5%',
-    fontFamily: "Roboto-Bold",
     fontSize: 46,
-    fontWeight: "bold",
-    fontStyle: "normal",
-    letterSpacing: 0.04,
-    color: "#ffffff",
-    textAlign: "center"
+    textAlign: "center",
+    color: 'white',
   } as TextStyle,
   footerText: {
+    ...baseStyles.textLight,
     marginTop: '2.5%',
-    fontFamily: "Roboto-Light",
     fontSize: 30,
-    fontWeight: "300",
-    fontStyle: "normal",
-    letterSpacing: 0.03,
-    color: "#ffffff",
-    textAlign: "center"
+    textAlign: "center",
+    color: 'white',
   } as TextStyle,
   button: {
     marginHorizontal: '12.5%',

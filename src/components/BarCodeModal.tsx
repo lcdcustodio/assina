@@ -52,6 +52,8 @@ const styles = StyleSheet.create({
   } as ViewStyle,
   camera: {
     flex: 1,
-    margin: '5%',
+    marginTop: '2%',
+    marginBottom: '5%',
+    marginHorizontal: '5%',
   } as ViewStyle,
 })

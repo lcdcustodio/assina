@@ -1,4 +1,4 @@
-import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { FlexStyle, ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 import { NativeBase } from 'native-base';
 
 export type IconStyle = NativeBase.Icon['style'];
@@ -10,42 +10,42 @@ export const defaultTouchableActiveOpacity = 0.5;
  * Palheta de cores
  */
 export const palette = {
-    primary: '#957657',
-    secondary: 'white',
+  primary: '#957657',
+  secondary: 'white',
 };
 
 
 /**
- * Icon (NativeBase)
+ * Flex de imagens.
  */
-const iconStyle: IconStyle = {
-    color: palette.secondary,
-    fontSize: 40,
-};
+const flexImageStyle: FlexStyle = {
+  width: '100%',
+  height: '100%',
+}
 
 
 /**
  * Text
  */
 const textStyle: TextStyle = {
-    color: palette.secondary,
-    fontFamily: 'Roboto',
-    fontSize: 22,
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    letterSpacing: 0,
-    textAlign: 'left',
+  color: palette.secondary,
+  fontFamily: 'Roboto',
+  fontSize: 22,
+  fontStyle: 'normal',
+  fontWeight: 'normal',
+  letterSpacing: 0,
+  textAlign: 'left',
 };
 const textBoldStyle: TextStyle = {
-    ...textStyle,
-    fontFamily: 'Roboto-Bold',
-    fontWeight: 'bold',
+  ...textStyle,
+  fontFamily: 'Roboto-Bold',
+  fontWeight: 'bold',
 };
 const textLightStyle: TextStyle = {
-    ...textStyle,
-    fontFamily: 'Roboto-Light',
-    fontWeight: '300',
-    letterSpacing: 0.01,
+  ...textStyle,
+  fontFamily: 'Roboto-Light',
+  fontWeight: '300',
+  letterSpacing: 0.01,
 };
 
 
@@ -55,17 +55,17 @@ const textLightStyle: TextStyle = {
 const viewStyle: ViewStyle = {
 };
 const viewBackgroundStyle: ViewStyle = {
-    backgroundColor: palette.primary,
+  backgroundColor: palette.primary,
 };
 const viewModalBackgroundStyle: ViewStyle = {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  justifyContent: 'center',
+  alignItems: 'center',
 };
 const viewRoundStyle: ViewStyle = {
-    ...viewBackgroundStyle,
-    borderRadius: 10,
+  ...viewBackgroundStyle,
+  borderRadius: 10,
 };
 
 
@@ -73,13 +73,18 @@ const viewRoundStyle: ViewStyle = {
  * Público
  */
 const styles = StyleSheet.create({
-    icon: iconStyle,
-    text: textStyle,
-    textBold: textBoldStyle,
-    textLight: textLightStyle,
-    view: viewStyle,
-    viewBackground: viewBackgroundStyle,
-    viewModalBackground: viewModalBackgroundStyle,
-    viewRound: viewRoundStyle,
+  icon: {
+    color: palette.secondary,
+    fontSize: 40,
+  } as IconStyle,
+  image: flexImageStyle as ImageStyle,
+  imageBackground: flexImageStyle as ViewStyle,
+  text: textStyle,
+  textBold: textBoldStyle,
+  textLight: textLightStyle,
+  view: viewStyle,
+  viewBackground: viewBackgroundStyle,
+  viewModalBackground: viewModalBackgroundStyle,
+  viewRound: viewRoundStyle,
 });
 export default styles;

@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 import { ImageBackground, Text, TextInput, TextStyle, View } from 'react-native';
 
-import Screen, { ScreenProps, ScreenState, styles as baseStyles } from '../components/Screen';
 import { assets, AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import baseStyles from '../components/assina-styles';
+import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 import BarCodeModal from '../components/BarCodeModal';
 import AssinaHeader from '../components/AssinaHeader';
 import Attendance from '../model/Attendance';
@@ -23,31 +24,30 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
   public render(): ReactNode {
     const { attendanceModal, attendanceRef } = this.state;
     return (
-      <View style={styles.container}>
+      <ImageBackground source={assets.backgroundImage} style={baseStyles.imageBackground}>
         <BarCodeModal getVisibility={() => attendanceModal}
           setVisibility={(attendanceModal) => this.setState({ attendanceModal })}
           onRead={(attendanceRef) => this.setState({ attendanceRef })} />
         <AssinaLoading visible={this.isLoading} />
-        <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
-          <AssinaHeader right={<AssinaHeader.Exit onPress={this.goHome} />} />
-          <View style={styles.containerForm}>
-            <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
-            <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}
-              pesquise pelo número de atendimento.</Text>
-            <AssinaSeparator vertical='10%' />
-            <View style={styles.attendanceBox}>
-              <TextInput value={attendanceRef} placeholder='Pesquisar'
-                placeholderTextColor='#707070' style={styles.attendanceInput}
-                autoCorrect={false} onChange={(event) => this.handleTextChange('attendanceRef', event)} />
-              <AssinaIcon.Barcode iconStyle={styles.attendanceIcon}
-                onPress={() => this.setState({ attendanceModal: true })} />
-            </View>
-            <View style={styles.containerButton}>
-              <AssinaButton text='Pesquisar' style={styles.button} onPress={() => this.search()} />
-            </View>
+        <AssinaHeader right={<AssinaHeader.Exit onPress={this.goHome} />} />
+        <View style={styles.containerForm}>
+          <Text style={styles.title}>Pesquise o N° de Atendimento</Text>
+          <Text style={styles.text}>Para ter acesso aos termos do paciente,{'\n'}
+            pesquise pelo número de atendimento.</Text>
+          <AssinaSeparator vertical='10%' />
+          <View style={styles.attendanceBox}>
+            <TextInput value={attendanceRef} placeholder='Pesquisar'
+              placeholderTextColor='#707070' style={styles.attendanceInput}
+              autoCorrect={false} onChange={(event) => this.handleTextChange('attendanceRef', event)} />
+            <AssinaIcon.Barcode iconStyle={styles.attendanceIcon}
+              onPress={() => this.setState({ attendanceModal: true })} />
           </View>
-        </ImageBackground>
-      </View >);
+          <View style={styles.containerButton}>
+            <AssinaButton text='Pesquisar' style={styles.button} onPress={() => this.search()} />
+          </View>
+        </View>
+      </ImageBackground>
+    );
   }
 
   private async search(): Promise<void> {
@@ -75,30 +75,19 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
 }
 
 const styles = {
-  ...baseStyles,
   containerForm: {
     alignItems: 'center' as const,
     marginTop: '10%',
     marginHorizontal: '7.5%',
   },
   title: {
-    fontFamily: 'Roboto-Bold',
+    ...baseStyles.textBold,
     fontSize: 40,
-    fontWeight: 'bold' as const,
-    fontStyle: 'normal' as const,
-    letterSpacing: 0,
-    textAlign: 'left' as const,
-    color: 'white'
   },
   text: {
+    ...baseStyles.textLight,
     marginTop: '5%',
-    fontFamily: 'Roboto-Light',
-    fontSize: 22,
-    fontWeight: '300' as const,
-    fontStyle: 'normal' as const,
-    letterSpacing: 0.01,
     textAlign: 'center' as const,
-    color: 'white'
   },
   attendanceBox: {
     width: '100%',

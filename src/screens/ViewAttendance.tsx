@@ -7,10 +7,7 @@ import baseStyles from '../components/assina-styles';
 import EmailModal from '../components/EmailModal';
 import AssinaHeader from '../components/AssinaHeader';
 import Document from '../model/Document';
-import Screen, {
-  ScreenProps, ScreenState,
-  styles as screenStyles // <--- TODO REMOVER (utilizar do assina-base)
-} from '../components/Screen';
+import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 
 const EMAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -25,12 +22,12 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
   public render(): ReactNode {
     const { emailModal } = this.state;
     const { patient, documents } = this.context.attendance;
-    return <View style={styles.container}>
-      <NavigationEvents onDidFocus={() => this.didFocus()} />
-      <EmailModal key={emailModal.toString()} visible={emailModal} defaultEmail={patient.email}
-        close={() => this.closeEmailModal()} send={(email, sendAllSigned) => this.sendEmail(email, sendAllSigned)} />
-      <AssinaLoading visible={this.isLoading} />
-      <ImageBackground source={assets.backgroundImage} style={styles.backgroundImage}>
+    return (
+      <ImageBackground source={assets.backgroundImage} style={baseStyles.imageBackground}>
+        <NavigationEvents onDidFocus={() => this.didFocus()} />
+        <EmailModal key={emailModal.toString()} visible={emailModal} defaultEmail={patient.email}
+          close={() => this.closeEmailModal()} send={(email, sendAllSigned) => this.sendEmail(email, sendAllSigned)} />
+        <AssinaLoading visible={this.isLoading} />
         <AssinaHeader
           left={<AssinaHeader.Back onPress={this.goBack} />}
           right={[
@@ -63,7 +60,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
           } />
         </View>
       </ImageBackground>
-    </View>
+    );
   }
 
   private didFocus(): void {
@@ -127,7 +124,6 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
 }
 
 const styles = {
-  ...screenStyles,
   containerContent: {
     width: '90%',
     height: '90%',
