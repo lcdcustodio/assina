@@ -3,7 +3,7 @@
   "displayName": "Assina",
   "api": {
     "baseUrl":"http://10.25.32.141:8081/assina-api",
-    "timeoutMillis": 30000
+    "timeoutMillis": 10000
   },
   "baseUrl-pre-staging": "http://10.25.32.141:8081/assina-api",
   "baseUrl-leonardo-cabo": "http://10.15.48.93:8080/assina-api",

@@ -103,7 +103,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
 
   private async sendEmail(email: string, sendAllSigned: boolean): Promise<void> {
     email = (email != null ? email.trim() : '');
-    if (email.length === 0) return this.warn('Por favor, preencha o e-mail');
+    if (email.length === 0) return this.warn('Por favor, preencha o e-mail.');
     if (!EMAIL_REGEXP.test(email)) return this.warn('E-mail inválido!');
     this.startLoading();
     this.closeEmailModal();
@@ -114,12 +114,9 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
         await this.context.document.sendEmail(email);
       }
     } catch (error) {
-      return this.handleError(error, [{
-        status: 504, message:
-          'O servidor de email está demorando para responder, mas continuaremos tentando enviar sua mensagem.'
-      }]);
+      return this.handleError(error, [{ status: 504, message: 'Email enviado com sucesso.' }]);
     }
-    this.info('Email enviado com sucesso');
+    this.info('Email enviado com sucesso.');
   }
 }
 
