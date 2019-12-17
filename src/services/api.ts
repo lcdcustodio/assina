@@ -40,7 +40,7 @@ class Api {
       data: {
         'username': username,
         'password': password,
-        'unit': { 'id': unitId },
+        'unitId': unitId,
       },
     })).headers.authorization;
   }
