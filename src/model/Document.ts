@@ -36,6 +36,11 @@ export default class Document {
 const defaultRnHtmlToPdf = {
   fileName: 'signed',
   base64: true,
-  padding: 0, // iOS
-  bgColor: '#FFFFFF', // iOS
+
+  // iOS-only
+  paddingLeft: 70, // BUG: afeta topo e direita
+  paddingRight: -70, // OK
+  paddingTop: 0, // BUG: afeta esquerda e baixo
+  paddingBottom: 140, // BUG: afeta baixo, mas não como esperado (colocar o dobro...?!?!?)
+  bgColor: '#FFFFFF',
 };
