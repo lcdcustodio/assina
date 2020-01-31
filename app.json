@@ -2,11 +2,12 @@
   "name": "assina",
   "displayName": "Assina",
   "api": {
-    "baseUrl":"http://assina.okdhml.rededor.corp",
+    "baseUrl":"http://10.25.35.84:8080/assina-api",
     "timeoutMillis": 10000
   },
   "baseUrl-hmg": "http://assina.okdhml.rededor.corp",
   "baseUrl-tst": "http://10.25.32.141:8081/assina-api",
+  "baseUrl-dev": "http://10.25.35.84:8080/assina-api",
   "baseUrl-leonardo-cabo": "http://10.15.48.93:8080/assina-api",
   "baseUrl-leonardo-wifi": "http://10.15.24.111:8080/assina-api"
 }
