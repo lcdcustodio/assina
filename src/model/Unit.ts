@@ -30,6 +30,10 @@ export default class Unit {
     await AsyncStorage.setItem('unit', JSON.stringify(o));
   }
 
+  public static async clear(): Promise<void> {
+    await AsyncStorage.removeItem('unit');
+  }
+
   public static async load(): Promise<Unit> {
     const json: string = await AsyncStorage.getItem('unit');
     if (json) {

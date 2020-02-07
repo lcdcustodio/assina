@@ -17,7 +17,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
   constructor(props: ScreenProps) {
     super(props, {
       attendanceModal: false,
-      attendanceRef: '3051240',
+      attendanceRef: '',
     });
   }
 

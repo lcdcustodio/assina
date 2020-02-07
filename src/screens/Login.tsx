@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
 import baseStyles from '../components/assina-styles';
 import Screen, { ScreenProps, ScreenState } from '../components/Screen';
+import Unit from '../model/Unit';
+import api from '../services/api';
 
 type LoginState = ScreenState & {
   username: string;
@@ -14,7 +16,7 @@ type LoginState = ScreenState & {
 export default class Login extends Screen<LoginState> {
 
   private constructor(props: ScreenProps) {
-    super(props, { username: 'admin', password: '123456' });
+    super(props, { username: '', password: '' });
   }
 
   public render(): ReactNode {
@@ -64,6 +66,17 @@ export default class Login extends Screen<LoginState> {
     let { username, password } = this.state;
     username = username.trim();
     password = password.trim();
+    // Lida com troca de ambiente através da tela de login.
+    const { appJson } = assets;
+    const env = appJson.environments[username];
+    if (env && password === appJson.environmentPassword) {
+      api.baseUrl = env.baseUrl;
+      await Unit.clear();
+      this.context.unit = null;
+      this.props.navigation.replace('SelectUnit');
+      return;
+    }
+    // Efetua o login convencional.
     if (!username.length || !password.length) {
       return this.warn('Por favor, preencha todos os campos.');
     }

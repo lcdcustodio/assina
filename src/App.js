@@ -3,9 +3,10 @@ import { View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import { AssinaStatusBar } from './components/assina-base';
+import { assets, AssinaStatusBar } from './components/assina-base';
 import Unit from './model/Unit';
 import Context from './components/Context';
+import api from './services/api';
 
 import Login from './screens/Login';
 import SearchAttendance from './screens/SearchAttendance';
@@ -18,6 +19,10 @@ export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { unit: null };
+    const { appJson } = assets;
+    const env = appJson.environments[appJson.defaultEnvironment];
+    api.baseUrl = env.baseUrl;
+    api.timeoutMillis = appJson.timeoutMillis;
   }
 
   componentDidMount() {

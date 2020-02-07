@@ -1,13 +1,25 @@
 {
   "name": "assina",
   "displayName": "Assina",
-  "api": {
-    "baseUrl":"http://10.25.35.84:8080/assina-api",
-    "timeoutMillis": 10000
+  "version": "1.0.8",
+  "timeoutMillis": 10000,
+  "environments": {
+    "PRD": {
+      "baseUrl": ""
+    },
+    "HMG": {
+      "baseUrl": "http://assina.okdhml.rededor.corp"
+    },
+    "TST": {
+      "baseUrl": "http://10.25.32.141:8081/assina-api"
+    },
+    "DEV": {
+      "baseUrl": "http://10.25.35.84:8080/assina-api"
+    },
+    "CSCTMP104": {
+      "baseUrl": "http://CSCTMP104:8080/assina-api"
+    }
   },
-  "baseUrl-hmg": "http://assina.okdhml.rededor.corp",
-  "baseUrl-tst": "http://10.25.32.141:8081/assina-api",
-  "baseUrl-dev": "http://10.25.35.84:8080/assina-api",
-  "baseUrl-leonardo-cabo": "http://10.15.48.93:8080/assina-api",
-  "baseUrl-leonardo-wifi": "http://10.15.24.111:8080/assina-api"
+  "defaultEnvironment": "HMG",
+  "environmentPassword": "RDSL"
 }

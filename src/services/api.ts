@@ -1,5 +1,4 @@
 import Axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { assets } from '../components/assina-base';
 
 export type UnitMessageItem = {
   id: number;
@@ -25,8 +24,23 @@ class Api {
   private axios: AxiosInstance;
 
   public constructor() {
-    const { baseUrl: baseURL, timeoutMillis: timeout } = assets.appJson.api;
-    this.axios = Axios.create({ baseURL, timeout });
+    this.axios = Axios.create();
+  }
+
+  public get baseUrl(): string {
+    return this.axios.defaults.baseURL;
+  }
+
+  public set baseUrl(baseUrl: string) {
+    this.axios.defaults.baseURL = baseUrl;
+  }
+
+  public get timeoutMillis(): number {
+    return this.axios.defaults.timeout;
+  }
+
+  public set timeoutMillis(timeoutMillis: number) {
+    this.axios.defaults.timeout = timeoutMillis;
   }
 
   public async getUnits(): Promise<UnitMessageItem[]> {
