@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Image, ImageBackground, Text, View } from 'react-native';
+import { Image, ImageBackground, Text, TextStyle, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -20,7 +20,10 @@ export default class Login extends Screen<LoginState> {
   }
 
   public render(): ReactNode {
+    const { version, defaultEnvironment } = assets.appJson;
+    const { environment } = this.context;
     const { username, password } = this.state;
+    const info = (environment === defaultEnvironment ? `v${version}` : `v${version} - ${environment}`);
     return (
       <ImageBackground source={this.getBackground()} style={baseStyles.imageBackground}>
         <AssinaLoading visible={this.isLoading} />
@@ -49,6 +52,8 @@ export default class Login extends Screen<LoginState> {
         <AssinaSeparator vertical='6.5%' />
         <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
           onPress={() => this.handleLogin()} />
+        <AssinaSeparator vertical='6.5%' />
+        <Text style={styles.info}>{info}</Text>
       </ImageBackground>
     );
   }
@@ -70,6 +75,7 @@ export default class Login extends Screen<LoginState> {
     const { appJson } = assets;
     const env = appJson.environments[username];
     if (env && password === appJson.environmentPassword) {
+      this.context.environment = username;
       api.baseUrl = env.baseUrl;
       await Unit.clear();
       this.context.unit = null;
@@ -122,4 +128,14 @@ const styles = {
     fontSize: 30,
     color: '#957657',
   },
+  info: {
+    ...baseStyles.text,
+    fontSize: 15,
+    textAlign: 'right',
+    marginHorizontal: '3%',
+    textShadowColor: '#0003',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 2,
+    opacity: 0.5,
+  } as TextStyle,
 };

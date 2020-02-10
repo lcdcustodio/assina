@@ -5,6 +5,7 @@ import Attendance from '../model/Attendance';
 import Document from '../model/Document';
 
 type ContextType = {
+  environment: string,
   unit: Unit;
   attendance: Attendance;
   document: Document;
@@ -12,6 +13,7 @@ type ContextType = {
 }
 
 export default React.createContext<ContextType>({
+  environment: null,
   unit: null,
   attendance: null,
   document: null,
