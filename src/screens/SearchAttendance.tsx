@@ -37,7 +37,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
           <AssinaSeparator vertical='10%' />
           <View style={styles.attendanceBox}>
             <TextInput value={attendanceRef} placeholder='Pesquisar'
-              placeholderTextColor='#707070' style={styles.attendanceInput}
+              placeholderTextColor='#7777' style={styles.attendanceInput}
               autoCorrect={false} onChange={(event) => this.handleTextChange('attendanceRef', event)} />
             <AssinaIcon.Barcode iconStyle={styles.attendanceIcon}
               onPress={() => this.setState({ attendanceModal: true })} />
@@ -101,10 +101,10 @@ const styles = {
   attendanceInput: {
     ...baseStyles.textBold,
     flex: 1,
-    color: '#707070',
+    color: '#777',
   } as TextStyle,
   attendanceIcon: {
-    color: '#707070',
+    color: '#777',
     fontSize: 60,
   },
   containerButton: {

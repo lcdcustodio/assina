@@ -37,16 +37,18 @@ export default class Login extends Screen<LoginState> {
           <Item>
             <Icon name='user' color='white' size={25} />
             <Input value={username} placeholder='login'
-              placeholderTextColor='white' style={styles.textInput}
-              autoCorrect={false} onChange={(event) => this.handleTextChange('username', event)} />
+              placeholderTextColor='#fff7' style={styles.textInput}
+              autoCompleteType="username" autoCapitalize="none" autoCorrect={false}
+              onChange={(event) => this.handleTextChange('username', event)} />
           </Item>
           <AssinaSeparator vertical='15%' />
           <Text style={styles.textLabel}>Senha</Text>
           <Item>
             <Icon name='lock' color='white' size={25} />
             <Input secureTextEntry value={password} placeholder='******'
-              placeholderTextColor='white' style={styles.textInput}
-              autoCorrect={false} onChange={(event) => this.handleTextChange('password', event)} />
+              placeholderTextColor='#fff7' style={styles.textInput}
+              autoCompleteType="password" autoCapitalize="none" autoCorrect={false}
+              onChange={(event) => this.handleTextChange('password', event)} />
           </Item>
         </View>
         <AssinaSeparator vertical='6.5%' />
@@ -90,10 +92,7 @@ export default class Login extends Screen<LoginState> {
     try {
       await this.context.unit.login(username, password);
     } catch (error) {
-      return this.handleError(error, [
-        { status: 401, message: 'Usuário e/ou senha inválidos.' },
-        { status: 403, message: 'Usuário e/ou senha inválidos.' },
-      ]);
+      return this.handleError(error, [{ status: 401, message: 'Usuário e/ou senha inválidos.' },]);
     }
     this.stopLoading();
     this.props.navigation.navigate('SearchAttendance');
@@ -116,7 +115,7 @@ const styles = {
   textInput: {
     ...baseStyles.text,
     marginHorizontal: '3%',
-    opacity: 0.6,
+    opacity: 0.75,
     fontSize: 30,
   },
   button: {
