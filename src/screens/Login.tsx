@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Image, ImageBackground, Text, View } from 'react-native';
+import { Image, ImageBackground, Text, TextStyle, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -20,7 +20,10 @@ export default class Login extends Screen<LoginState> {
   }
 
   public render(): ReactNode {
+    const { version, defaultEnvironment } = assets.appJson;
+    const { environment } = this.context;
     const { username, password } = this.state;
+    const info = (environment === defaultEnvironment ? `v${version}` : `v${version} - ${environment}`);
     return (
       <ImageBackground source={this.getBackground()} style={baseStyles.imageBackground}>
         <AssinaLoading visible={this.isLoading} />
@@ -34,21 +37,25 @@ export default class Login extends Screen<LoginState> {
           <Item>
             <Icon name='user' color='white' size={25} />
             <Input value={username} placeholder='login'
-              placeholderTextColor='white' style={styles.textInput}
-              autoCorrect={false} onChange={(event) => this.handleTextChange('username', event)} />
+              placeholderTextColor='#fff7' style={styles.textInput}
+              autoCompleteType="username" autoCapitalize="none" autoCorrect={false}
+              onChange={(event) => this.handleTextChange('username', event)} />
           </Item>
           <AssinaSeparator vertical='15%' />
           <Text style={styles.textLabel}>Senha</Text>
           <Item>
             <Icon name='lock' color='white' size={25} />
             <Input secureTextEntry value={password} placeholder='******'
-              placeholderTextColor='white' style={styles.textInput}
-              autoCorrect={false} onChange={(event) => this.handleTextChange('password', event)} />
+              placeholderTextColor='#fff7' style={styles.textInput}
+              autoCompleteType="password" autoCapitalize="none" autoCorrect={false}
+              onChange={(event) => this.handleTextChange('password', event)} />
           </Item>
         </View>
         <AssinaSeparator vertical='6.5%' />
         <AssinaButton text='Login' style={styles.button} textStyle={styles.buttonText}
           onPress={() => this.handleLogin()} />
+        <AssinaSeparator vertical='6.5%' />
+        <Text style={styles.info}>{info}</Text>
       </ImageBackground>
     );
   }
@@ -70,6 +77,7 @@ export default class Login extends Screen<LoginState> {
     const { appJson } = assets;
     const env = appJson.environments[username];
     if (env && password === appJson.environmentPassword) {
+      this.context.environment = username;
       api.baseUrl = env.baseUrl;
       await Unit.clear();
       this.context.unit = null;
@@ -84,10 +92,7 @@ export default class Login extends Screen<LoginState> {
     try {
       await this.context.unit.login(username, password);
     } catch (error) {
-      return this.handleError(error, [
-        { status: 401, message: 'Usuário e/ou senha inválidos.' },
-        { status: 403, message: 'Usuário e/ou senha inválidos.' },
-      ]);
+      return this.handleError(error, [{ status: 401, message: 'Usuário e/ou senha inválidos.' },]);
     }
     this.stopLoading();
     this.props.navigation.navigate('SearchAttendance');
@@ -110,7 +115,7 @@ const styles = {
   textInput: {
     ...baseStyles.text,
     marginHorizontal: '3%',
-    opacity: 0.6,
+    opacity: 0.75,
     fontSize: 30,
   },
   button: {
@@ -122,4 +127,14 @@ const styles = {
     fontSize: 30,
     color: '#957657',
   },
+  info: {
+    ...baseStyles.text,
+    fontSize: 15,
+    textAlign: 'right',
+    marginHorizontal: '3%',
+    textShadowColor: '#0003',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 2,
+    opacity: 0.5,
+  } as TextStyle,
 };

@@ -30,6 +30,7 @@ export default class App extends Component {
   }
 
   render() {
+    const { defaultEnvironment } = assets.appJson;
     const { unit } = this.state;
     const RootStack = createStackNavigator(
       {
@@ -49,6 +50,7 @@ export default class App extends Component {
       <View style={{ flex: 1 }}>
         <AssinaStatusBar />
         <Context.Provider value={{
+          environment: defaultEnvironment,
           unit,
           attendance: null,
           document: null,
