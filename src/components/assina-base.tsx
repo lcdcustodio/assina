@@ -52,6 +52,17 @@ export const assets = {
   dfStarBackgroundImage: require(`${imagePath}/dfstar-background.png`) as number,
 };
 
+/**
+ * Rotas
+ */
+export enum Routes {
+  Login = 'Login',
+  SearchAttendance = 'SearchAttendance',
+  SelectUnit = 'SelectUnit',
+  SignDocument = 'SignDocument',
+  ViewAttendance = 'ViewAttendance',
+};
+
 
 /**
  * Botão de uso geral.

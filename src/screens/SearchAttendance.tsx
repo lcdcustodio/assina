@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { ImageBackground, Text, TextInput, TextStyle, View } from 'react-native';
 
-import { assets, AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import { assets, AssinaButton, AssinaIcon, AssinaLoading, AssinaSeparator, Routes } from '../components/assina-base';
 import baseStyles from '../components/assina-styles';
 import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 import BarCodeModal from '../components/BarCodeModal';
@@ -70,7 +70,7 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
     }
     this.context.attendance = attendance;
     this.context.callerStopLoading = this.stopLoading;
-    this.props.navigation.navigate('ViewAttendance');
+    this.props.navigation.navigate(Routes.ViewAttendance);
   }
 }
 

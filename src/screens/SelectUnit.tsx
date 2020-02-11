@@ -3,7 +3,7 @@ import { ImageBackground, Platform, Text, TextStyle, View, ViewStyle } from 'rea
 import { Picker } from "native-base";
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import { assets, AssinaButton, AssinaLoading, AssinaSeparator, Routes } from '../components/assina-base';
 import baseStyles from '../components/assina-styles';
 import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 import Unit from '../model/Unit';
@@ -19,7 +19,14 @@ export default class SelectUnit extends Screen<SelectUnitState> {
   }
 
   public componentDidMount(): void {
-    this.loadUnits();
+    Unit.load().then(unit => {
+      if (unit) {
+        this.context.unit = unit;
+        this.props.navigation.replace(Routes.Login);
+      } else {
+        this.loadUnits();
+      }
+    });
   }
 
   public render(): ReactNode {
@@ -80,7 +87,7 @@ export default class SelectUnit extends Screen<SelectUnitState> {
     }
     await unit.store();
     this.context.unit = unit;
-    this.props.navigation.replace('Login');
+    this.props.navigation.replace(Routes.Login);
   }
 }
 

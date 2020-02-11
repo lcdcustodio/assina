@@ -3,7 +3,7 @@ import { Image, ImageBackground, Text, TextStyle, View } from 'react-native';
 import { Item, Input } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import { assets, AssinaButton, AssinaLoading, AssinaSeparator } from '../components/assina-base';
+import { assets, AssinaButton, AssinaLoading, AssinaSeparator, Routes } from '../components/assina-base';
 import baseStyles from '../components/assina-styles';
 import Screen, { ScreenProps, ScreenState } from '../components/Screen';
 import Unit from '../model/Unit';
@@ -81,7 +81,7 @@ export default class Login extends Screen<LoginState> {
       api.baseUrl = env.baseUrl;
       await Unit.clear();
       this.context.unit = null;
-      this.props.navigation.replace('SelectUnit');
+      this.props.navigation.replace(Routes.SelectUnit);
       return;
     }
     // Efetua o login convencional.
@@ -95,7 +95,7 @@ export default class Login extends Screen<LoginState> {
       return this.handleError(error, [{ status: 401, message: 'Usuário e/ou senha inválidos.' },]);
     }
     this.stopLoading();
-    this.props.navigation.navigate('SearchAttendance');
+    this.props.navigation.navigate(Routes.SearchAttendance);
   }
 }
 

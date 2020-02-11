@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 import { FlatList, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 
-import { assets, AssinaIcon, AssinaLoading } from '../components/assina-base';
+import { assets, AssinaIcon, AssinaLoading, Routes } from '../components/assina-base';
 import baseStyles from '../components/assina-styles';
 import EmailModal from '../components/EmailModal';
 import AssinaHeader from '../components/AssinaHeader';
@@ -98,7 +98,7 @@ export default class ViewAttendance extends Screen<ViewAttendanceState> {
     }
     this.context.document = document;
     this.context.callerStopLoading = this.stopLoading;
-    this.props.navigation.navigate('SignDocument');
+    this.props.navigation.navigate(Routes.SignDocument);
   }
 
   private async sendEmail(email: string, sendAllSigned: boolean): Promise<void> {
