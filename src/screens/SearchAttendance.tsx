@@ -62,7 +62,8 @@ export default class SearchAttendance extends Screen<SearchAttendanceState> {
     } catch (error) {
       return this.handleError(error, [
         { status: 400, message: 'Atendimento inválido.' },
-        { status: 404, message: 'Atendimento não encontrado.' }
+        { status: 404, message: 'Atendimento não encontrado.' },
+        { status: 422, message: 'O atendimento não é deste estabelecimento.' }
       ]);
     }
     if (attendance.isEmpty) {
